@@ -1,0 +1,88 @@
+/* ================================
+   FORM ĐẶT LỊCH KHÁM - BỆNH VIỆN PHÚC AN
+================================ */
+
+/* Toàn bộ section */
+#appointmentSection,
+.container.py-4 {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    padding: 2rem 2.5rem;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* Khi cuộn đến phần form, highlight nhẹ */
+#appointmentSection.highlight {
+    box-shadow: 0 6px 25px rgba(25, 135, 84, 0.3);
+    transform: scale(1.01);
+}
+
+/* Tiêu đề */
+#appointmentSection h2 {
+    font-weight: 700;
+    color: #0d6efd; /* màu chủ đạo Bootstrap */
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Nhãn label */
+#appointmentSection .form-label {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Ô nhập liệu và select */
+#appointmentSection .form-control,
+#appointmentSection .form-select {
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Hiệu ứng khi focus vào input */
+#appointmentSection .form-control:focus,
+#appointmentSection .form-select:focus {
+    border-color: #198754;
+    box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
+/* Nút xác nhận */
+#appointmentSection .btn-success {
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 0.6rem 1.4rem;
+    transition: background-color 0.25s ease, transform 0.2s ease;
+}
+
+#appointmentSection .btn-success:hover {
+    background-color: #157347;
+    transform: scale(1.03);
+}
+
+/* Alert */
+#appointmentSection .alert {
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #appointmentSection {
+        padding: 1.5rem;
+    }
+    #appointmentSection h2 {
+        font-size: 1.25rem;
+    }
+}
+
+/* Hiệu ứng focus khi cuộn tới */
+@keyframes highlightFade {
+    0% {
+        box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.3);
+    }
+    100% {
+        box-shadow: none;
+    }
+}

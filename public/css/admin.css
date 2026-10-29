@@ -1,0 +1,121 @@
+/* Admin Dashboard Styles */
+
+/* Sidebar */
+.sidebar {
+    min-height: 100vh;
+    background: #4e73df;
+    background: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+    background-size: cover;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #d1d3e2;
+    padding: 0.75rem 1rem;
+    position: relative;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #fff;
+}
+
+/* Card */
+.card {
+    border: none;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.btn-primary:hover {
+    background-color: #2e59d9;
+    border-color: #2653d4;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+/* Table */
+.table {
+    color: #5a5c69;
+}
+
+.table th {
+    border-top: none;
+    border-bottom: 2px solid #e3e6f0;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+}
+
+/* Custom Utilities */
+.text-xs {
+    font-size: 0.7rem;
+}
+
+.text-gray-300 {
+    color: #dddfeb !important;
+}
+
+.text-gray-800 {
+    color: #5a5c69 !important;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        z-index: 1030;
+        width: 250px;
+        margin-left: -250px;
+        transition: all 0.3s;
+    }
+    
+    .sidebar.show {
+        margin-left: 0;
+    }
+    
+    .content-wrapper {
+        width: 100%;
+        padding-left: 0;
+        transition: all 0.3s;
+    }
+    
+    .content-wrapper.toggled {
+        padding-left: 250px;
+    }
+}

@@ -1,0 +1,1974 @@
+/* ==========================================================================
+   PHÒNG KHÁM ĐA KHOA 125 THÁI THỊNH · MEDILAB DESIGN SYSTEM
+   Fonts: Roboto (default), Poppins (heading), Raleway (nav)
+   Colors: #ffffff (bg), #444444 (default), #2c4964 (heading), #1977cc (accent), #f1f7fc (light-bg)
+   ========================================================================== */
+
+:root {
+    --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    --heading-font: "Poppins", sans-serif;
+    --nav-font: "Raleway", sans-serif;
+
+    --background-color: #ffffff;
+    --default-color: #444444;
+    --heading-color: #2c4964;
+    --accent-color: #1977cc;
+    --surface-color: #ffffff;
+    --contrast-color: #ffffff;
+
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-soft: #f1f7fc;
+    --surface-subtle: #f1f7fc;
+    --ink: #2c4964;
+    --ink-secondary: #444444;
+    --muted: #6c757d;
+    --accent: #1977cc;
+    --accent-hover: #145ea3;
+    --accent-ink: #ffffff;
+    --accent-tint: #d6e8f8;
+    --border-color: #dce8f4;
+    --border-hover: #1977cc;
+    --field-dark: #2c4964;
+    --field-dark-surface: #1f3549;
+    --field-dark-ink: #ffffff;
+    --field-dark-muted: #d6e8f8;
+
+    --status-ok-bg: #ecfdf5;
+    --status-ok-ink: #047857;
+    --status-warn-bg: #fffbeb;
+    --status-warn-ink: #b45309;
+    --status-danger-bg: #fef2f2;
+    --status-danger-ink: #b91c1c;
+
+    --font-display: "Poppins", sans-serif;
+    --font-text: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --step-display: 38px;
+    --step-head: 32px;
+    --step-lead: 16px;
+    --step-body: 15px;
+    --step-small: 14px;
+
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 10px;
+    --shadow-xs: 0px 2px 15px rgba(0, 0, 0, 0.06);
+    --shadow-sm: 0px 2px 15px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0px 5px 25px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0px 10px 30px rgba(0, 0, 0, 0.12);
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Legacy compatibility variables */
+    --tiki-blue: #1977cc;
+    --tiki-blue-dark: #2c4964;
+    --tiki-blue-light: #f1f7fc;
+    --tiki-navy: #2c4964;
+    --tiki-bg: #f1f7fc;
+    --tiki-surface: #ffffff;
+    --tiki-text: #2c4964;
+    --tiki-text-secondary: #444444;
+    --tiki-text-muted: #6c757d;
+    --tiki-green: #047857;
+    --tiki-green-bg: #ecfdf5;
+    --tiki-amber: #b45309;
+    --tiki-amber-bg: #fffbeb;
+    --tiki-red: #b91c1c;
+    --tiki-red-bg: #fef2f2;
+    --tiki-radius: 8px;
+    --tiki-radius-lg: 10px;
+    --primary: #1977cc;
+    --primary-hover: #145ea3;
+    --primary-soft: #f1f7fc;
+    --emerald: #047857;
+    --emerald-soft: #ecfdf5;
+    --amber-soft: #fffbeb;
+    --surface-bg: #f1f7fc;
+    --line: #dce8f4;
+    --brand: #1977cc;
+}
+
+.scroll-top,
+#scroll-top {
+    bottom: 92px !important;
+    right: 24px !important;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--background-color);
+    color: var(--default-color);
+    font-family: var(--default-font);
+}
+
+body,
+body.tiki-layout {
+    margin: 0;
+    background-color: var(--background-color);
+    color: var(--default-color);
+    font-family: var(--default-font);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.ts-num,
+.font-monospace {
+    font-family: var(--default-font);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ==========================================================================
+   LAYOUT CONTAINER
+   ========================================================================== */
+.ts-frame,
+.container-tiki {
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(20px, 3vw, 32px);
+}
+
+/* ==========================================================================
+   TOP UTILITY BAR & STICKY TIKI HEADER
+   ========================================================================== */
+.tiki-topbar {
+    background-color: var(--field-dark);
+    color: var(--field-dark-ink);
+    font-size: 13px;
+    padding-block: 8px;
+}
+
+.tiki-topbar a {
+    color: var(--field-dark-ink) !important;
+    text-decoration: none;
+}
+
+.tiki-topbar a:hover {
+    text-decoration: underline;
+}
+
+.tiki-topbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.tiki-topbar-list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+
+.tiki-topbar-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #e2e8f0;
+    font-size: 13px;
+}
+
+.tiki-topbar-item i {
+    color: #7cb8ff;
+}
+
+.tiki-topbar-hotline {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #112d55;
+    border: 1px solid #153460;
+    color: #ffffff !important;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.ts-header {
+    background-color: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    padding-block: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ts-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.ts-wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none !important;
+    color: var(--ink) !important;
+    flex-shrink: 0;
+}
+
+.ts-wordmark-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--accent);
+    color: #ffffff;
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 800;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-sm);
+}
+
+.ts-wordmark-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.ts-wordmark-name {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--accent-hover);
+}
+
+.ts-wordmark-sub {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    line-height: 1.2;
+}
+
+.ts-nav {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.ts-nav-link {
+    font-family: var(--font-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-secondary) !important;
+    text-decoration: none !important;
+    padding: 7px 10px;
+    border-radius: var(--radius-sm);
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ts-nav-link:hover,
+.ts-nav-link.is-active {
+    background-color: var(--surface-soft);
+    color: var(--accent-hover) !important;
+}
+
+.ts-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.ts-account-trigger {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-secondary) !important;
+    text-decoration: none !important;
+    padding: 8px 12px;
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.ts-account-trigger:hover {
+    background-color: var(--surface-soft);
+    border-color: var(--border-hover);
+    color: var(--accent-hover) !important;
+}
+
+.ts-count-pill {
+    background-color: var(--accent-hover);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 1px 7px;
+    border-radius: 9999px;
+}
+
+.ts-menu-toggle {
+    display: none;
+    background-color: var(--bg);
+    color: var(--ink);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.ts-mobile-drawer {
+    display: none;
+    background-color: var(--surface);
+    padding: 16px;
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+}
+
+.ts-mobile-drawer.is-open {
+    display: block;
+}
+
+.ts-mobile-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+@media (max-width: 1120px) {
+    .ts-nav {
+        display: none;
+    }
+    .ts-menu-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+}
+
+/* ==========================================================================
+   BUTTONS & ACTIONS
+   ========================================================================== */
+.ts-btn,
+.btn-tiki-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 8px 25px !important;
+    background-color: var(--accent-color) !important;
+    color: var(--contrast-color) !important;
+    font-family: var(--default-font) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.25;
+    border: 1px solid var(--accent-color) !important;
+    border-radius: 50px !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.3s !important;
+}
+
+.ts-btn:hover,
+.btn-tiki-primary:hover {
+    background-color: color-mix(in srgb, var(--accent-color), transparent 15%) !important;
+    border-color: color-mix(in srgb, var(--accent-color), transparent 15%) !important;
+    color: var(--contrast-color) !important;
+}
+
+.ts-btn-secondary,
+.btn-tiki-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 38px;
+    padding: 8px 22px !important;
+    background-color: var(--surface-color) !important;
+    color: var(--accent-color) !important;
+    font-family: var(--default-font) !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.25;
+    border: 1px solid color-mix(in srgb, var(--accent-color), transparent 50%) !important;
+    border-radius: 50px !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.3s !important;
+}
+
+.ts-btn-secondary:hover,
+.btn-tiki-outline:hover {
+    background-color: #f1f7fc !important;
+    border-color: var(--accent-color) !important;
+    color: var(--accent-color) !important;
+}
+
+.ts-btn-sm {
+    min-height: 36px !important;
+    padding: 6px 13px !important;
+    font-size: 13.5px !important;
+}
+
+.ts-link-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent-hover) !important;
+    text-decoration: none !important;
+}
+
+.ts-link-action:hover {
+    color: var(--accent) !important;
+    text-decoration: underline !important;
+}
+
+.ts-spec-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 38px;
+    padding: 7px 13px;
+    background-color: var(--surface);
+    color: var(--ink-secondary);
+    font-family: var(--font-text);
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.ts-spec-btn:hover,
+.ts-spec-btn:focus-visible {
+    background-color: var(--surface-soft);
+    border-color: var(--border-hover);
+    color: var(--accent-hover);
+    outline: none;
+}
+
+.ts-spec-btn.is-active {
+    background-color: var(--surface-soft);
+    border-color: var(--accent-hover);
+    color: var(--accent-hover);
+}
+
+.med-badge-spec {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    background-color: var(--surface-soft);
+    color: var(--accent-hover);
+    border: 1px solid var(--border-hover);
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+/* ==========================================================================
+   AUTHENTICATION & PATIENT PORTAL ENTRY WORKBENCH (FRAMED-SHEET)
+   ========================================================================== */
+.ts-auth-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg);
+    color: var(--ink);
+}
+
+.ts-auth-main {
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    padding-block: clamp(20px, 3vw, 36px);
+}
+
+.ts-auth-grid {
+    display: grid;
+    grid-template-columns: 1.12fr 0.88fr;
+    gap: 20px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.ts-auth-context-card,
+.ts-auth-form-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: clamp(20px, 2.5vw, 28px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.ts-auth-photo-wrap {
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    aspect-ratio: 16 / 8.5;
+    background-color: var(--surface-soft);
+    border: 1px solid var(--border-color);
+    margin-bottom: 18px;
+}
+
+.ts-auth-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.ts-auth-feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-block: 16px;
+}
+
+.ts-auth-feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+}
+
+.ts-auth-feature-icon {
+    color: var(--accent-hover);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.ts-auth-kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    background-color: var(--bg);
+    overflow: hidden;
+    margin-top: auto;
+}
+
+.ts-auth-kpi-cell {
+    padding: 11px 14px;
+    border-right: 1px solid var(--border-color);
+}
+
+.ts-auth-kpi-cell:last-child {
+    border-right: 0;
+}
+
+.ts-auth-kpi-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 2px;
+}
+
+.ts-auth-kpi-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+
+.ts-auth-role-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+    padding: 4px;
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+}
+
+.ts-auth-role-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    border-radius: 6px;
+    text-decoration: none !important;
+    transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.ts-auth-role-tab:hover {
+    color: var(--accent-hover);
+    background-color: var(--surface);
+}
+
+.ts-auth-role-tab.is-active {
+    background-color: var(--accent-hover);
+    color: #ffffff !important;
+}
+
+.ts-demo-strip {
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 18px;
+}
+
+.ts-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+}
+
+.ts-password-group {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.ts-password-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    flex-shrink: 0;
+    background-color: var(--surface);
+    color: var(--ink-secondary);
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.ts-password-toggle:hover {
+    background-color: var(--surface-soft);
+    border-color: var(--accent-hover);
+    color: var(--accent-hover);
+}
+
+.ts-auth-footer-box {
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    margin-top: auto;
+}
+
+@media (max-width: 991.98px) {
+    .ts-auth-grid {
+        grid-template-columns: 1fr;
+    }
+    .ts-auth-context-card {
+        order: 2;
+    }
+    .ts-auth-form-card {
+        order: 1;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .ts-auth-kpi-strip {
+        grid-template-columns: 1fr;
+    }
+    .ts-auth-kpi-cell {
+        border-right: 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .ts-auth-kpi-cell:last-child {
+        border-bottom: 0;
+    }
+}
+
+/* ==========================================================================
+   HERO BANNER (TIKI HEALTHCARE PORTAL HERO · FRAMED-SHEET)
+   ========================================================================== */
+.tiki-hero-section {
+    background-color: #f1f7fc;
+    padding-top: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid color-mix(in srgb, var(--accent-color), transparent 80%);
+}
+
+.tiki-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    color: var(--accent-color);
+    border: 1px solid color-mix(in srgb, var(--accent-color), transparent 75%);
+    padding: 5px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 14px;
+}
+
+.tiki-hero-badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: var(--accent-color);
+    display: inline-block;
+}
+
+.tiki-hero-title {
+    font-family: var(--heading-font) !important;
+    font-size: 36px !important;
+    font-weight: 700 !important;
+    line-height: 1.25 !important;
+    color: var(--heading-color);
+    margin-bottom: 12px;
+}
+
+.tiki-hero-title .text-highlight {
+    color: var(--accent-hover);
+}
+
+.tiki-hero-desc,
+.tiki-hero-subtitle {
+    font-size: 15px;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+    margin-bottom: 20px;
+    max-width: 62ch;
+}
+
+/* Search Box inside Hero */
+.tiki-search-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+}
+
+.tiki-search-card:focus-within {
+    border-color: var(--border-hover);
+}
+
+.tiki-search-form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tiki-search-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1 1 auto;
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 4px 12px;
+}
+
+.tiki-search-input-wrap i {
+    color: var(--accent-hover);
+    font-size: 15px;
+}
+
+.tiki-search-input {
+    border: 0 !important;
+    background: transparent !important;
+    padding: 8px 6px !important;
+    font-size: 14.5px !important;
+    color: var(--ink) !important;
+    width: 100%;
+    outline: none !important;
+    box-shadow: none !important; /* taste-skill-ignore */
+}
+
+.tiki-quick-tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 10px;
+}
+
+.tiki-quick-tags-label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.tiki-tag-pill,
+.tiki-quick-tag {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    padding: 4px 11px;
+    border-radius: 9999px;
+    text-decoration: none !important;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.tiki-tag-pill:hover,
+.tiki-quick-tag:hover {
+    background-color: var(--surface-soft);
+    border-color: var(--border-hover);
+    color: var(--accent-hover) !important;
+}
+
+.tiki-tag-pill.is-accent-tag {
+    background-color: var(--surface-soft);
+    color: var(--accent-hover) !important;
+    border-color: var(--border-hover);
+}
+
+/* Trust metrics strip (Framed Typographic KPI Cards) */
+.tiki-trust-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.tiki-trust-item {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.tiki-trust-lbl,
+.tiki-trust-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    line-height: 1.3;
+    margin-bottom: 3px;
+}
+
+.tiki-trust-val,
+.tiki-trust-num {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+}
+
+.tiki-trust-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+/* Right Hero Showcase & Live Slot Widget */
+.tiki-hero-showcase {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+    padding: 0;
+}
+
+.tiki-hero-showcase-media {
+    position: relative;
+    width: 100%;
+    height: 205px;
+    overflow: hidden;
+    background-color: var(--surface-soft);
+}
+
+.tiki-hero-showcase-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    display: block;
+}
+
+.tiki-hero-showcase-overlay {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tiki-live-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background-color: #ffffff;
+    color: var(--ink);
+    padding: 5px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tiki-hours-pill {
+    background-color: rgba(15, 23, 42, 0.84);
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tiki-hero-showcase-body {
+    padding: 16px 18px 18px;
+}
+
+.tiki-live-slot-panel {
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+}
+
+.ts-filter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--bg);
+    color: var(--ink-secondary) !important;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.ts-filter-pill:hover {
+    background-color: var(--surface-soft);
+    border-color: var(--border-hover);
+    color: var(--accent-hover) !important;
+}
+
+.ts-filter-pill.is-active {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #ffffff !important;
+}
+
+.tiki-slot-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.tiki-slot-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    color: var(--accent-hover) !important;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 6px 8px;
+    border-radius: var(--radius-sm);
+    text-decoration: none !important;
+    font-variant-numeric: tabular-nums;
+    transition: background-color 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+}
+
+.tiki-slot-pill:hover {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff !important;
+}
+
+/* ==========================================================================
+   SECTIONS & TIKI CARDS
+   ========================================================================== */
+.tiki-section {
+    padding-block: clamp(36px, 4.5vw, 56px);
+}
+
+.tiki-section-white,
+.tiki-section-alt {
+    background-color: var(--surface);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tiki-section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.tiki-section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--accent-hover);
+    background-color: var(--surface-soft);
+    padding: 4px 11px;
+    border-radius: 9999px;
+    margin-bottom: 8px;
+}
+
+.tiki-section-title {
+    font-size: clamp(1.2rem, 1.6vw, 1.5rem) !important;
+    font-weight: 800 !important;
+    color: var(--ink);
+    margin: 0;
+}
+
+.tiki-section-sub,
+.tiki-section-desc {
+    font-size: 14.5px;
+    color: var(--muted);
+    margin: 6px 0 0 0;
+    max-width: 65ch;
+}
+
+/* Universal Medilab Card */
+.tiki-card,
+.tiki-item-card {
+    background-color: var(--surface-color);
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 88%);
+    border-radius: 5px;
+    box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.08);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: all ease-in-out 0.3s;
+}
+
+.tiki-item-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+    box-shadow: 0px 5px 25px rgba(25, 119, 204, 0.15);
+}
+
+.tiki-card-thumb {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--surface-soft);
+    aspect-ratio: 16 / 10;
+}
+
+.tiki-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s var(--ease-out);
+}
+
+.tiki-item-card:hover .tiki-card-thumb img {
+    transform: scale(1.03);
+}
+
+.tiki-card-badges {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.tiki-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.tiki-badge-primary {
+    background-color: #ffffff;
+    color: var(--accent-hover);
+}
+
+.tiki-badge-emerald {
+    background-color: var(--status-ok-bg);
+    color: var(--status-ok-ink);
+}
+
+.tiki-card-body {
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.tiki-card-title {
+    font-size: 16.5px !important;
+    font-weight: 700 !important;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.35 !important;
+}
+
+.tiki-card-title a {
+    color: var(--ink) !important;
+    text-decoration: none !important;
+}
+
+.tiki-card-title a:hover {
+    color: var(--accent-hover) !important;
+}
+
+.tiki-card-desc {
+    font-size: 13.75px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 12px;
+}
+
+.tiki-card-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding-top: 10px;
+}
+
+.tiki-card-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    color: var(--ink-secondary);
+}
+
+.tiki-card-meta-item i {
+    color: var(--accent-hover);
+    font-size: 14px;
+}
+
+.tiki-card-footer {
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.tiki-price-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.tiki-price-label {
+    font-size: 12px;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.tiki-price-tag,
+.tiki-price-value {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent-hover);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.15;
+}
+
+/* Doctor Card */
+.tiki-doctor-thumb {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--surface-soft);
+    aspect-ratio: 4 / 4.3;
+}
+
+.tiki-doctor-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 15%;
+    display: block;
+    transition: transform 0.4s var(--ease-out);
+}
+
+.tiki-item-card:hover .tiki-doctor-thumb img {
+    transform: scale(1.03);
+}
+
+/* Step Card */
+.tiki-step-card {
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    height: 100%;
+    position: relative;
+    transition: border-color 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.tiki-step-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+}
+
+.tiki-step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    background-color: var(--surface-soft);
+    color: var(--accent-hover);
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.tiki-step-title {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+
+.tiki-step-desc {
+    font-size: 13.75px;
+    color: var(--ink-secondary);
+    line-height: 1.55;
+    margin-bottom: 0;
+}
+
+/* AI Symptom Advisor Banner */
+.tiki-ai-banner {
+    background-color: var(--field-dark);
+    border: 1px solid #153460;
+    border-radius: var(--radius);
+    color: #ffffff;
+}
+
+.tiki-ai-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #112d55;
+    color: #7cb8ff;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 700;
+}
+
+.tiki-ai-title {
+    font-size: clamp(1.15rem, 1.5vw, 1.45rem) !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    line-height: 1.25 !important;
+}
+
+/* ==========================================================================
+   INNER PAGE HERO & COMPATIBILITY CLASSES
+   ========================================================================== */
+.ts-hero {
+    background-color: var(--bg);
+    padding-top: clamp(24px, 3.5vw, 40px);
+    padding-bottom: clamp(28px, 4vw, 44px);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.ts-hero-title {
+    font-size: clamp(1.25rem, 2vw, 1.75rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.22 !important;
+    letter-spacing: -0.02em !important;
+    color: var(--ink);
+    margin: 0 0 14px 0;
+}
+
+.ts-hero-title br {
+    display: none;
+}
+
+.ts-line-mask,
+.ts-line-inner {
+    display: inline;
+}
+
+.ts-hero-deck {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 24px;
+    align-items: center;
+}
+
+.ts-hero-intro {
+    grid-column: 1 / span 6;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ts-hero-lead {
+    font-size: 15px !important;
+    line-height: 1.6 !important;
+    color: var(--ink-secondary);
+    margin: 0;
+}
+
+.ts-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.ts-hero-live {
+    grid-column: 7 / span 6;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    border-radius: var(--radius);
+}
+
+.ts-section,
+.ts-pricing-field,
+.ts-verbs-section {
+    padding-block: clamp(36px, 4.5vw, 56px);
+}
+
+.ts-section-title {
+    font-size: clamp(1.2rem, 1.6vw, 1.5rem) !important;
+    font-weight: 800 !important;
+    color: var(--ink);
+    margin: 0 0 12px 0;
+}
+
+.ts-feature-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.ts-feature-row {
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.ts-feature-photo {
+    order: -1;
+}
+
+.ts-photo-frame {
+    overflow: hidden;
+    background-color: var(--surface-soft);
+    border-radius: var(--radius-sm);
+    width: 100%;
+    aspect-ratio: 16 / 10 !important;
+    max-width: 100% !important;
+}
+
+.ts-photo-frame img,
+.ts-photo-frame video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+}
+
+.ts-feature-heading {
+    font-size: 17px !important;
+    font-weight: 700 !important;
+    color: var(--ink);
+    margin: 0 0 6px 0;
+}
+
+.ts-feature-copy {
+    font-size: 14px;
+    color: var(--ink-secondary);
+    margin: 0 0 10px 0;
+}
+
+.ts-pass-price {
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent-hover);
+    font-variant-numeric: tabular-nums;
+}
+
+.ts-tariff-ledger {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.ts-tariff-item {
+    grid-column: span 6 !important;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: 100%;
+    text-decoration: none !important;
+}
+
+.ts-tariff-item:hover {
+    border-color: var(--border-hover);
+    background-color: var(--surface-soft);
+}
+
+.ts-tariff-name {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: var(--ink);
+    display: block;
+}
+
+.ts-tariff-sub {
+    font-size: 13px;
+    color: var(--muted);
+    display: block;
+    margin-top: 4px;
+}
+
+.ts-tariff-figure {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--accent-hover);
+    white-space: nowrap;
+}
+
+.ts-surface-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+}
+
+.ts-small {
+    font-size: 12.5px;
+    color: var(--muted);
+}
+
+/* ==========================================================================
+   BADGES & TAGS
+   ========================================================================== */
+.med-badge-spec {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--surface-soft);
+    color: var(--accent-hover);
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+}
+
+.med-badge-bhyt {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background-color: var(--status-ok-bg);
+    color: var(--status-ok-ink);
+    border: 1px solid var(--border-color);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+}
+
+.med-symptom-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background-color: var(--bg);
+    color: var(--ink-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* ==========================================================================
+   FORMS, INPUTS & BOOKING STEPPER
+   ========================================================================== */
+.tiki-form-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    display: block;
+}
+
+.tiki-form-control,
+.tiki-form-select {
+    background-color: var(--surface) !important;
+    border: 1px solid color-mix(in srgb, var(--default-color), transparent 80%) !important;
+    border-radius: 4px !important;
+    padding: 9px 13px !important;
+    font-family: var(--default-font) !important;
+    font-size: 14px !important;
+    color: var(--default-color) !important;
+    min-height: 42px;
+    box-shadow: none !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.tiki-form-control:focus,
+.tiki-form-select:focus {
+    border-color: var(--accent-color) !important;
+    outline: none !important;
+}
+
+/* Booking Stepper */
+.booking-stepper {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 24px;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    padding: 18px 16px;
+    border-radius: var(--radius);
+}
+
+.booking-step-item {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.booking-step-circle {
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    background-color: var(--bg);
+    border: 1px solid var(--border-color);
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13.5px;
+    margin-bottom: 6px;
+}
+
+.booking-step-item.active .booking-step-circle {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #ffffff;
+}
+
+.booking-step-item.completed .booking-step-circle {
+    background-color: var(--status-ok-ink);
+    border-color: var(--status-ok-ink);
+    color: #ffffff;
+}
+
+.booking-step-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    display: block;
+}
+
+.booking-step-item.active .booking-step-label {
+    color: var(--accent-hover);
+    font-weight: 700;
+}
+
+/* Selectable Cards in Booking */
+.selectable-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+
+.selectable-card:hover {
+    border-color: var(--border-hover);
+    background-color: var(--surface-soft);
+}
+
+.selectable-card.selected {
+    border-color: var(--accent);
+    background-color: var(--surface-soft);
+}
+
+.slot-pill {
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.slot-pill:hover:not(.disabled) {
+    border-color: var(--accent);
+    background-color: var(--surface-soft);
+}
+
+.slot-pill.selected {
+    background-color: var(--accent) !important;
+    border-color: var(--accent) !important;
+    color: #ffffff !important;
+}
+
+.slot-pill.selected * {
+    color: #ffffff !important;
+}
+
+.slot-pill.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background-color: #f1f5f9;
+}
+
+/* ==========================================================================
+   CUSTOMER ACCOUNT / PROFILE LAYOUT
+   ========================================================================== */
+.tiki-breadcrumb {
+    background-color: transparent;
+    padding: 14px 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.tiki-breadcrumb a {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.tiki-breadcrumb a:hover {
+    color: var(--accent-hover);
+}
+
+.tiki-profile-sidebar {
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.tiki-profile-user {
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--surface-soft);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tiki-profile-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 9999px;
+    background-color: var(--accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 17px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.tiki-profile-nav {
+    list-style: none;
+    padding: 8px;
+    margin: 0;
+}
+
+.tiki-profile-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    color: var(--ink-secondary);
+    text-decoration: none !important;
+    font-size: 13.5px;
+    font-weight: 600;
+    border-radius: var(--radius-sm);
+}
+
+.tiki-profile-nav-link:hover,
+.tiki-profile-nav-link.active {
+    background-color: var(--surface-soft);
+    color: var(--accent-hover) !important;
+}
+
+.tiki-tabs-nav {
+    display: flex;
+    background-color: var(--surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    padding: 4px;
+    gap: 4px;
+}
+
+.tiki-tab-link {
+    flex: 1;
+    text-align: center;
+    padding: 8px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink-secondary);
+    text-decoration: none !important;
+    white-space: nowrap;
+    border-radius: var(--radius-sm);
+}
+
+.tiki-tab-link.active {
+    color: #ffffff !important;
+    background-color: var(--accent);
+}
+
+.tiki-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tiki-status-badge.pending {
+    background-color: var(--status-warn-bg);
+    color: var(--status-warn-ink);
+}
+
+.tiki-status-badge.confirmed,
+.tiki-status-badge.received {
+    background-color: var(--surface-soft);
+    color: var(--accent-hover);
+}
+
+.tiki-status-badge.completed {
+    background-color: var(--status-ok-bg);
+    color: var(--status-ok-ink);
+}
+
+.tiki-status-badge.cancelled {
+    background-color: var(--status-danger-bg);
+    color: var(--status-danger-ink);
+}
+
+/* ==========================================================================
+   FOOTER (TIKI HEALTHCARE STRUCTURED 4-COLUMN FOOTER)
+   ========================================================================== */
+.ts-footer {
+    background-color: var(--field-dark);
+    color: var(--field-dark-ink);
+    padding-top: 48px;
+    padding-bottom: 32px;
+    margin-top: 40px;
+}
+
+.ts-footer a {
+    color: var(--field-dark-muted) !important;
+    text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+.ts-footer a:hover {
+    color: #ffffff !important;
+}
+
+.ts-footer-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: 32px;
+}
+
+.ts-footer-heading,
+.ts-footer-col-title {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    margin-bottom: 14px;
+}
+
+.ts-footer-list,
+.ts-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    font-size: 13.5px;
+}
+
+.ts-footer-links a {
+    color: #cbd5e1 !important;
+}
+
+.ts-footer-links a:hover {
+    color: #ffffff !important;
+    text-decoration: underline;
+}
+
+.ts-footer-hotline-box {
+    background-color: #112d55;
+    border: 1px solid #153460;
+    border-radius: var(--radius);
+    padding: 16px 18px;
+}
+
+.ts-footer-hotline {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 800;
+    color: #7cb8ff !important;
+    text-decoration: none !important;
+    line-height: 1.2;
+}
+
+.ts-footer-bottom {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 1px solid #153460;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: 13px;
+    color: var(--field-dark-muted);
+}
+
+@media (max-width: 991.98px) {
+    .ts-hero-intro,
+    .ts-hero-live {
+        grid-column: 1 / -1;
+    }
+    .ts-feature-list {
+        grid-template-columns: 1fr;
+    }
+    .ts-tariff-item {
+        grid-column: 1 / -1 !important;
+    }
+    .tiki-trust-grid {
+        grid-template-columns: 1fr;
+    }
+    .ts-footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .ts-header-inner {
+        gap: 8px;
+    }
+    .ts-wordmark-badge {
+        width: 34px;
+        height: 34px;
+        font-size: 13.5px;
+    }
+    .ts-wordmark-name {
+        font-size: 15.5px;
+    }
+    .ts-wordmark-sub {
+        font-size: 11px;
+    }
+    .ts-header-actions {
+        gap: 6px;
+    }
+    .ts-header-actions .ts-btn {
+        min-height: 34px;
+        padding: 6px 10px !important;
+        font-size: 12.5px !important;
+    }
+    .ts-menu-toggle {
+        padding: 6px 9px;
+        font-size: 12.5px;
+    }
+    .tiki-search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .ts-footer-grid {
+        grid-template-columns: 1fr;
+    }
+}

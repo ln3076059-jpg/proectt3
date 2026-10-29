@@ -34,6 +34,7 @@ class AIChatController extends Controller
             'khó thở', 'đau tức ngực', 'đau thắt ngực', 'bất tỉnh', 'ngất xỉu',
             'co giật', 'nôn ra máu', 'ho ra máu', 'đột quỵ', 'liệt nửa người',
             'méo miệng', 'sốt cao trên 39', 'chảy máu không cầm', 'sốc phản vệ', 'tím tái',
+            'tai biến', 'hôn mê', 'mất ý thức', 'ngừng tim', 'khó nuốt đột ngột', 'đau đầu dữ dội đột ngột',
         ];
 
         $matchedRedFlags = collect($redFlagList)->filter(function ($flag) use ($message) {
@@ -241,7 +242,7 @@ class AIChatController extends Controller
             }
 
             $res = Http::withToken($apiKey)
-                ->timeout(30)
+                ->timeout(8)
                 ->post('https://api.groq.com/openai/v1/chat/completions', [
                     'model' => 'llama-3.1-8b-instant',
                     'messages' => [

@@ -85,7 +85,7 @@ CREATE TABLE `appointments` (
   KEY `appointments_service_id_foreign` (`service_id`),
   KEY `appointments_time_slot_id_foreign` (`time_slot_id`),
   KEY `appointments_cancelled_by_foreign` (`cancelled_by`),
-  KEY `appointments_idempotency_key_index` (`idempotency_key`),
+  UNIQUE KEY `appointments_idempotency_key_unique` (`idempotency_key`),
   CONSTRAINT `appointments_cancelled_by_foreign` FOREIGN KEY (`cancelled_by`) REFERENCES `users` (`id`) ON DELETE SET NULL,
   CONSTRAINT `appointments_doctor_id_foreign` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`),
   CONSTRAINT `appointments_patient_id_foreign` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`),
@@ -95,10 +95,10 @@ CREATE TABLE `appointments` (
 
 -- Đang đổ dữ liệu cho bảng `appointments` (4 bản ghi)
 INSERT INTO `appointments` (`id`, `appointment_code`, `idempotency_key`, `patient_id`, `booking_for`, `relative_name`, `relative_dob`, `relative_gender`, `relative_relationship`, `doctor_id`, `service_id`, `time_slot_id`, `appointment_date`, `status`, `payment_status`, `total`, `total_amount`, `payment_method`, `transaction_id`, `transaction_ref`, `payment_reference`, `refund_status`, `refund_amount`, `refund_note`, `paid_at`, `checked_in_at`, `medical_examination`, `note`, `cancellation_reason`, `cancelled_at`, `created_at`, `updated_at`, `cancelled_by`) VALUES
-(1, 'TT-20261025-06C1', NULL, 1, 'self', NULL, NULL, NULL, NULL, 1, 1, 2, '2026-10-25 08:00:00', 'confirmed', 'success', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, '2026-10-25 17:51:40', NULL, 'Ca sáng (07:30 - 11:30)', 'Bệnh nhân cảm thấy hồi hộp, đau tức nhẹ ngực trái khi gắng sức.', NULL, NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL),
-(2, 'TT-20261025-DF19', NULL, 2, 'self', NULL, NULL, NULL, NULL, 2, 3, NULL, '2026-10-24 08:30:00', 'completed', 'success', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, '2026-10-23 22:00:00', NULL, 'Ca sáng (07:30 - 11:30)', 'Bệnh nhân nghẹt mũi, khàn giọng 3 ngày.', NULL, NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL),
-(3, 'TT-20261025-D9A3', NULL, 3, 'self', NULL, NULL, NULL, NULL, 1, 4, 16, '2026-10-26 07:30:00', 'pending', 'failed', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL, 'Ca sáng (07:30 - 11:30)', 'Đưa bé đi kiểm tra dinh dưỡng và khám đường hô hấp định kỳ.', NULL, NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL),
-(4, 'TT-20261025-A62E', NULL, 4, 'self', NULL, NULL, NULL, NULL, 4, 5, NULL, '2026-10-26 14:00:00', 'cancelled', 'failed', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL, 'Ca chiều (13:00 - 17:00)', 'Đã hủy lịch hẹn.', 'Bận lịch công tác đột xuất vào ngày mai, xin dời sang tuần sau.', '2026-10-25 17:51:40', '2026-10-25 17:51:40', '2026-10-25 17:51:40', 9);
+(1, 'TT-20261025-06C1', NULL, 1, 'self', NULL, NULL, NULL, NULL, 1, 1, 2, '2026-10-25 08:00:00', 'confirmed', 'success', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, '2026-10-25 17:51:40', NULL, 'Ca sáng (07:30 - 11:30)', 'Bệnh nhân kiểm tra sức khỏe tim mạch định kỳ (Dữ liệu mẫu demo).', NULL, NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL),
+(2, 'TT-20261025-DF19', NULL, 2, 'self', NULL, NULL, NULL, NULL, 2, 3, NULL, '2026-10-24 08:30:00', 'completed', 'success', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, '2026-10-23 22:00:00', NULL, 'Ca sáng (07:30 - 11:30)', 'Bệnh nhân kiểm tra tai mũi họng định kỳ (Dữ liệu mẫu demo).', NULL, NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL),
+(3, 'TT-20261025-D9A3', NULL, 3, 'self', NULL, NULL, NULL, NULL, 1, 4, 16, '2026-10-26 07:30:00', 'pending', 'failed', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL, 'Ca sáng (07:30 - 11:30)', 'Khám sức khỏe tổng quát và tư vấn dinh dưỡng (Dữ liệu mẫu demo).', NULL, NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL),
+(4, 'TT-20261025-A62E', NULL, 4, 'self', NULL, NULL, NULL, NULL, 4, 5, NULL, '2026-10-26 14:00:00', 'cancelled', 'failed', NULL, NULL, NULL, NULL, NULL, NULL, 'none', NULL, NULL, NULL, NULL, 'Ca chiều (13:00 - 17:00)', 'Đã hủy lịch hẹn.', 'Bận lịch công tác đột xuất vào ngày mai, xin dời sang tuần sau (Dữ liệu mẫu demo).', '2026-10-25 17:51:40', '2026-10-25 17:51:40', '2026-10-25 17:51:40', 9);
 
 -- ----------------------------------------------------------------------------
 -- Cấu trúc bảng cho bảng `departments`
@@ -275,8 +275,8 @@ CREATE TABLE `medical_records` (
 
 -- Đang đổ dữ liệu cho bảng `medical_records` (2 bản ghi)
 INSERT INTO `medical_records` (`id`, `appointment_id`, `patient_id`, `description`, `diagnosis`, `doctor_conclusion`, `prescription`, `notes`, `created_at`, `updated_at`, `image`, `images`) VALUES
-(1, 2, 2, 'Nội soi vòm họng niêm mạc xung huyết, có dịch mủ rải rác khe giữa.', 'Viêm mũi xoang cấp, viêm thanh quản thể xuất tiết', 'Bệnh nhân đáp ứng tốt, cần kiêng uống nước lạnh và xịt rửa mũi nước muối sinh lý.', '[{\"name\":\"Augmentin 1g\",\"dosage\":\"2 vi\\u00ean\\/ng\\u00e0y chia 2 l\\u1ea7n\",\"duration\":\"5 ng\\u00e0y\"},{\"name\":\"Otrivin 0.1%\",\"dosage\":\"X\\u1ecbt m\\u0169i 2 l\\u1ea7n\\/ng\\u00e0y\",\"duration\":\"3 ng\\u00e0y\"}]', NULL, '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL, NULL),
-(2, 1, 1, NULL, 'Tăng huyết áp độ 1 / Theo dõi thiếu máu cơ tim cục bộ (I10)', NULL, NULL, NULL, '2026-10-26 21:40:16', '2026-10-26 21:40:16', NULL, NULL);
+(1, 2, 2, 'Nội soi tai mũi họng niêm mạc phù nề nhẹ (Bản ghi mẫu Demo).', 'Viêm mũi xoang cấp (Mã giả lập Demo ICD-10)', 'Bệnh nhân đáp ứng điều trị mẫu, xịt rửa mũi nước muối sinh lý.', '[{\"name\":\"Augmentin 1g\",\"dosage\":\"2 vi\\u00ean\\/ng\\u00e0y chia 2 l\\u1ea7n\",\"duration\":\"5 ng\\u00e0y\"},{\"name\":\"Otrivin 0.1%\",\"dosage\":\"X\\u1ecbt m\\u0169i 2 l\\u1ea7n\\/ng\\u00e0y\",\"duration\":\"3 ng\\u00e0y\"}]', 'Dữ liệu y tế mẫu phục vụ kiểm thử hệ thống.', '2026-10-25 17:51:40', '2026-10-25 17:51:40', NULL, NULL),
+(2, 1, 1, 'Khám tim mạch định kỳ, huyết áp ổn định (Bản ghi mẫu Demo).', 'Tăng huyết áp độ 1 (Mã giả lập Demo ICD-10: I10)', 'Duy trì chế độ ăn giảm muối và sinh hoạt điều độ.', NULL, 'Dữ liệu y tế mẫu phục vụ kiểm thử hệ thống.', '2026-10-26 21:40:16', '2026-10-26 21:40:16', NULL, NULL);
 
 -- ----------------------------------------------------------------------------
 -- Cấu trúc bảng cho bảng `medicines`
@@ -341,9 +341,9 @@ CREATE TABLE `messages` (
 
 -- Đang đổ dữ liệu cho bảng `messages` (3 bản ghi)
 INSERT INTO `messages` (`id`, `sender_id`, `receiver_id`, `message`, `is_read`, `created_at`, `updated_at`) VALUES
-(1, 6, 1, 'Chào phòng khám, tôi bị đau tức ngực nhẹ và hồi hộp thì nên đăng ký khám chuyên khoa nào ạ?', 1, '2026-10-26 16:23:25', '2026-10-26 16:23:25'),
-(2, 1, 6, 'Chào bạn, với triệu chứng đau tức ngực và hồi hộp, bạn nên đăng ký khám tại Khoa Tim mạch (Tầng 2) cùng BS. CKII Nguyễn Văn Hùng nhé!', 1, '2026-10-26 16:23:25', '2026-10-26 16:23:25'),
-(3, 6, 1, 'Cảm ơn phòng khám, tôi đã đặt lịch khám lúc 08:30 sáng mai và nhận được mã QR rồi ạ.', 0, '2026-10-26 16:23:25', '2026-10-26 16:23:25');
+(1, 6, 1, '[Tin nhắn mẫu Demo] Xin chào phòng khám, tôi muốn tư vấn đăng ký khám chuyên khoa tim mạch.', 1, '2026-10-26 16:23:25', '2026-10-26 16:23:25'),
+(2, 1, 6, '[Tin nhắn mẫu Demo] Chào bạn, phòng khám có chuyên khoa Tim mạch hoạt động các ngày trong tuần. Bạn có thể đặt lịch hẹn trực tuyến.', 1, '2026-10-26 16:23:25', '2026-10-26 16:23:25'),
+(3, 6, 1, '[Tin nhắn mẫu Demo] Cảm ơn phòng khám, tôi đã nhận được xác nhận đặt lịch hẹn thử nghiệm.', 0, '2026-10-26 16:23:25', '2026-10-26 16:23:25');
 
 -- ----------------------------------------------------------------------------
 -- Cấu trúc bảng cho bảng `migrations`
@@ -398,7 +398,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (38, '2026_01_01_000002_add_is_active_to_doctors_table', 1),
 (39, '2026_01_01_000003_add_family_booking_and_checkin_fields_to_appointments', 1),
 (40, '2026_10_23_230000_fix_schema_columns_and_constraints', 1),
-(41, '2026_10_23_235500_sync_schema_and_backfill_data', 1);
+(41, '2026_10_23_235500_sync_schema_and_backfill_data', 1),
+(42, '2026_10_30_000001_add_unique_constraint_to_appointments_idempotency_key', 1);
 
 -- ----------------------------------------------------------------------------
 -- Cấu trúc bảng cho bảng `password_reset_tokens`
@@ -435,12 +436,12 @@ CREATE TABLE `patients` (
 
 -- Đang đổ dữ liệu cho bảng `patients` (6 bản ghi)
 INSERT INTO `patients` (`id`, `user_id`, `name`, `email`, `birthdate`, `gender`, `address`, `phone`, `insurance_number`, `avatar`, `created_at`, `updated_at`) VALUES
-(1, 6, 'Bùi Tuấn Anh', 'patient1@thaithinh.vn', '1995-04-12', 'Nam', 'Số 15 phố Thái Thịnh, Đống Đa, Hà Nội', '0987654321', NULL, NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36'),
-(2, 7, 'Vũ Thị Hồng Nhung', 'patient2@thaithinh.vn', '1998-08-20', 'Nữ', 'Số 88 phố Giảng Võ, Ba Đình, Hà Nội', '0912345678', NULL, NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36'),
-(3, 8, 'Nguyễn Minh Quang', 'patient3@thaithinh.vn', '1988-11-05', 'Nam', 'Số 42 Cầu Giấy, Cầu Giấy, Hà Nội', '0934567890', NULL, NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37'),
-(4, 9, 'Lê Thu Trang', 'patient4@thaithinh.vn', '2000-01-15', 'Nữ', 'Số 209 Nguyễn Trãi, Thanh Xuân, Hà Nội', '0976543210', NULL, NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37'),
-(5, 10, 'Hoàng Đức Trọng', 'patient5@thaithinh.vn', '1975-06-30', 'Nam', 'Số 54 phố Huế, Hai Bà Trưng, Hà Nội', '0908765432', NULL, NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38'),
-(6, 11, 'Đỗ Phương Linh', 'patient6@thaithinh.vn', '1992-09-18', 'Nữ', 'Số 12 phố Định Công, Hoàng Mai, Hà Nội', '0965432109', NULL, NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38');
+(1, 6, 'Bệnh nhân Mẫu 01 (Demo)', 'patient1@demo.thaithinh.vn', '1995-04-12', 'Nam', 'Khu đô thị Thử nghiệm A, Quận Đống Đa, Hà Nội', '0900000001', NULL, NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36'),
+(2, 7, 'Bệnh nhân Mẫu 02 (Demo)', 'patient2@demo.thaithinh.vn', '1998-08-20', 'Nữ', 'Khu đô thị Thử nghiệm B, Quận Ba Đình, Hà Nội', '0900000002', NULL, NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36'),
+(3, 8, 'Bệnh nhân Mẫu 03 (Demo)', 'patient3@demo.thaithinh.vn', '1988-11-05', 'Nam', 'Khu đô thị Thử nghiệm C, Quận Cầu Giấy, Hà Nội', '0900000003', NULL, NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37'),
+(4, 9, 'Bệnh nhân Mẫu 04 (Demo)', 'patient4@demo.thaithinh.vn', '2000-01-15', 'Nữ', 'Khu đô thị Thử nghiệm D, Quận Thanh Xuân, Hà Nội', '0900000004', NULL, NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37'),
+(5, 10, 'Bệnh nhân Mẫu 05 (Demo)', 'patient5@demo.thaithinh.vn', '1975-06-30', 'Nam', 'Khu đô thị Thử nghiệm E, Quận Hai Bà Trưng, Hà Nội', '0900000005', NULL, NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38'),
+(6, 11, 'Bệnh nhân Mẫu 06 (Demo)', 'patient6@demo.thaithinh.vn', '1992-09-18', 'Nữ', 'Khu đô thị Thử nghiệm F, Quận Hoàng Mai, Hà Nội', '0900000006', NULL, NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38');
 
 -- ----------------------------------------------------------------------------
 -- Cấu trúc bảng cho bảng `personal_access_tokens`
@@ -1092,12 +1093,12 @@ INSERT INTO `users` (`id`, `role_id`, `name`, `email`, `email_verified_at`, `pas
 (3, 2, 'ThS. BS Trần Thị Mai', 'mai.tran@thaithinh.vn', '2026-10-25 17:51:34', '$2y$12$BBCr5lZToz3/m8P7Kq5m0egK8ki.IJGzZ1GPb61z.G0vZeERmeADm', NULL, '2026-10-25 17:51:34', '2026-10-25 17:51:34', '0912111002', NULL, NULL, NULL, NULL),
 (4, 2, 'BSCK I Lê Hoàng Nam', 'nam.le@thaithinh.vn', '2026-10-25 17:51:35', '$2y$12$MXuySQ6G/.aOLMKcmffq3uP.LHqywea5jXImpcqQUFh9LRGD1xatW', NULL, '2026-10-25 17:51:35', '2026-10-25 17:51:35', '0912111003', NULL, NULL, NULL, NULL),
 (5, 2, 'BSCK II Phạm Thị Thu Hương', 'huong.pham@thaithinh.vn', '2026-10-25 17:51:35', '$2y$12$mW5Mda4L1vf0HP/VWiRtT.9fajl7P7zCHAu3BQtVLP7hX./0RvaMO', NULL, '2026-10-25 17:51:35', '2026-10-25 17:51:35', '0912111004', NULL, NULL, NULL, NULL),
-(6, 3, 'Bùi Tuấn Anh', 'patient1@thaithinh.vn', '2026-10-25 17:51:36', '$2y$12$09Kyljif5NvqCz9ctoalI.vEsbfcPdogv53Ce5UVFohLmV69tNivO', NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36', '0987654321', NULL, NULL, NULL, NULL),
-(7, 3, 'Vũ Thị Hồng Nhung', 'patient2@thaithinh.vn', '2026-10-25 17:51:36', '$2y$12$qKv/RHkK25CMktBKq1eEJ.YraLm36Jy0gOYtnc.HsR/zK7pJODnq6', NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36', '0912345678', NULL, NULL, NULL, NULL),
-(8, 3, 'Nguyễn Minh Quang', 'patient3@thaithinh.vn', '2026-10-25 17:51:37', '$2y$12$qZESSd8nFIkCTyDsf6GwsOWs03YBo.DS8ApfE.Kp05HedpuqoM23u', NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37', '0934567890', NULL, NULL, NULL, NULL),
-(9, 3, 'Lê Thu Trang', 'patient4@thaithinh.vn', '2026-10-25 17:51:37', '$2y$12$2rfZRAJKDI6SUn.7w7KmQe0IDNtmicqHSzQibJQchWTrd8CE8aBsi', NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37', '0976543210', NULL, NULL, NULL, NULL),
-(10, 3, 'Hoàng Đức Trọng', 'patient5@thaithinh.vn', '2026-10-25 17:51:38', '$2y$12$z..1Nsvd8ZKmHk/bJvre6ecK5PC5w/mgCTO74Erc8OhOd.BtJ/.sK', NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38', '0908765432', NULL, NULL, NULL, NULL),
-(11, 3, 'Đỗ Phương Linh', 'patient6@thaithinh.vn', '2026-10-25 17:51:38', '$2y$12$kgDsA0e43NBZFIx7Ze3NMeyDC5XjG1NuWxvtaa4DeIrQBO6xnUtfi', NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38', '0965432109', NULL, NULL, NULL, NULL);
+(6, 3, 'Bệnh nhân Mẫu 01 (Demo)', 'patient1@demo.thaithinh.vn', '2026-10-25 17:51:36', '$2y$12$09Kyljif5NvqCz9ctoalI.vEsbfcPdogv53Ce5UVFohLmV69tNivO', NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36', '0900000001', NULL, NULL, NULL, NULL),
+(7, 3, 'Bệnh nhân Mẫu 02 (Demo)', 'patient2@demo.thaithinh.vn', '2026-10-25 17:51:36', '$2y$12$qKv/RHkK25CMktBKq1eEJ.YraLm36Jy0gOYtnc.HsR/zK7pJODnq6', NULL, '2026-10-25 17:51:36', '2026-10-25 17:51:36', '0900000002', NULL, NULL, NULL, NULL),
+(8, 3, 'Bệnh nhân Mẫu 03 (Demo)', 'patient3@demo.thaithinh.vn', '2026-10-25 17:51:37', '$2y$12$qZESSd8nFIkCTyDsf6GwsOWs03YBo.DS8ApfE.Kp05HedpuqoM23u', NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37', '0900000003', NULL, NULL, NULL, NULL),
+(9, 3, 'Bệnh nhân Mẫu 04 (Demo)', 'patient4@demo.thaithinh.vn', '2026-10-25 17:51:37', '$2y$12$2rfZRAJKDI6SUn.7w7KmQe0IDNtmicqHSzQibJQchWTrd8CE8aBsi', NULL, '2026-10-25 17:51:37', '2026-10-25 17:51:37', '0900000004', NULL, NULL, NULL, NULL),
+(10, 3, 'Bệnh nhân Mẫu 05 (Demo)', 'patient5@demo.thaithinh.vn', '2026-10-25 17:51:38', '$2y$12$z..1Nsvd8ZKmHk/bJvre6ecK5PC5w/mgCTO74Erc8OhOd.BtJ/.sK', NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38', '0900000005', NULL, NULL, NULL, NULL),
+(11, 3, 'Bệnh nhân Mẫu 06 (Demo)', 'patient6@demo.thaithinh.vn', '2026-10-25 17:51:38', '$2y$12$kgDsA0e43NBZFIx7Ze3NMeyDC5XjG1NuWxvtaa4DeIrQBO6xnUtfi', NULL, '2026-10-25 17:51:38', '2026-10-25 17:51:38', '0900000006', NULL, NULL, NULL, NULL);
 
 -- ----------------------------------------------------------------------------
 -- Cấu trúc bảng cho bảng `working_schedules`

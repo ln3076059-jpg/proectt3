@@ -65,7 +65,7 @@ Route::get('/dashboard', function () {
     }
 
     if (method_exists($user, 'hasRole')) {
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole(['admin', 'leader'])) {
             return redirect()->route('admin.dashboard');
         }
 

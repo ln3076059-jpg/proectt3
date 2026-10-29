@@ -62,11 +62,16 @@ Nếu sử dụng môi trường PHP của XAMPP:
 ```
 
 ### Bước 3: Cấu hình tệp môi trường `.env`
-Tạo hoặc kiểm tra tệp `.env` đã thiết lập kết nối cơ sở dữ liệu MySQL:
+Sao chép tệp mẫu và sinh khóa bí mật ứng dụng (không sử dụng khóa cố định):
+```powershell
+copy .env.example .env
+php artisan key:generate
+```
+
+Cập nhật kết nối cơ sở dữ liệu MySQL và cấu hình dịch vụ trong tệp `.env`:
 ```env
 APP_NAME="Phòng khám Thái Thịnh"
 APP_ENV=local
-APP_KEY=base64:XG8d2Lq3yUqB+35uC/G7+4zT/T8B5F9Z/W9N6Q5K4L8=
 APP_DEBUG=true
 APP_URL=http://localhost:8000
 
@@ -77,16 +82,21 @@ DB_DATABASE=phongkham_thaithinh
 DB_USERNAME=root
 DB_PASSWORD=
 ```
+> [!IMPORTANT]
+> **Khuyến nghị môi trường Production:**
+> - Thiết lập `APP_ENV=production` và `APP_DEBUG=false` để ngăn chặn lộ thông tin hệ thống khi có ngoại lệ.
+> - Bật cờ `SESSION_SECURE_COOKIE=true` và ép buộc kết nối HTTPS.
+> - Khóa bí mật VNPay (`VNPAY_HASH_SECRET`) và Groq API (`GROQ_API_KEY`) phải được lưu trữ trong biến môi trường máy chủ bảo mật, tuyệt đối không commit lên kho mã nguồn.
 
 ### Bước 4: Khởi tạo Cơ sở dữ liệu và Dữ liệu mẫu (Seed)
-Chạy lệnh migrate để tạo toàn bộ 38 bảng cơ sở dữ liệu và nạp dữ liệu mẫu thực tế của Phòng khám Thái Thịnh:
+Chạy lệnh migrate để tạo toàn bộ bảng cơ sở dữ liệu và nạp dữ liệu mẫu an toàn:
 ```powershell
-& "D:\xampp1\php\php.exe" artisan migrate:fresh --seed
+php artisan migrate --seed
 ```
 
 ### Bước 5: Khởi động máy chủ ứng dụng
 ```powershell
-& "D:\xampp1\php\php.exe" artisan serve --port=8000
+php artisan serve --port=8000
 ```
 Truy cập hệ thống tại trình duyệt: **`http://localhost:8000`**
 

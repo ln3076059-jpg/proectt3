@@ -30,8 +30,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'vnpay' => [
-        'tmn_code' => env('VNPAY_TMN_CODE', env('VNP_TMN_CODE', '4ITGG2O5')),
-        'hash_secret' => env('VNPAY_HASH_SECRET', env('VNP_HASH_SECRET', 'AJ45UO1MCUTPO3F1HIMTSVYOESY1GCJ0')),
+        'tmn_code' => env('VNPAY_TMN_CODE', env('VNP_TMN_CODE', '')),
+        'hash_secret' => env('VNPAY_HASH_SECRET', env('VNP_HASH_SECRET', '')),
         'url' => env('VNPAY_URL', env('VNP_URL', 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html')),
         'return_url' => env('VNPAY_RETURN_URL', env('VNP_RETURN_URL')),
     ],

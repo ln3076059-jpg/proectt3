@@ -95,8 +95,29 @@ class DoctorRecordController extends Controller
             ->get();
 
         if ($isRelativeBooking) {
+            $targetDob = $appointment->relative_dob ? \Carbon\Carbon::parse($appointment->relative_dob)->toDateString() : null;
+            $targetRel = trim((string) $appointment->relative_relationship);
+
             $previousRecords = $candidateRecords
-                ->filter(fn ($rec) => Appointment::normalizePersonName(optional($rec->appointment)->relative_name) === $normalizedTargetRel)
+                ->filter(function ($rec) use ($normalizedTargetRel, $targetDob, $targetRel) {
+                    $recAppt = $rec->appointment;
+                    if (!$recAppt) {
+                        return false;
+                    }
+                    if (Appointment::normalizePersonName($recAppt->relative_name) !== $normalizedTargetRel) {
+                        return false;
+                    }
+                    // Tách biệt hồ sơ người thân nếu có ngày sinh khác nhau hoặc mối quan hệ khác nhau
+                    $recDob = $recAppt->relative_dob ? \Carbon\Carbon::parse($recAppt->relative_dob)->toDateString() : null;
+                    if ($targetDob && $recDob && $targetDob !== $recDob) {
+                        return false;
+                    }
+                    $recRel = trim((string) $recAppt->relative_relationship);
+                    if ($targetRel && $recRel && strcasecmp($targetRel, $recRel) !== 0) {
+                        return false;
+                    }
+                    return true;
+                })
                 ->take(5)
                 ->values();
         } else {

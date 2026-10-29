@@ -53,14 +53,14 @@ class PatientAuthController extends Controller
 
         $roleName = $user->role ? strtolower(trim($user->role->name)) : null;
 
-        // Nếu tài khoản là Quản trị viên
-        if ($roleName === 'admin') {
+        // Nếu tài khoản là Quản trị viên hoặc Leader
+        if (in_array($roleName, ['admin', 'leader'], true)) {
             Auth::guard('web_admin')->login($user, $remember);
             Auth::guard('web')->login($user, $remember);
             $request->session()->regenerate();
 
             return redirect()->route('admin.dashboard')
-                ->with('success', 'Đăng nhập quản trị viên thành công!');
+                ->with('success', 'Đăng nhập ban quản lý thành công!');
         }
 
         // Nếu tài khoản là Bác sĩ

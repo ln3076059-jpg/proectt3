@@ -53,19 +53,19 @@ class AdminAuthController extends Controller
 
         $roleName = $user->role ? strtolower(trim($user->role->name)) : null;
 
-        // Nếu là Admin
-        if ($roleName === 'admin') {
+        // Nếu là Admin hoặc Leader
+        if (in_array($roleName, ['admin', 'leader'], true)) {
             Auth::guard('web_admin')->login($user, $remember);
             Auth::guard('web')->login($user, $remember);
             $request->session()->regenerate();
 
             $intended = $request->session()->pull('url.intended');
             if ($intended && (str_contains($intended, '/admin') || str_contains($intended, 'admin.'))) {
-                return redirect($intended)->with('success', 'Đăng nhập quản trị viên thành công!');
+                return redirect($intended)->with('success', 'Đăng nhập ban quản lý thành công!');
             }
 
             return redirect()->route('admin.dashboard')
-                ->with('success', 'Đăng nhập quản trị viên thành công!');
+                ->with('success', 'Đăng nhập ban quản lý thành công!');
         }
 
         // Nếu là Bác sĩ nhập tại form admin (tiện ích tự chuyển hướng đúng cổng)

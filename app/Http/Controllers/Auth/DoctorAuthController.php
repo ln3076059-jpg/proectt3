@@ -74,14 +74,14 @@ class DoctorAuthController extends Controller
                 ->with('success', 'Đăng nhập bác sĩ thành công!');
         }
 
-        // Nếu là Admin
-        if ($roleName === 'admin') {
+        // Nếu là Admin hoặc Leader
+        if (in_array($roleName, ['admin', 'leader'], true)) {
             Auth::guard('web_admin')->login($user, $remember);
             Auth::guard('web')->login($user, $remember);
             $request->session()->regenerate();
 
             return redirect()->route('admin.dashboard')
-                ->with('success', 'Đăng nhập quản trị viên thành công!');
+                ->with('success', 'Đăng nhập ban quản lý thành công!');
         }
 
         // Nếu là Bệnh nhân

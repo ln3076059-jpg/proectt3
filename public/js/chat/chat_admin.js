@@ -70,28 +70,32 @@ $(function () {
         });
     });
 
-    // Load tin nhắn
-    function loadMessages(scrollToBottom = true) {
-        const url = messagesUrlTemplate.replace('__RID__', receiverId);
-        $.get(url, function (messages) {
-            $('#chat-messages').html('');
-            messages.forEach(msg => {
-                let cls = msg.sender_id == authId
-                    ? 'message-sent'
-                    : 'message-received';
+        // Load tin nhắn an toàn (Chống Stored XSS bằng textContent / jQuery .text())
+        function loadMessages(scrollToBottom = true) {
+            const url = messagesUrlTemplate.replace('__RID__', receiverId);
+            $.get(url, function (messages) {
+                const $container = $('#chat-messages');
+                $container.empty();
 
-                $('#chat-messages').append(
-                    `<div class="chat-message ${cls}">${msg.message}</div>`
-                );
+                if (!messages || messages.length === 0) {
+                    $container.html('<div class="text-muted text-center py-5"><i class="far fa-comments fa-3x text-gray-300 mb-3 d-block"></i>Chưa có tin nhắn nào trong cuộc trò chuyện này.</div>');
+                    return;
+                }
+
+                messages.forEach(msg => {
+                    const cls = msg.sender_id == authId
+                        ? 'message-sent'
+                        : 'message-received';
+
+                    const $div = $('<div>').addClass('chat-message ' + cls).text(msg.message || '');
+                    $container.append($div);
+                });
+
+                if (scrollToBottom && $container.length) {
+                    $container.scrollTop($container[0].scrollHeight);
+                }
             });
-
-            if (scrollToBottom) {
-                $('#chat-messages').scrollTop(
-                    $('#chat-messages')[0].scrollHeight
-                );
-            }
-        });
-    }
+        }
 
     loadUnreadBadges();
 

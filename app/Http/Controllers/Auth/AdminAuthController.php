@@ -27,16 +27,29 @@ class AdminAuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $throttleKey = \Illuminate\Support\Str::transliterate(\Illuminate\Support\Str::lower($credentials['email']) . '|' . $request->ip());
+
+        // Chống tấn công Brute-force mật khẩu (tối đa 5 lần thử / phút)
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($throttleKey);
+            return back()->withErrors([
+                'email' => "Bạn đã đăng nhập sai quá nhiều lần. Vui lòng thử lại sau {$seconds} giây.",
+            ])->withInput();
+        }
+
         $remember = $request->boolean('remember');
 
         // Tìm người dùng theo email
         $user = User::with(['role', 'doctor'])->where('email', $credentials['email'])->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password)) {
+            \Illuminate\Support\Facades\RateLimiter::hit($throttleKey, 60);
             return back()->withErrors([
                 'email' => 'Email hoặc mật khẩu không đúng.',
             ])->withInput();
         }
+
+        \Illuminate\Support\Facades\RateLimiter::clear($throttleKey);
 
         $roleName = $user->role ? strtolower(trim($user->role->name)) : null;
 

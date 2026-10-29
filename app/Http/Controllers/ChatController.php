@@ -116,12 +116,12 @@ class ChatController extends Controller
         $receiver = User::with('role')->findOrFail($request->receiver_id);
 
         // Phân quyền: user chỉ chat với admin; admin chỉ chat với user
-        if ($sender->role && $sender->role->name === 'admin') {
-            if (!$receiver->role || $receiver->role->name !== 'patient') {
+        if ($sender->role && in_array($sender->role->name, ['admin', 'leader'])) {
+            if (!$receiver->role || !in_array($receiver->role->name, ['patient', 'user'])) {
                 abort(403);
             }
         } else {
-            if (!$receiver->role || $receiver->role->name !== 'admin') {
+            if (!$receiver->role || !in_array($receiver->role->name, ['admin', 'leader'])) {
                 abort(403);
             }
         }
@@ -217,12 +217,12 @@ class ChatController extends Controller
         $receiver = User::with('role')->findOrFail($receiverId);
 
         // Phân quyền: user chỉ chat với admin; admin chỉ chat với user
-        if ($sender->role && $sender->role->name === 'admin') {
-            if (!$receiver->role || $receiver->role->name !== 'patient') {
+        if ($sender->role && in_array($sender->role->name, ['admin', 'leader'])) {
+            if (!$receiver->role || !in_array($receiver->role->name, ['patient', 'user'])) {
                 abort(403);
             }
         } else {
-            if (!$receiver->role || $receiver->role->name !== 'admin') {
+            if (!$receiver->role || !in_array($receiver->role->name, ['admin', 'leader'])) {
                 abort(403);
             }
         }

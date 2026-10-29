@@ -191,9 +191,11 @@
             const msgClass = isMine ? 'text-end text-primary' : 'text-start text-dark';
             const sender = isMine ? 'Bạn' : 'Admin';
             
-            $messagesDiv.append(
-                `<p class="${msgClass} mb-2"><strong>${sender}:</strong> ${escapeHtml(msg.message)}</p>`
-            );
+            const $p = $('<p>').addClass(msgClass + ' mb-2');
+            const $strong = $('<strong>').text(sender + ': ');
+            $p.append($strong);
+            $p.append(document.createTextNode(msg.message || ''));
+            $messagesDiv.append($p);
         });
         
         scrollToBottom();

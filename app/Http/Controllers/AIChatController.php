@@ -29,6 +29,19 @@ class AIChatController extends Controller
             ], 422);
         }
 
+        // 0️⃣ SÀNG LỌC DẤU HIỆU CẤP CỨU NGUY HIỂM (Emergency Red-Flags Triage)
+        $redFlagList = [
+            'khó thở', 'đau tức ngực', 'đau thắt ngực', 'bất tỉnh', 'ngất xỉu',
+            'co giật', 'nôn ra máu', 'ho ra máu', 'đột quỵ', 'liệt nửa người',
+            'méo miệng', 'sốt cao trên 39', 'chảy máu không cầm', 'sốc phản vệ', 'tím tái',
+        ];
+
+        $matchedRedFlags = collect($redFlagList)->filter(function ($flag) use ($message) {
+            return mb_stripos($message, $flag, 0, 'UTF-8') !== false;
+        })->values();
+
+        $isEmergency = $matchedRedFlags->isNotEmpty();
+
         // 1️⃣ ƯU TIÊN GỢI Ý TỪ DB TRIỆU CHỨNG
         $keywords = $this->extractKeywords($message);
         $diseases = $this->suggestDiseasesFromSymptomsDb($keywords);
@@ -39,8 +52,15 @@ class AIChatController extends Controller
             $aiDiseases = $this->askAIForDiseases($message);
 
             if (empty($aiDiseases)) {
+                $fallbackReply = $isEmergency
+                    ? '⚠️ CẢNH BÁO Y TẾ KHẨN CẤP: Triệu chứng có dấu hiệu cấp cứu (' . $matchedRedFlags->implode(', ') . '). Vui lòng gọi ngay Cấp cứu 115 hoặc đến viện ngay lập tức!'
+                    : 'Hệ thống chưa xác định được bệnh phù hợp. Vui lòng mô tả rõ hơn triệu chứng.';
+
                 return response()->json([
-                    'reply' => 'Hệ thống chưa xác định được bệnh phù hợp. Vui lòng mô tả rõ hơn triệu chứng.',
+                    'reply' => $fallbackReply,
+                    'is_emergency' => $isEmergency,
+                    'emergency_flags' => $matchedRedFlags,
+                    'emergency_hotline' => '115 / 024 3853 5522',
                     'suggestions' => [
                         'diseases' => [],
                         'departments' => [],
@@ -93,17 +113,25 @@ class AIChatController extends Controller
             $services = $services->values();
         }
 
-        Log::info('AIChat mapped diseases', [
-            'message' => $message,
-            'keywords' => $keywords,
+        // Bảo vệ dữ liệu sức khỏe người dùng: Không ghi nguyên văn thông tin bệnh lý nhạy cảm vào log thông thường
+        Log::info('AIChat mapped symptoms summary', [
+            'message_length' => mb_strlen($message),
+            'is_emergency' => $isEmergency,
+            'keywords_count' => count($keywords),
             'db_diseases_count' => $diseases->count(),
             'departments_count' => $departments->count(),
             'services_count' => $services->count(),
         ]);
 
+        $replyMessage = $isEmergency
+            ? '⚠️ CẢNH BÁO Y TẾ KHẨN CẤP: Triệu chứng của bạn có dấu hiệu nguy hiểm (' . $matchedRedFlags->implode(', ') . '). Vui lòng gọi ngay 115 hoặc đến cơ sở y tế gần nhất ngay lập tức, không nên chờ đợi đặt lịch trực tuyến!'
+            : 'Dựa trên triệu chứng bạn cung cấp, hệ thống gợi ý một số bệnh nghi ngờ. Kết quả chỉ mang tính tham khảo, bạn nên đến phòng khám để được bác sĩ chẩn đoán chính xác.';
+
         return response()->json([
-            'reply' => 'Dựa trên triệu chứng bạn cung cấp, hệ thống gợi ý một số bệnh nghi ngờ. '.
-                'Kết quả chỉ mang tính tham khảo, bạn nên đến bệnh viện để được chẩn đoán chính xác.',
+            'reply' => $replyMessage,
+            'is_emergency' => $isEmergency,
+            'emergency_flags' => $matchedRedFlags,
+            'emergency_hotline' => '115 / 024 3853 5522',
             'suggestions' => [
                 'diseases' => $diseases->map(fn ($d) => [
                     'id' => $d->id,

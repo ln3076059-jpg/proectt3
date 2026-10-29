@@ -89,13 +89,16 @@ class AppointmentService
     /**
      * Kiểm tra thông minh chống đặt trùng lịch theo đúng đối tượng khám (Bản thân vs Người thân)
      * và chống trùng khung giờ giữa các chuyên khoa khác nhau.
+     * Làm rõ định danh người khám: Không coi trùng tên là cùng 1 người nếu có ngày sinh hoặc mối quan hệ khác nhau.
      */
     protected function assertNoTimeConflictForExaminee(
         int $patientId,
         TimeSlot $targetSlot,
         string $bookingFor = 'self',
         ?string $relativeName = null,
-        ?int $excludeAppointmentId = null
+        ?int $excludeAppointmentId = null,
+        ?string $relativeDob = null,
+        ?string $relativeRelationship = null
     ): void {
         $isRelative = ($bookingFor === 'relative') && !empty(trim((string) $relativeName));
         $normalizedTargetRel = $isRelative ? Appointment::normalizePersonName($relativeName) : '';
@@ -123,10 +126,24 @@ class AppointmentService
             $existingIsRelative = ($existing->booking_for === 'relative') && !empty(trim((string) $existing->relative_name));
 
             if ($isRelative && $existingIsRelative) {
-                if (Appointment::normalizePersonName($existing->relative_name) === $normalizedTargetRel) {
-                    throw ValidationException::withMessages([
-                        'time_slot_id' => "Người thân \"{$relativeName}\" đã có lịch hẹn (#{$existing->appointment_code}) trong khung giờ {$targetSlot->formatted_time}. Vui lòng không đặt trùng giờ cho cùng một người khám.",
-                    ]);
+                $sameName = (Appointment::normalizePersonName($existing->relative_name) === $normalizedTargetRel);
+                if ($sameName) {
+                    // Nếu cùng tên nhưng có ngày sinh khác nhau hoặc mối quan hệ khác nhau rõ rệt -> là 2 người phụ thuộc khác nhau
+                    $existingDob = $existing->relative_dob ? Carbon::parse($existing->relative_dob)->toDateString() : null;
+                    $targetDob = $relativeDob ? Carbon::parse($relativeDob)->toDateString() : null;
+
+                    $isDifferentPerson = false;
+                    if ($existingDob && $targetDob && $existingDob !== $targetDob) {
+                        $isDifferentPerson = true;
+                    } elseif (!empty($existing->relative_relationship) && !empty($relativeRelationship) && strcasecmp(trim((string) $existing->relative_relationship), trim((string) $relativeRelationship)) !== 0) {
+                        $isDifferentPerson = true;
+                    }
+
+                    if (!$isDifferentPerson) {
+                        throw ValidationException::withMessages([
+                            'time_slot_id' => "Người thân \"{$relativeName}\" đã có lịch hẹn (#{$existing->appointment_code}) trong khung giờ {$targetSlot->formatted_time}. Vui lòng không đặt trùng giờ cho cùng một người khám.",
+                        ]);
+                    }
                 }
             } elseif (!$isRelative && !$existingIsRelative) {
                 $sameSlot = (int) $existing->time_slot_id === (int) $targetSlot->id;
@@ -255,7 +272,10 @@ class AppointmentService
                     $patient->id,
                     $timeSlot,
                     (string) ($data['booking_for'] ?? 'self'),
-                    $data['relative_name'] ?? null
+                    $data['relative_name'] ?? null,
+                    null,
+                    $data['relative_dob'] ?? null,
+                    $data['relative_relationship'] ?? null
                 );
 
                 // Cập nhật booked_count cho TimeSlot
@@ -316,7 +336,18 @@ class AppointmentService
                 'total_amount' => $price,
             ];
 
-            $appointment = Appointment::create($insertData);
+            try {
+                $appointment = Appointment::create($insertData);
+            } catch (\Illuminate\Database\QueryException $e) {
+                // Xử lý race condition trên idempotency_key tại tầng DB unique constraint
+                if (!empty($data['idempotency_key']) && ($e->getCode() == 23000 || str_contains($e->getMessage(), 'idempotency_key') || str_contains($e->getMessage(), 'Duplicate entry'))) {
+                    $existing = Appointment::where('idempotency_key', $data['idempotency_key'])->first();
+                    if ($existing) {
+                        return $existing;
+                    }
+                }
+                throw $e;
+            }
 
             // Cập nhật mã lịch hẹn chuẩn
             $appointment->appointment_code = Appointment::generateCode($appointment->id);
@@ -470,6 +501,51 @@ class AppointmentService
 
             if ($oldStatus === $newStatus) {
                 return $lockedAppt;
+            }
+
+            // State Machine Transition Matrix: Ràng buộc quy trình chuyển trạng thái chặt chẽ
+            $isAdmin = $user->hasRole('admin');
+            $allowedForStatus = [
+                Appointment::STATUS_PENDING => [
+                    Appointment::STATUS_CONFIRMED,
+                    Appointment::STATUS_CHECKED_IN,
+                    Appointment::STATUS_COMPLETED,
+                    Appointment::STATUS_CANCELLED,
+                    Appointment::STATUS_REJECTED,
+                    Appointment::STATUS_NO_SHOW,
+                ],
+                Appointment::STATUS_CONFIRMED => [
+                    Appointment::STATUS_CHECKED_IN,
+                    Appointment::STATUS_COMPLETED,
+                    Appointment::STATUS_CANCELLED,
+                    Appointment::STATUS_NO_SHOW,
+                    Appointment::STATUS_PENDING,
+                ],
+                Appointment::STATUS_CHECKED_IN => [
+                    Appointment::STATUS_COMPLETED,
+                    Appointment::STATUS_CANCELLED,
+                    Appointment::STATUS_NO_SHOW,
+                    Appointment::STATUS_CONFIRMED,
+                ],
+                Appointment::STATUS_COMPLETED => $isAdmin ? [Appointment::STATUS_CONFIRMED, Appointment::STATUS_CHECKED_IN] : [],
+                Appointment::STATUS_CANCELLED => [
+                    Appointment::STATUS_CONFIRMED,
+                    Appointment::STATUS_PENDING,
+                ],
+                Appointment::STATUS_REJECTED => [
+                    Appointment::STATUS_CONFIRMED,
+                    Appointment::STATUS_PENDING,
+                ],
+                Appointment::STATUS_NO_SHOW => [
+                    Appointment::STATUS_CONFIRMED,
+                    Appointment::STATUS_PENDING,
+                ],
+            ];
+
+            if (!isset($allowedForStatus[$oldStatus]) || !in_array($newStatus, $allowedForStatus[$oldStatus], true)) {
+                throw ValidationException::withMessages([
+                    'status' => "Quy tắc nghiệp vụ không cho phép chuyển trạng thái từ [{$oldStatus}] sang [{$newStatus}].",
+                ]);
             }
 
             // State Machine Guard: Không cho phép nhảy trực tiếp từ trạng thái Đã hủy / Từ chối / Vắng mặt sang Đã tiếp đón hoặc Hoàn thành
@@ -726,7 +802,9 @@ class AppointmentService
                     $newSlot,
                     (string) ($lockedAppt->booking_for ?? 'self'),
                     $lockedAppt->relative_name,
-                    $lockedAppt->id
+                    $lockedAppt->id,
+                    $lockedAppt->relative_dob,
+                    $lockedAppt->relative_relationship
                 );
             } catch (ValidationException $e) {
                 throw ValidationException::withMessages([

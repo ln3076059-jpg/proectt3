@@ -156,7 +156,11 @@ class PaymentController extends Controller
     public function vnpay_return(Request $request)
     {
         $input = $request->all();
-        Log::info('VNPay Return Data', $input);
+        Log::info('VNPay Return Data Received', [
+            'vnp_TxnRef' => $input['vnp_TxnRef'] ?? null,
+            'vnp_ResponseCode' => $input['vnp_ResponseCode'] ?? null,
+            'vnp_TransactionNo' => $input['vnp_TransactionNo'] ?? null,
+        ]);
 
         $vnp_HashSecret = trim((string) config('services.vnpay.hash_secret'));
         $vnp_SecureHash = $input['vnp_SecureHash'] ?? '';
@@ -179,7 +183,8 @@ class PaymentController extends Controller
 
         $calculatedHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
 
-        if ($calculatedHash !== $vnp_SecureHash) {
+        // Chống Timing Attack bằng hash_equals
+        if (!hash_equals($calculatedHash, (string) $vnp_SecureHash)) {
             Log::warning('VNPay checksum mismatch', [
                 'expected' => $calculatedHash,
                 'received' => $vnp_SecureHash,
@@ -189,88 +194,120 @@ class PaymentController extends Controller
 
         $responseCode = $input['vnp_ResponseCode'] ?? null;
         $orderInfo = $input['vnp_OrderInfo'] ?? '';
+        $txnRef = $input['vnp_TxnRef'] ?? '';
 
         // Kiểm tra response code
         if (!$responseCode) {
             return redirect()->route('home')->with('error', 'Dữ liệu phản hồi không hợp lệ.');
         }
 
-        // Lấy appointment ID từ order info
-        if (!preg_match('/#(\d+)/', $orderInfo, $matches)) {
-            return redirect()->route('home')->with('error', 'Không thể xác định mã lịch hẹn.');
+        // Lấy appointment ID từ order info hoặc txnRef
+        $appointmentId = null;
+        if (preg_match('/#(\d+)/', $orderInfo, $matches)) {
+            $appointmentId = (int) $matches[1];
         }
 
-        $appointmentId = $matches[1];
-        $appointment = Appointment::find($appointmentId);
+        // Xử lý Transaction an toàn với Row-Level Locking (Pessimistic Locking)
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($appointmentId, $txnRef, $input, $responseCode) {
+            $appointmentQuery = Appointment::with(['service', 'patient']);
+            if ($appointmentId) {
+                $appointmentQuery->where('id', $appointmentId);
+            } elseif ($txnRef !== '') {
+                $appointmentQuery->where('transaction_ref', $txnRef);
+            } else {
+                return redirect()->route('home')->with('error', 'Không thể xác định mã lịch hẹn.');
+            }
 
-        if (!$appointment) {
-            return redirect()->route('home')->with('error', 'Không tìm thấy thông tin lịch hẹn.');
-        }
+            $appointment = $appointmentQuery->lockForUpdate()->first();
 
-        // Chống xử lý trùng callback
-        if ($appointment->payment_status === 'success') {
-            return redirect()
-                ->route('appointments.show', $appointment->id)
-                ->with('info', 'Lịch hẹn này đã được ghi nhận thanh toán trước đó.');
-        }
+            if (!$appointment) {
+                return redirect()->route('home')->with('error', 'Không tìm thấy thông tin lịch hẹn.');
+            }
 
-        // Xác thực số tiền thanh toán từ VNPay khớp với viện phí gốc của lịch hẹn (Chống can thiệp vnp_Amount)
-        $expectedAmount = (float) ($appointment->total_amount ?? $appointment->total ?? optional($appointment->service)->price ?? 0);
-        if (isset($input['vnp_Amount']) && $expectedAmount > 0) {
-            $returnedAmount = (float) $input['vnp_Amount'] / 100;
-            if (abs($returnedAmount - $expectedAmount) >= 1) {
-                Log::warning('VNPay amount mismatch', [
-                    'appointment_id' => $appointment->id,
-                    'expected' => $expectedAmount,
-                    'returned' => $returnedAmount,
-                ]);
+            // Chống xử lý trùng callback (Idempotent)
+            if ($appointment->payment_status === 'success') {
                 return redirect()
                     ->route('appointments.show', $appointment->id)
-                    ->with('error', 'Số tiền phản hồi từ cổng thanh toán không khớp với viện phí của lịch hẹn.');
+                    ->with('info', 'Lịch hẹn này đã được ghi nhận thanh toán trước đó.');
             }
-        }
 
-        // Xử lý thanh toán thành công
-        if ($responseCode === '00') {
-            $paidAmount = isset($input['vnp_Amount'])
-                ? ((float) $input['vnp_Amount'] / 100)
-                : $expectedAmount;
+            // Xác thực số tiền thanh toán từ VNPay khớp với viện phí gốc của lịch hẹn (Chống can thiệp vnp_Amount)
+            $expectedAmount = (float) ($appointment->total_amount ?? $appointment->total ?? optional($appointment->service)->price ?? 0);
+            if (isset($input['vnp_Amount']) && $expectedAmount > 0) {
+                $returnedAmount = (float) $input['vnp_Amount'] / 100;
+                if (abs($returnedAmount - $expectedAmount) >= 1) {
+                    Log::warning('VNPay amount mismatch', [
+                        'appointment_id' => $appointment->id,
+                        'expected' => $expectedAmount,
+                        'returned' => $returnedAmount,
+                    ]);
+                    return redirect()
+                        ->route('appointments.show', $appointment->id)
+                        ->with('error', 'Số tiền phản hồi từ cổng thanh toán không khớp với viện phí của lịch hẹn.');
+                }
+            }
 
-            $updateData = [
-                'payment_status' => 'success',
-                'transaction_id' => $input['vnp_TransactionNo'] ?? null,
-                'transaction_ref' => $input['vnp_TxnRef'] ?? null,
-                'payment_method' => 'VNPay - ' . ($input['vnp_BankCode'] ?? 'Cổng thanh toán điện tử'),
-                'total_amount' => $paidAmount,
-                'total' => $paidAmount,
-                'paid_at' => now(),
-            ];
+            // Xử lý thanh toán thành công
+            if ($responseCode === '00') {
+                $paidAmount = isset($input['vnp_Amount'])
+                    ? ((float) $input['vnp_Amount'] / 100)
+                    : $expectedAmount;
 
-            $appointment->update($updateData);
+                $oldStatus = $appointment->status;
+                $newStatus = $oldStatus;
+                $refundStatus = $appointment->refund_status ?? Appointment::REFUND_NONE;
+                $refundNote = $appointment->refund_note;
 
-            // Ghi nhật ký kiểm vết thanh toán VNPay thành công
-            AppointmentStatusHistory::create([
-                'appointment_id' => $appointment->id,
-                'from_status' => $appointment->status,
-                'to_status' => $appointment->status,
-                'changed_by_user_id' => auth()->id() ?? optional($appointment->patient)->user_id,
-                'action_role' => 'patient',
-                'note' => 'Thanh toán trực tuyến VNPay thành công (' . number_format($paidAmount, 0, ',', '.') . ' VNĐ - Mã GD: ' . ($input['vnp_TransactionNo'] ?? $input['vnp_TxnRef'] ?? 'N/A') . ')',
-            ]);
+                // Nếu lịch hẹn bị hủy trước khi thanh toán thành công: giữ status là cancelled, tự động đưa vào hàng đợi hoàn tiền
+                if ($oldStatus === Appointment::STATUS_CANCELLED) {
+                    $refundStatus = Appointment::REFUND_PENDING;
+                    $refundNote = 'Bệnh nhân thanh toán thành công sau khi lịch đã hủy. Tự động chuyển bộ phận kế toán hoàn tiền viện phí.';
+                } elseif ($oldStatus === Appointment::STATUS_PENDING) {
+                    // Tự động xác nhận lịch hẹn khi đã thanh toán thành công
+                    $newStatus = Appointment::STATUS_CONFIRMED;
+                }
 
-            return redirect()
-                ->route('appointments.show', $appointment->id)
-                ->with('success', 'Thanh toán VNPay thành công! Lịch hẹn của bạn đã được xác nhận thanh toán.');
-        }
+                $appointment->update([
+                    'status' => $newStatus,
+                    'payment_status' => 'success',
+                    'transaction_id' => $input['vnp_TransactionNo'] ?? null,
+                    'transaction_ref' => $txnRef ?: $appointment->transaction_ref,
+                    'payment_method' => 'VNPay - ' . ($input['vnp_BankCode'] ?? 'Cổng thanh toán điện tử'),
+                    'total_amount' => $paidAmount,
+                    'total' => $paidAmount,
+                    'paid_at' => now(),
+                    'refund_status' => $refundStatus,
+                    'refund_note' => $refundNote,
+                ]);
 
-        // Xử lý thanh toán thất bại
-        $errorMessage = $responseCode === '24'
-            ? 'Giao dịch thanh toán đã bị hủy bởi người dùng.'
-            : 'Thanh toán thất bại. Mã lỗi phản hồi: ' . $responseCode;
+                // Ghi nhật ký kiểm vết thanh toán VNPay thành công
+                AppointmentStatusHistory::create([
+                    'appointment_id' => $appointment->id,
+                    'from_status' => $oldStatus,
+                    'to_status' => $newStatus,
+                    'changed_by_user_id' => auth()->id() ?? optional($appointment->patient)->user_id,
+                    'action_role' => 'patient',
+                    'note' => 'Thanh toán trực tuyến VNPay thành công (' . number_format($paidAmount, 0, ',', '.') . ' VNĐ - Mã GD: ' . ($input['vnp_TransactionNo'] ?? $input['vnp_TxnRef'] ?? 'N/A') . ')' . ($refundStatus === Appointment::REFUND_PENDING ? ' [Lịch đã hủy - Chờ hoàn tiền]' : ''),
+                ]);
 
-        $appointment->update(['payment_status' => 'failed']);
+                $successMsg = ($oldStatus === Appointment::STATUS_CANCELLED)
+                    ? 'Thanh toán VNPay thành công. Do lịch hẹn đã bị hủy trước đó, viện phí đã được chuyển sang danh sách hoàn tiền tự động.'
+                    : 'Thanh toán VNPay thành công! Lịch hẹn của bạn đã được xác nhận.';
 
-        return redirect()->route('appointments.show', $appointment->id)->with('error', $errorMessage);
+                return redirect()
+                    ->route('appointments.show', $appointment->id)
+                    ->with('success', $successMsg);
+            }
+
+            // Xử lý thanh toán thất bại
+            $errorMessage = $responseCode === '24'
+                ? 'Giao dịch thanh toán đã bị hủy bởi người dùng.'
+                : 'Thanh toán thất bại. Mã lỗi phản hồi: ' . $responseCode;
+
+            $appointment->update(['payment_status' => 'failed']);
+
+            return redirect()->route('appointments.show', $appointment->id)->with('error', $errorMessage);
+        }, 5);
     }
 
     /**
@@ -305,58 +342,84 @@ class PaymentController extends Controller
 
         $orderInfo = $input['vnp_OrderInfo'] ?? '';
         $txnRef = $input['vnp_TxnRef'] ?? '';
-        $appointment = null;
+        $appointmentId = null;
 
         if (preg_match('/#(\d+)/', $orderInfo, $matches)) {
-            $appointment = Appointment::with(['service', 'patient'])->find((int) $matches[1]);
-        } elseif ($txnRef !== '') {
-            $appointment = Appointment::with(['service', 'patient'])->where('transaction_ref', $txnRef)->first();
+            $appointmentId = (int) $matches[1];
         }
 
-        if (!$appointment) {
-            return response()->json(['RspCode' => '01', 'Message' => 'Order not found']);
-        }
-
-        $expectedAmount = (float) ($appointment->total_amount ?? $appointment->total ?? optional($appointment->service)->price ?? 0);
-        if (isset($input['vnp_Amount']) && $expectedAmount > 0) {
-            $returnedAmount = (float) $input['vnp_Amount'] / 100;
-            if (abs($returnedAmount - $expectedAmount) >= 1) {
-                return response()->json(['RspCode' => '04', 'Message' => 'Invalid amount']);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($appointmentId, $txnRef, $input) {
+            $query = Appointment::with(['service', 'patient']);
+            if ($appointmentId) {
+                $query->where('id', $appointmentId);
+            } elseif ($txnRef !== '') {
+                $query->where('transaction_ref', $txnRef);
+            } else {
+                return response()->json(['RspCode' => '01', 'Message' => 'Order not found']);
             }
-        }
 
-        if ($appointment->payment_status === 'success') {
-            return response()->json(['RspCode' => '02', 'Message' => 'Order already confirmed']);
-        }
+            $appointment = $query->lockForUpdate()->first();
 
-        $responseCode = $input['vnp_ResponseCode'] ?? '';
-        $transactionStatus = $input['vnp_TransactionStatus'] ?? $responseCode;
+            if (!$appointment) {
+                return response()->json(['RspCode' => '01', 'Message' => 'Order not found']);
+            }
 
-        if ($responseCode === '00' && $transactionStatus === '00') {
-            $paidAmount = isset($input['vnp_Amount']) ? ((float) $input['vnp_Amount'] / 100) : $expectedAmount;
-            $appointment->update([
-                'payment_status' => 'success',
-                'transaction_id' => $input['vnp_TransactionNo'] ?? null,
-                'transaction_ref' => $txnRef ?: $appointment->transaction_ref,
-                'payment_method' => 'VNPay IPN - ' . ($input['vnp_BankCode'] ?? 'Cổng thanh toán điện tử'),
-                'total_amount' => $paidAmount,
-                'total' => $paidAmount,
-                'paid_at' => now(),
-            ]);
+            $expectedAmount = (float) ($appointment->total_amount ?? $appointment->total ?? optional($appointment->service)->price ?? 0);
+            if (isset($input['vnp_Amount']) && $expectedAmount > 0) {
+                $returnedAmount = (float) $input['vnp_Amount'] / 100;
+                if (abs($returnedAmount - $expectedAmount) >= 1) {
+                    return response()->json(['RspCode' => '04', 'Message' => 'Invalid amount']);
+                }
+            }
 
-            AppointmentStatusHistory::create([
-                'appointment_id' => $appointment->id,
-                'from_status' => $appointment->status,
-                'to_status' => $appointment->status,
-                'changed_by_user_id' => optional($appointment->patient)->user_id,
-                'action_role' => 'system',
-                'note' => 'Xác nhận thanh toán tự động qua VNPay IPN (' . number_format($paidAmount, 0, ',', '.') . ' VNĐ)',
-            ]);
-        } else {
-            $appointment->update(['payment_status' => 'failed']);
-        }
+            if ($appointment->payment_status === 'success') {
+                return response()->json(['RspCode' => '02', 'Message' => 'Order already confirmed']);
+            }
 
-        return response()->json(['RspCode' => '00', 'Message' => 'Confirm Success']);
+            $responseCode = $input['vnp_ResponseCode'] ?? '';
+            $transactionStatus = $input['vnp_TransactionStatus'] ?? $responseCode;
+
+            if ($responseCode === '00' && $transactionStatus === '00') {
+                $paidAmount = isset($input['vnp_Amount']) ? ((float) $input['vnp_Amount'] / 100) : $expectedAmount;
+                $oldStatus = $appointment->status;
+                $newStatus = $oldStatus;
+                $refundStatus = $appointment->refund_status ?? Appointment::REFUND_NONE;
+                $refundNote = $appointment->refund_note;
+
+                if ($oldStatus === Appointment::STATUS_CANCELLED) {
+                    $refundStatus = Appointment::REFUND_PENDING;
+                    $refundNote = 'IPN xác nhận thanh toán sau khi lịch đã hủy. Tự động chuyển hàng đợi hoàn tiền viện phí.';
+                } elseif ($oldStatus === Appointment::STATUS_PENDING) {
+                    $newStatus = Appointment::STATUS_CONFIRMED;
+                }
+
+                $appointment->update([
+                    'status' => $newStatus,
+                    'payment_status' => 'success',
+                    'transaction_id' => $input['vnp_TransactionNo'] ?? null,
+                    'transaction_ref' => $txnRef ?: $appointment->transaction_ref,
+                    'payment_method' => 'VNPay IPN - ' . ($input['vnp_BankCode'] ?? 'Cổng thanh toán điện tử'),
+                    'total_amount' => $paidAmount,
+                    'total' => $paidAmount,
+                    'paid_at' => now(),
+                    'refund_status' => $refundStatus,
+                    'refund_note' => $refundNote,
+                ]);
+
+                AppointmentStatusHistory::create([
+                    'appointment_id' => $appointment->id,
+                    'from_status' => $oldStatus,
+                    'to_status' => $newStatus,
+                    'changed_by_user_id' => optional($appointment->patient)->user_id,
+                    'action_role' => 'system',
+                    'note' => 'Xác nhận thanh toán tự động qua VNPay IPN (' . number_format($paidAmount, 0, ',', '.') . ' VNĐ)' . ($refundStatus === Appointment::REFUND_PENDING ? ' [Lịch đã hủy - Chờ hoàn tiền]' : ''),
+                ]);
+            } else {
+                $appointment->update(['payment_status' => 'failed']);
+            }
+
+            return response()->json(['RspCode' => '00', 'Message' => 'Confirm Success']);
+        }, 5);
     }
 
     // Khởi tạo thanh toán cho một lịch hẹn đã tồn tại

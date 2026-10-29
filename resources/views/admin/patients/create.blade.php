@@ -39,6 +39,17 @@
             </div>
 
             <div class="form-row">
+                <div class="form-group col-md-12">
+                    <label class="font-weight-bold text-gray-700">Mật khẩu đăng nhập ban đầu (Tùy chọn, tối thiểu 8 ký tự)</label>
+                    <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="Để trống hệ thống sẽ tự sinh mật khẩu ngẫu nhiên bảo mật 12 ký tự...">
+                    <small class="form-text text-muted">Nếu để trống, hệ thống sẽ tự động gán mật khẩu ngẫu nhiên phức tạp an toàn.</small>
+                    @error('password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="form-row">
                 <div class="form-group col-md-4">
                     <label class="font-weight-bold text-gray-700">Số điện thoại</label>
                     <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" placeholder="09xxxxxxxx">

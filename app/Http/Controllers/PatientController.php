@@ -67,6 +67,13 @@ class PatientController extends Controller
     {
         $patient = \App\Models\Patient::with(['user', 'appointments.doctor.user', 'appointments.service'])->findOrFail($id);
         if (request()->routeIs('doctor.*')) {
+            $user = auth('web_doctor')->user() ?? auth()->user();
+            if ($user && $user->doctor) {
+                $hasAppt = $patient->appointments()->where('doctor_id', $user->doctor->id)->exists();
+                if (!$hasAppt) {
+                    abort(403, 'Bạn không có quyền xem thông tin bệnh nhân này vì bệnh nhân chưa từng đặt lịch khám với bạn.');
+                }
+            }
             return view('doctor.patients.show', compact('patient'));
         }
         return view('admin.patients.show', compact('patient'));

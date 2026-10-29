@@ -268,7 +268,7 @@ class AIChatController extends Controller
             }
 
             $content = (string) data_get($res->json(), 'choices.0.message.content', '');
-            Log::info('AI disease raw content', ['content' => $content]);
+            Log::info('AI disease response received', ['length' => strlen($content)]);
 
             // Một số model trả JSON kèm markdown code fences (```json ... ```)
             $content = preg_replace('/^```(?:json)?\s*/i', '', $content);
@@ -278,7 +278,7 @@ class AIChatController extends Controller
             $json = json_decode($content, true);
 
             if (! is_array($json)) {
-                Log::warning('AI disease content not valid JSON', ['content' => $content]);
+                Log::warning('AI disease content not valid JSON', ['length' => strlen($content)]);
 
                 return [];
             }

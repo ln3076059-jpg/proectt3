@@ -27,8 +27,6 @@ class PaymentController extends Controller
     public function vnpay_payment(Request $request)
     {
         try {
-            Log::info('VNPay Payment Request:', $request->all());
-
             // Validate dữ liệu đầu vào (Hỗ trợ cả chuẩn TimeSlot mới lẫn ca khám truyền thống)
             $validated = $request->validate([
                 'patient_id' => 'nullable|exists:patients,id',
@@ -46,6 +44,14 @@ class PaymentController extends Controller
                 'relative_gender' => 'nullable|string|max:50',
                 'relative_relationship' => 'nullable|string|max:100',
                 'idempotency_key' => 'nullable|string|max:100',
+            ]);
+
+            // Ghi nhật ký khởi tạo an toàn (Không lưu thông tin sức khỏe hoặc ghi chú cá nhân vào log)
+            Log::info('VNPay Payment Request initialized', [
+                'doctor_id' => $validated['doctor_id'],
+                'service_id' => $validated['service_id'],
+                'time_slot_id' => $validated['time_slot_id'] ?? null,
+                'booking_for' => $validated['booking_for'] ?? 'self',
             ]);
 
             $service = Service::with('department')->findOrFail($validated['service_id']);
@@ -136,7 +142,7 @@ class PaymentController extends Controller
             // Build VNPay URL
             $vnpUrl = $this->buildVnpayUrl($appointment, $service->price, $request, $txnRef);
 
-            Log::info('VNPay Redirect URL', ['url' => $vnpUrl, 'appointment_code' => $appointment->appointment_code]);
+            Log::info('VNPay Redirect generated', ['appointment_code' => $appointment->appointment_code, 'txn_ref' => $txnRef]);
 
             return redirect()->away($vnpUrl);
         } catch (ValidationException $e) {
@@ -463,7 +469,7 @@ class PaymentController extends Controller
 
             // Build URL và chuyển hướng
             $vnpUrl = $this->buildVnpayUrl($appointment, $amount, $request, $txnRef);
-            Log::info('VNPay Checkout Redirect URL', ['url' => $vnpUrl]);
+            Log::info('VNPay Checkout Redirect generated', ['appointment_id' => $appointment->id, 'txn_ref' => $txnRef]);
 
             return redirect()->away($vnpUrl);
         } catch (\Exception $e) {
@@ -538,12 +544,6 @@ class PaymentController extends Controller
         // Tạo chữ ký bảo mật
         $vnpSecureHash = hash_hmac('sha512', $hashData, $vnp_HashSecret);
         $finalUrl = $vnp_Url.'?'.$query.'vnp_SecureHash='.$vnpSecureHash;
-
-        Log::debug('VNPay Signature Debug', [
-            'hash_data' => $hashData,
-            'secure_hash' => $vnpSecureHash,
-            'final_url' => $finalUrl,
-        ]);
 
         return $finalUrl;
     }

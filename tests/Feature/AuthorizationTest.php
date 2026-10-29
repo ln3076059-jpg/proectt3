@@ -125,6 +125,21 @@ class AuthorizationTest extends TestCase
     }
 
     /**
+     * Test 3b: Bác sĩ 1 KHÔNG THỂ xem thông tin hồ sơ của bệnh nhân chưa từng đặt lịch với mình (403 Forbidden)
+     */
+    public function test_doctor_cannot_view_unassigned_patient_profile(): void
+    {
+        if ($this->doctor1->id === $this->doctor2->id) {
+            $this->markTestSkipped('Cần tối thiểu 2 bác sĩ khác nhau để kiểm thử.');
+        }
+
+        $response = $this->actingAs($this->doctor1User, 'web_doctor')
+            ->get(route('doctor.patients.show', $this->patientB->id));
+
+        $response->assertStatus(403);
+    }
+
+    /**
      * Test 4: Bệnh nhân KHÔNG THỂ truy cập Dashboard quản trị (phải bị từ chối chuyển hướng)
      */
     public function test_patient_cannot_access_admin_dashboard(): void

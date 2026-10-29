@@ -48,7 +48,7 @@ class PatientController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'nullable|string|min:6',
+            'password' => 'nullable|string|min:8',
             'phone' => 'nullable|string|max:15',
             'gender' => 'nullable|string|in:male,female,other,Nam,Nữ,Khác',
             'birthdate' => 'nullable|date',
@@ -61,10 +61,14 @@ class PatientController extends Controller
         DB::transaction(function () use ($request, $normalizedGender) {
             $patientRoleId = \App\Models\Role::where('name', 'patient')->value('id') ?? 1;
 
+            $initialPassword = $request->filled('password')
+                ? $request->password
+                : \Illuminate\Support\Str::password(12, true, true, false);
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => strtolower(trim($request->email)),
-                'password' => Hash::make($request->filled('password') ? $request->password : '123456'),
+                'password' => Hash::make($initialPassword),
                 'role_id' => $patientRoleId, // Bệnh nhân (role_id = 1)
                 'phone' => $request->phone,
                 'gender' => $normalizedGender,

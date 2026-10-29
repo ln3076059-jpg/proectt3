@@ -247,10 +247,13 @@
 
                             {{-- Quick 7-Day Date Selector Strip --}}
                             <div class="mb-4">
-                                <p class="ts-small fw-semibold mb-2" style="color: var(--muted);">
-                                    Chọn nhanh ngày khám trong 7 ngày tới:
-                                </p>
-                                <div class="d-flex flex-wrap gap-2" id="quickDateStrip">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <p class="ts-small fw-bold mb-0" style="color: var(--ink);">
+                                        <i class="far fa-calendar-check text-primary me-1"></i>Chọn nhanh ngày khám trong 7 ngày tới:
+                                    </p>
+                                    <span class="ts-small text-muted d-none d-md-inline">Bấm ngày để xem ca khám trống</span>
+                                </div>
+                                <div class="quick-date-grid" id="quickDateStrip">
                                     @php
                                         $dayNames = [0 => 'CN', 1 => 'Thứ 2', 2 => 'Thứ 3', 3 => 'Thứ 4', 4 => 'Thứ 5', 5 => 'Thứ 6', 6 => 'Thứ 7'];
                                     @endphp
@@ -262,42 +265,51 @@
                                             $isSelectedDate = (old('appointment_date', $selectedDate) === $dVal);
                                         @endphp
                                         <button type="button"
-                                                class="ts-spec-btn quick-date-pill {{ $isSelectedDate ? 'is-active' : '' }}"
+                                                class="quick-date-pill {{ $isSelectedDate ? 'is-active' : '' }}"
                                                 data-date="{{ $dVal }}">
-                                            <span class="fw-semibold">{{ $dLabel }}</span>
-                                            <span class="ts-num ms-1">({{ $d->format('d/m') }})</span>
+                                            <span class="pill-day">{{ $dLabel }}</span>
+                                            <span class="pill-date">{{ $d->format('d/m') }}</span>
                                         </button>
                                     @endfor
                                 </div>
                             </div>
 
-                            <div class="row g-4 mb-4">
-                                <div class="col-md-6">
-                                    <label for="appointment_date" class="form-label">
-                                        Hoặc chọn ngày cụ thể *
+                            {{-- Specific Date Input & Reload Slots --}}
+                            <div class="row g-3 align-items-center mb-4">
+                                <div class="col-12 col-md-8 col-lg-7">
+                                    <label for="appointment_date" class="form-label fw-semibold mb-1" style="color: var(--ink);">
+                                        <i class="far fa-calendar-alt text-primary me-1"></i>Hoặc chọn ngày cụ thể *
                                     </label>
-                                    <input type="date"
-                                           class="form-control"
-                                           id="appointment_date"
-                                           name="appointment_date"
-                                           min="{{ now()->format('Y-m-d') }}"
-                                           max="{{ now()->addDays(14)->format('Y-m-d') }}"
-                                           value="{{ old('appointment_date', $selectedDate) }}"
-                                           required>
-                                    <div class="ts-small mt-1" style="color: var(--muted);">Bạn có thể đặt trước tối đa 14 ngày</div>
-                                </div>
-                                <div class="col-md-6 d-flex align-items-end">
-                                    <button type="button" class="ts-btn-secondary w-100" id="btnReloadSlots">
-                                        <span>Tải lại khung giờ trống</span>
-                                    </button>
+                                    <div class="input-group">
+                                        <input type="date"
+                                               class="form-control"
+                                               id="appointment_date"
+                                               name="appointment_date"
+                                               min="{{ now()->format('Y-m-d') }}"
+                                               max="{{ now()->addDays(14)->format('Y-m-d') }}"
+                                               value="{{ old('appointment_date', $selectedDate) }}"
+                                               required
+                                               style="height: 42px; border-radius: 8px 0 0 8px; border-color: #dce8f4; font-size: 14.5px;">
+                                        <button type="button" class="btn btn-outline-primary d-inline-flex align-items-center gap-2 px-3 fw-semibold" id="btnReloadSlots" title="Tải lại danh sách khung giờ" style="height: 42px; border-radius: 0 8px 8px 0; border-color: #1977cc; white-space: nowrap;">
+                                            <i class="fas fa-sync-alt" id="reloadIcon"></i>
+                                            <span>Tải lại khung giờ</span>
+                                        </button>
+                                    </div>
+                                    <div class="ts-small mt-1 text-muted">
+                                        <i class="fas fa-info-circle me-1 text-primary"></i>Bạn có thể đặt trước tối đa 14 ngày
+                                    </div>
                                 </div>
                             </div>
 
                             {{-- Time Slot Selection Container --}}
                             <div class="mb-4">
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <span class="fw-semibold">Khung giờ khám còn khả dụng:</span>
-                                    <span class="ts-small" style="color: var(--muted);" id="slotLoadStatus">Đang tải...</span>
+                                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                                    <span class="fw-bold" style="color: var(--ink); font-size: 1.05rem;">
+                                        <i class="far fa-clock text-primary me-2"></i>Khung giờ khám còn khả dụng:
+                                    </span>
+                                    <span class="badge bg-light text-primary border border-primary-subtle px-3 py-2 fw-semibold" id="slotLoadStatus" style="font-size: 13px;">
+                                        Đang tải...
+                                    </span>
                                 </div>
 
                                 {{-- Loading Spinner --}}
@@ -388,10 +400,10 @@
                                           rows="3"
                                           placeholder="Mô tả ngắn gọn triệu chứng bạn đang gặp phải (ví dụ: sốt, ho, đau đầu 2 ngày nay...)...">{{ old('note', request('note')) }}</textarea>
                                 <div class="mt-3 d-flex flex-wrap align-items-center gap-2">
-                                    <span class="ts-small" style="color: var(--muted);">Chọn nhanh triệu chứng:</span>
+                                    <span class="ts-small fw-semibold" style="color: var(--muted);"><i class="fas fa-tags text-primary me-1"></i>Chọn nhanh triệu chứng:</span>
                                     @foreach(['Sốt, mệt mỏi', 'Ho, đau rát họng', 'Đau đầu, chóng mặt', 'Đau dạ dày, ợ chua', 'Đau nhức xương khớp', 'Khám sức khỏe tổng quát', 'Tái khám theo hẹn'] as $sym)
-                                        <button type="button" class="ts-spec-btn quick-symptom-btn" data-symptom="{{ $sym }}">
-                                            + {{ $sym }}
+                                        <button type="button" class="quick-symptom-chip" data-symptom="{{ $sym }}">
+                                            <i class="fas fa-plus me-1 small"></i>{{ $sym }}
                                         </button>
                                     @endforeach
                                 </div>
@@ -458,28 +470,32 @@
                             </div>
 
                             {{-- Chọn hình thức thanh toán --}}
-                            <div class="p-4 mb-4" style="background-color: var(--bg); border-radius: var(--radius);">
+                            <div class="p-4 mb-4" style="background-color: var(--bg); border: 1px solid var(--border-color); border-radius: var(--radius);">
                                 <h3 class="ts-feature-heading mb-3">
-                                    Phương thức thanh toán viện phí
+                                    <i class="fas fa-credit-card text-primary me-2"></i>Phương thức thanh toán viện phí
                                 </h3>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <div class="form-check p-3 h-100" style="background-color: var(--surface); border-radius: var(--radius);">
-                                            <input class="form-check-input ms-0 me-2" type="radio" name="payment_method_choice" id="payAtClinic" value="counter" checked>
-                                            <label class="form-check-label fw-semibold" for="payAtClinic">
-                                                Thanh toán tại Quầy tiếp đón
-                                                <span class="d-block ts-small fw-normal mt-1" style="color: var(--muted);">Trả bằng tiền mặt, quẹt thẻ POS hoặc xuất trình thẻ BHYT khi tới phòng khám.</span>
-                                            </label>
-                                        </div>
+                                        <label class="payment-method-card p-3 h-100 d-flex align-items-start gap-3 w-100 mb-0" for="payAtClinic">
+                                            <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="payment_method_choice" id="payAtClinic" value="counter" checked>
+                                            <div>
+                                                <span class="fw-bold d-block mb-1" style="color: var(--ink);">
+                                                    <i class="fas fa-hospital text-primary me-1"></i>Thanh toán tại Quầy tiếp đón
+                                                </span>
+                                                <span class="d-block ts-small" style="color: var(--muted);">Trả bằng tiền mặt, quẹt thẻ POS hoặc xuất trình thẻ BHYT khi tới phòng khám.</span>
+                                            </div>
+                                        </label>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-check p-3 h-100" style="background-color: var(--surface); border-radius: var(--radius);">
-                                            <input class="form-check-input ms-0 me-2" type="radio" name="payment_method_choice" id="payVnpay" value="vnpay">
-                                            <label class="form-check-label fw-semibold" for="payVnpay">
-                                                Thanh toán trực tuyến VNPAY
-                                                <span class="d-block ts-small fw-normal mt-1" style="color: var(--muted);">Chuyển hướng cổng VNPAY (Thẻ ATM, Internet Banking, Quét mã QR Pay).</span>
-                                            </label>
-                                        </div>
+                                        <label class="payment-method-card p-3 h-100 d-flex align-items-start gap-3 w-100 mb-0" for="payVnpay">
+                                            <input class="form-check-input flex-shrink-0 mt-1" type="radio" name="payment_method_choice" id="payVnpay" value="vnpay">
+                                            <div>
+                                                <span class="fw-bold d-block mb-1" style="color: var(--ink);">
+                                                    <i class="fas fa-qrcode text-danger me-1"></i>Thanh toán trực tuyến VNPAY
+                                                </span>
+                                                <span class="d-block ts-small" style="color: var(--muted);">Chuyển hướng cổng VNPAY (Thẻ ATM, Internet Banking, Quét mã QR Pay).</span>
+                                            </div>
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -507,57 +523,211 @@
 </div>
 
 <style>
+/* ==================== STEP WIZARD ==================== */
+.step-item {
+    position: relative;
+    z-index: 1;
+}
 .step-circle {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background-color: var(--surface-soft);
+    background-color: #ffffff;
+    border: 2px solid #dce8f4;
     color: var(--ink);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    font-size: 15px;
+    transition: all 0.25s ease;
 }
 .step-item.active .step-circle {
-    background-color: var(--accent);
-    color: var(--accent-ink);
+    background-color: #1977cc;
+    border-color: #1977cc;
+    color: #ffffff;
+    box-shadow: 0 0 0 4px rgba(25, 119, 204, 0.18);
 }
 .step-item.completed .step-circle {
-    background-color: var(--status-ok-bg);
-    color: var(--status-ok-ink);
+    background-color: #10b981;
+    border-color: #10b981;
+    color: #ffffff;
 }
+
+/* ==================== QUICK 7-DAY DATE STRIP ==================== */
+.quick-date-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+@media (max-width: 991px) {
+    .quick-date-grid {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        gap: 8px;
+        padding-bottom: 6px;
+    }
+    .quick-date-grid::-webkit-scrollbar {
+        height: 4px;
+    }
+    .quick-date-grid::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .quick-date-grid .quick-date-pill {
+        flex: 0 0 102px;
+    }
+}
+.quick-date-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 4px;
+    background-color: #ffffff;
+    border: 1.5px solid #dce8f4;
+    border-radius: 10px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    min-height: 64px;
+    outline: none;
+    user-select: none;
+}
+.quick-date-pill:hover {
+    background-color: #f1f7fc;
+    border-color: #1977cc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(25, 119, 204, 0.12);
+}
+.quick-date-pill.is-active {
+    background-color: #1977cc !important;
+    border-color: #1977cc !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(25, 119, 204, 0.3) !important;
+}
+.quick-date-pill .pill-day {
+    font-size: 13.5px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.quick-date-pill .pill-date {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 3px;
+    font-weight: 500;
+}
+.quick-date-pill.is-active .pill-day,
+.quick-date-pill.is-active .pill-date {
+    color: #ffffff !important;
+}
+
+/* ==================== TIME SLOT CARDS ==================== */
 .slot-card {
     cursor: pointer;
-    background-color: var(--surface-soft);
-    border-radius: var(--radius);
-    transition: background-color 0.2s ease, transform 0.2s var(--ease-out);
+    background-color: #ffffff;
+    border: 1.5px solid #dce8f4;
+    border-radius: 10px;
+    height: 100%;
+    min-height: 78px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
 }
 .slot-card:hover:not(.disabled) {
-    background-color: var(--accent-tint);
+    background-color: #f1f7fc;
+    border-color: #1977cc;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 119, 204, 0.12);
 }
 .slot-card.selected {
-    background-color: var(--accent);
-    color: var(--accent-ink);
+    background-color: #1977cc !important;
+    border-color: #1977cc !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 14px rgba(25, 119, 204, 0.28);
+}
+.slot-card.selected .slot-time,
+.slot-card.selected .slot-subtext {
+    color: #ffffff !important;
+}
+.slot-card.selected .slot-badge {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 .slot-card.disabled {
     cursor: not-allowed;
     opacity: 0.55;
-    background-color: var(--bg);
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
 }
 .skeleton-slot {
-    height: 76px;
-    background-color: var(--surface-soft);
-    border-radius: var(--radius);
+    height: 78px;
+    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 10px;
+}
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 .slot-section-title {
-    font-size: var(--step-body);
+    font-size: 15px;
     font-weight: 700;
     color: var(--ink);
-    padding-bottom: 0.5rem;
-    margin-top: 1rem;
+    padding: 8px 14px;
+    background: #f1f7fc;
+    border-left: 4px solid #1977cc;
+    border-radius: 0 8px 8px 0;
+    margin-top: 1.25rem;
     margin-bottom: 0.75rem;
+}
+
+/* ==================== QUICK SYMPTOMS CHIPS ==================== */
+.quick-symptom-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 14px;
+    background-color: #f1f7fc;
+    color: #1977cc;
+    border: 1px solid #dce8f4;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.quick-symptom-chip:hover {
+    background-color: #1977cc;
+    color: #ffffff;
+    border-color: #1977cc;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(25, 119, 204, 0.2);
+}
+
+/* ==================== PAYMENT METHOD CARDS ==================== */
+.payment-method-card {
+    background-color: #ffffff;
+    border: 1.5px solid #dce8f4 !important;
+    border-radius: 10px !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.payment-method-card:hover {
+    border-color: #1977cc !important;
+    background-color: #f8fafc;
+}
+.payment-method-card:has(input:checked) {
+    border-color: #1977cc !important;
+    background-color: #f1f7fc !important;
+    box-shadow: 0 4px 12px rgba(25, 119, 204, 0.12);
 }
 </style>
 
@@ -708,12 +878,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         col.innerHTML = `
-            <div class="p-3 slot-card ${isAvail ? '' : 'disabled'}" data-slot-id="${slot.id}" data-time="${slot.formatted_time}">
+            <div class="slot-card p-3 ${isAvail ? '' : 'disabled'}" data-slot-id="${slot.id}" data-time="${slot.formatted_time}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="fw-bold ts-num">${slot.formatted_time}</span>
-                    <span class="${badgeClass}">${badgeText}</span>
+                    <span class="fw-bold ts-num slot-time">${slot.formatted_time}</span>
+                    <span class="${badgeClass} slot-badge">${badgeText}</span>
                 </div>
-                <span class="ts-small" style="color: var(--muted);">${isAvail ? 'Có thể đăng ký' : 'Đã kín lịch'}</span>
+                <span class="ts-small slot-subtext" style="color: var(--muted);">${isAvail ? 'Có thể đăng ký' : 'Đã kín lịch'}</span>
             </div>
         `;
 
@@ -853,7 +1023,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    document.getElementById('btnReloadSlots').addEventListener('click', fetchTimeSlots);
+    const btnReloadSlots = document.getElementById('btnReloadSlots');
+    const reloadIcon = document.getElementById('reloadIcon');
+    if (btnReloadSlots) {
+        btnReloadSlots.addEventListener('click', function() {
+            if (reloadIcon) {
+                reloadIcon.classList.add('fa-spin');
+                setTimeout(() => reloadIcon.classList.remove('fa-spin'), 700);
+            }
+            fetchTimeSlots();
+        });
+    }
     dateInput.addEventListener('change', function() {
         syncQuickDatePills(this.value);
         fetchTimeSlots();
@@ -877,7 +1057,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Quick symptom chips click handler
-    document.querySelectorAll('.quick-symptom-btn').forEach(btn => {
+    document.querySelectorAll('.quick-symptom-btn, .quick-symptom-chip').forEach(btn => {
         btn.addEventListener('click', function() {
             const noteEl = document.getElementById('note');
             const sym = this.getAttribute('data-symptom');

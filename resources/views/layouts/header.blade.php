@@ -50,8 +50,8 @@
                 <i class="bi bi-chevron-down toggle-dropdown"></i>
               </a>
               <ul>
-                @if(Auth::user()->hasRole('admin'))
-                  <li><a href="{{ route('admin.dashboard') }}">Trang Quản trị Admin</a></li>
+                @if(Auth::user()->hasRole(['admin', 'leader']))
+                  <li><a href="{{ route('admin.dashboard') }}">Trang Quản trị / Lãnh đạo</a></li>
                 @endif
                 @if(Auth::user()->hasRole('doctor'))
                   <li><a href="{{ route('doctor.dashboard') }}">Bàn làm việc Bác sĩ</a></li>

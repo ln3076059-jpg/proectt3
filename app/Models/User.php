@@ -34,6 +34,18 @@ class User extends Authenticatable
         'birthdate' => 'date',
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            if (empty($user->role_id)) {
+                $patientRoleId = Role::where('name', 'patient')->value('id');
+                if ($patientRoleId) {
+                    $user->role_id = $patientRoleId;
+                }
+            }
+        });
+    }
+
     /**
      * Kiểm tra người dùng có role nhất định hay không.
      *

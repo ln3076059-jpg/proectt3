@@ -51,7 +51,7 @@ class ChatController extends Controller
             abort(401);
         }
 
-        // Lấy danh sách tất cả user bệnh nhân kèm thông tin hồ sơ & lịch hẹn gần nhất để hiển thị ngữ cảnh CSKH
+        // Lấy danh sách bệnh nhân kèm hồ sơ & lịch hẹn gần nhất, ưu tiên người có tương tác tin nhắn mới nhất
         $users = User::where('id', '!=', $user->id)
             ->whereHas('role', function ($query) {
                 $query->where('name', 'patient');
@@ -59,6 +59,21 @@ class ChatController extends Controller
             ->with(['role', 'patient.appointments' => function ($q) {
                 $q->with(['doctor.user', 'service'])->latest('id')->limit(1);
             }])
+            ->orderByDesc(
+                Message::select('created_at')
+                    ->where(function ($mq) use ($user) {
+                        $mq->whereColumn('messages.sender_id', 'users.id')
+                            ->where('messages.receiver_id', $user->id);
+                    })
+                    ->orWhere(function ($mq) use ($user) {
+                        $mq->whereColumn('messages.receiver_id', 'users.id')
+                            ->where('messages.sender_id', $user->id);
+                    })
+                    ->latest('created_at')
+                    ->limit(1)
+            )
+            ->orderByDesc('id')
+            ->limit(100)
             ->get();
 
         $authId = $user->id;

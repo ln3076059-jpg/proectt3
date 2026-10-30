@@ -71,8 +71,10 @@ class Appointment extends Model
     ];
 
     // Payment status constants
+    const PAYMENT_PENDING = 'pending';
     const PAYMENT_SUCCESS = 'success';
     const PAYMENT_FAILED = 'failed';
+    const PAYMENT_REFUNDED = 'refunded';
 
     // Refund status constants
     const REFUND_NONE = 'none';

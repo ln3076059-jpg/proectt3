@@ -23,7 +23,7 @@ class AdminMiddleware
 
         $roleName = $user->role ? strtolower(trim($user->role->name)) : null;
 
-        if (! in_array($roleName, ['admin', 'leader'], true) && (int) $user->role_id !== 3) {
+        if (! in_array($roleName, ['admin', 'leader'], true)) {
             return redirect('/')->with('error', 'Bạn không có quyền truy cập vào khu vực quản trị.');
         }
 

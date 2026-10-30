@@ -34,7 +34,7 @@ class AppointmentService
         $cutoff = now()->subMinutes($ttlMinutes);
 
         $query = Appointment::where('status', Appointment::STATUS_PENDING)
-            ->where('payment_status', Appointment::PAYMENT_FAILED)
+            ->whereIn('payment_status', [Appointment::PAYMENT_FAILED, Appointment::PAYMENT_PENDING, 'failed', 'pending'])
             ->whereNotNull('transaction_ref')
             ->where('created_at', '<=', $cutoff);
 
@@ -325,7 +325,7 @@ class AppointmentService
                 'appointment_date' => $appointmentDate,
                 'medical_examination' => $shiftName,
                 'status' => Appointment::STATUS_PENDING,
-                'payment_status' => $data['payment_status'] ?? Appointment::PAYMENT_FAILED,
+                'payment_status' => $data['payment_status'] ?? Appointment::PAYMENT_PENDING,
                 'note' => $data['note'] ?? null,
                 'booking_for' => $data['booking_for'] ?? 'self',
                 'relative_name' => ($data['booking_for'] ?? 'self') === 'relative' ? ($data['relative_name'] ?? null) : null,

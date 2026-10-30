@@ -132,7 +132,7 @@ class PaymentController extends Controller
             }
 
             // Khởi tạo lịch hẹn thông qua AppointmentService (đảm bảo khóa hàng, trừ slot, sinh mã PK và lưu Audit Trail)
-            $validated['payment_status'] = Appointment::PAYMENT_FAILED;
+            $validated['payment_status'] = Appointment::PAYMENT_PENDING;
             $appointment = $this->appointmentService->bookAppointment($validated, $authUser);
 
             // Tạo mã giao dịch (TxnRef) và cập nhật lịch hẹn

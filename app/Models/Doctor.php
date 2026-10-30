@@ -59,6 +59,18 @@ class Doctor extends Model
     }
 
     /**
+     * Tên bác sĩ hiển thị chuẩn y khoa (tự động xử lý tiền tố học hàm/học vị, không bị lặp BS. BS.)
+     */
+    public function getFormattedNameAttribute(): string
+    {
+        $raw = trim($this->user->name ?? $this->name ?? 'Bác sĩ chuyên khoa');
+        if (preg_match('/^(BS\.|BS|BSCK|ThS|TS|PGS|GS)\b/iu', $raw)) {
+            return $raw;
+        }
+        return 'BS. ' . $raw;
+    }
+
+    /**
      * Khung giờ khám của bác sĩ
      */
     public function timeSlots()

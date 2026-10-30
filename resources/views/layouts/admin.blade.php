@@ -45,8 +45,8 @@
         .gap-3 { gap: 1rem !important; }
         .global-toast-notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 75px;
+            right: 24px;
             z-index: 1090;
             min-width: 300px;
             max-width: 440px;
@@ -124,7 +124,7 @@
                 <div class="sidebar-brand-icon">
                     <i class="fas fa-clinic-medical"></i>
                 </div>
-                <div class="sidebar-brand-text mx-2">Thái Thịnh <sup>ADMIN</sup></div>
+                <div class="sidebar-brand-text mx-2" style="white-space: nowrap; font-weight: 700; letter-spacing: 0.3px;">125 Thái Thịnh <span class="badge badge-light text-primary font-weight-bold ml-1" style="font-size: 10px;">Admin</span></div>
             </a>
 
             <!-- Divider -->

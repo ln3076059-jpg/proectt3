@@ -36,14 +36,14 @@
   @include('layouts.header')
 
   <main class="main">
-    <!-- Page Title (Medilab Breadcrumbs) -->
-    <div class="page-title" data-aos="fade">
-      <nav class="breadcrumbs">
-        <div class="container">
-          <ol>
-            <li><a href="{{ url('/') }}">Trang chủ</a></li>
-            <li><a href="{{ route('appointments.index') }}">Tài khoản bệnh nhân</a></li>
-            <li class="current">
+    <!-- Clean Compact Breadcrumb -->
+    <div class="bg-white border-bottom py-2 shadow-xs no-print">
+      <div class="container-fluid px-3 px-md-4 px-xl-5" style="max-width: 1540px;">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb mb-0 small" style="font-size: 13px;">
+            <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-decoration-none text-muted"><i class="fas fa-home me-1"></i>Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('appointments.index') }}" class="text-decoration-none text-muted">Tài khoản bệnh nhân</a></li>
+            <li class="breadcrumb-item active text-primary fw-semibold" aria-current="page">
               @hasSection('breadcrumb_current')
                 @yield('breadcrumb_current')
               @else
@@ -51,9 +51,9 @@
               @endif
             </li>
           </ol>
-        </div>
-      </nav>
-    </div><!-- End Page Title -->
+        </nav>
+      </div>
+    </div>
 
     <section class="section pt-4 pb-5">
       <div class="container-fluid px-3 px-md-4 px-xl-5" style="max-width: 1540px;">

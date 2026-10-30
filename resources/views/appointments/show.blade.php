@@ -142,7 +142,7 @@
     font-weight: 700;
 }
 .clinical-journey-sub {
-    font-size: 12px;
+    font-size: 11.5px;
     color: #64748b;
     background: #f8fafc;
     padding: 2px 10px;
@@ -150,6 +150,7 @@
     border: 1px solid #e2e8f0;
     display: inline-block;
     margin-top: 2px;
+    white-space: nowrap;
 }
 
 @media (max-width: 576px) {
@@ -373,20 +374,22 @@
     </div>
 
     @if(in_array($appointment->status, ['confirmed', 'checked_in']))
-        <div class="p-3 rounded-3 mb-3 d-flex align-items-center justify-content-between flex-wrap gap-2 no-print" style="background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E3A8A;">
-            <div class="d-flex align-items-center gap-2">
-                <i class="fas fa-users-cog fs-5 text-primary"></i>
-                <div class="small">
-                    <strong>Trạng thái hàng đợi buồng khám thời gian thực:</strong>
+        <div class="p-3 rounded-4 mb-3 d-flex align-items-center justify-content-between gap-3 no-print" style="background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a;">
+            <div class="d-flex align-items-center gap-2.5">
+                <div class="rounded-circle bg-white d-flex align-items-center justify-content-center text-primary shadow-xs" style="width: 38px; height: 38px; flex-shrink: 0;">
+                    <i class="fas fa-users-cog fs-6"></i>
+                </div>
+                <div class="small" style="line-height: 1.45;">
+                    <strong class="text-primary-emphasis d-block mb-0.5">Trạng thái hàng đợi buồng khám thời gian thực:</strong>
                     @if(($queueAheadCount ?? 0) === 0)
-                        <span>Bạn đang là <strong>ca khám ưu tiên tiếp theo</strong> của <strong>{{ $appointment->doctor->user->name ?? 'Bác sĩ' }}</strong> trong ngày hẹn.</span>
+                        <span>Bạn là <strong>ca khám ưu tiên tiếp theo</strong> của <strong>{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'Bác sĩ' }}</strong> trong ngày hẹn.</span>
                     @else
-                        <span>Hiện có <strong>{{ $queueAheadCount }} bệnh nhân</strong> xếp lịch trước ca của bạn tại buồng khám của <strong>{{ $appointment->doctor->user->name ?? 'Bác sĩ' }}</strong>.</span>
+                        <span>Hiện có <strong>{{ $queueAheadCount }} bệnh nhân</strong> xếp lịch trước ca của bạn tại buồng khám <strong>{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'Bác sĩ' }}</strong>.</span>
                     @endif
                 </div>
             </div>
-            <span class="badge bg-primary text-white rounded-pill px-3 py-1">
-                {{ $appointment->status === 'checked_in' ? 'Đã Check-in QR · Sẵn sàng vào khám' : 'Vui lòng đến trước 10 phút' }}
+            <span class="badge bg-primary text-white rounded-pill px-3 py-1.5 fw-semibold flex-shrink-0 shadow-xs" style="font-size: 12px; white-space: nowrap;">
+                {{ $appointment->status === 'checked_in' ? 'Đã Check-in QR · Chờ gọi vào khám' : 'Vui lòng đến trước 10-15 phút' }}
             </span>
         </div>
     @endif
@@ -576,9 +579,9 @@
                                 <span class="text-truncate">{{ $appointment->patient->email ?? optional($appointment->patient->user)->email ?? 'Chưa có email' }}</span>
                             </div>
                         </div>
-                        <div class="pt-2.5 border-top small text-muted mt-3 d-flex align-items-center gap-1.5">
-                            <i class="fas fa-check-circle text-success"></i>
-                            <span>Hồ sơ y tế điện tử đã được xác thực</span>
+                        <div class="p-2 rounded-3 mt-3 bg-success-subtle border border-success-subtle d-flex align-items-center gap-2">
+                            <i class="fas fa-check-circle text-success fs-6"></i>
+                            <span class="small text-success fw-semibold" style="font-size: 11.5px;">Hồ sơ y tế điện tử đã được xác thực</span>
                         </div>
                     @endif
                 </div>
@@ -596,21 +599,27 @@
                 </div>
                 <div class="flex-grow-1 d-flex flex-column justify-content-between">
                     <div>
-                        <div class="d-flex align-items-center justify-content-between mb-2.5">
-                            <strong class="text-primary fs-6">
-                                <i class="far fa-calendar-check me-1.5"></i>
-                                {{ $appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') : '---' }}
-                            </strong>
-                            <span class="badge bg-primary text-white rounded-pill px-3 py-1 fw-bold" style="font-size: 12px;">
+                        <div class="d-flex align-items-center justify-content-between p-2 rounded-3 mb-2.5" style="background: #f0f7ff; border: 1px solid #d0e7ff;">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="far fa-calendar-check text-primary fs-5"></i>
+                                <div>
+                                    <div class="fw-bold text-dark" style="font-size: 13.5px;">{{ $appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') : '---' }}</div>
+                                    <div class="text-muted" style="font-size: 11px;">Ngày khám</div>
+                                </div>
+                            </div>
+                            <span class="badge bg-primary text-white rounded-pill px-3 py-1.5 fw-bold" style="font-size: 12px; white-space: nowrap;">
                                 <i class="far fa-clock me-1"></i>{{ $appointment->timeSlot ? $appointment->timeSlot->formatted_time : ($appointment->medical_examination ?? 'Trong giờ') }}
                             </span>
                         </div>
 
-                        <div class="text-dark fw-bold mb-1 fs-6">
-                            <i class="fas fa-user-md text-primary me-2"></i>{{ $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}
-                        </div>
-                        <div class="small text-muted mb-2 ps-4">
-                            Khoa: <strong>{{ $appointment->doctor->department->name ?? 'Đa khoa' }}</strong>
+                        <div class="mb-2">
+                            <div class="text-dark fw-bold fs-6 d-flex align-items-center">
+                                <i class="fas fa-user-md text-primary me-2"></i>
+                                <span>{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}</span>
+                            </div>
+                            <div class="small text-muted ps-4 mt-0.5" style="font-size: 12px;">
+                                Khoa: <strong class="text-secondary">{{ $appointment->doctor->department->name ?? 'Đa khoa' }}</strong>
+                            </div>
                         </div>
                     </div>
 
@@ -618,23 +627,23 @@
                         $deptName = $appointment->doctor->department->name ?? 'Đa khoa';
                         $clinicArea = 'Khu khám ' . $deptName . ' (Tầng 2, Nhà A)';
                     @endphp
-                    <div class="pt-2 border-top mt-2">
-                        <div class="mb-2">
-                            <span class="small text-muted d-block" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px;">
+                    <div class="p-2.5 rounded-3 mt-2" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                        <div class="mb-1.5">
+                            <span class="small text-muted d-block" style="font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.3px;">
                                 <i class="fas fa-map-marker-alt me-1 text-primary"></i>Khu tiếp nhận &amp; Buồng khám:
                             </span>
-                            <div class="small fw-bold text-dark mt-0.5" style="font-size: 12.5px; line-height: 1.35;">
+                            <div class="small fw-bold text-dark mt-0.5" style="font-size: 12px; line-height: 1.35;">
                                 {{ $clinicArea }}
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center pt-1.5 border-top border-slate-100">
-                            <small class="text-muted"><i class="fas fa-sort-numeric-up me-1 text-success"></i>Số thứ tự (STT):</small>
+                        <div class="d-flex justify-content-between align-items-center pt-1.5 border-top border-slate-200">
+                            <small class="text-muted fw-semibold" style="white-space: nowrap;"><i class="fas fa-sort-numeric-up me-1 text-success"></i>Số khám (STT):</small>
                             @if($appointment->status === 'checked_in' || $appointment->status === 'in_progress')
-                                <span class="badge bg-success text-white fw-bold px-2.5 py-1 rounded-pill"><i class="fas fa-check-circle me-1"></i>Đã cấp STT tại Quầy</span>
+                                <span class="badge bg-success text-white fw-bold px-2.5 py-1 rounded-pill" style="font-size: 11px; white-space: nowrap;"><i class="fas fa-check-circle me-1"></i>Đã cấp tại Quầy</span>
                             @elseif($appointment->status === 'completed')
-                                <span class="badge bg-secondary text-white fw-bold px-2.5 py-1 rounded-pill"><i class="fas fa-flag-checkered me-1"></i>Đã hoàn tất</span>
+                                <span class="badge bg-secondary text-white fw-bold px-2.5 py-1 rounded-pill" style="font-size: 11px; white-space: nowrap;"><i class="fas fa-flag-checkered me-1"></i>Đã hoàn tất</span>
                             @else
-                                <span class="badge bg-primary-subtle text-primary fw-bold px-2.5 py-1 rounded-pill"><i class="fas fa-qrcode me-1"></i>Cấp tự động khi quét QR</span>
+                                <span class="badge bg-primary-subtle text-primary fw-bold px-2.5 py-1 rounded-pill" style="font-size: 11px; white-space: nowrap;"><i class="fas fa-qrcode me-1"></i>Cấp khi quét QR</span>
                             @endif
                         </div>
                     </div>
@@ -722,7 +731,7 @@
                                     {{ $appointment->service->name ?? 'Khám Nội tổng quát chuyên sâu' }}
                                 </h6>
                                 <p class="text-muted small mb-1.5" style="line-height: 1.4;">
-                                    Bác sĩ phụ trách: <strong class="text-dark">{{ $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}</strong>
+                                    Bác sĩ phụ trách: <strong class="text-dark">{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}</strong>
                                     <span class="mx-1">•</span> Chuyên khoa: {{ $appointment->doctor->department->name ?? 'Đa khoa' }}
                                 </p>
                                 @if(optional($appointment->service)->description)

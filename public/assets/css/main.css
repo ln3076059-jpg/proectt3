@@ -223,14 +223,15 @@ h6 {
 --------------------------------------------------------------*/
 .header {
   color: var(--default-color);
-  z-index: 997;
-  background-color: var(--background-color);
+  z-index: 1030;
+  background-color: #ffffff;
   transition: box-shadow 0.25s ease;
 }
 
 .header.sticky-top {
   position: sticky;
   top: -40px;
+  background-color: #ffffff;
 }
 
 .header .topbar {
@@ -914,10 +915,7 @@ section,
 .hero {
   width: 100%;
   min-height: calc(100vh - 112px);
-  padding: 60px 0 80px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding: 72px 0 88px 0;
   position: relative;
   overflow: hidden;
 }
@@ -926,7 +924,7 @@ section,
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.88) 52%, rgba(255, 255, 255, 0.25) 100%);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.97) 0%, rgba(255, 255, 255, 0.90) 54%, rgba(255, 255, 255, 0.30) 100%);
   z-index: 2;
   pointer-events: none;
 }

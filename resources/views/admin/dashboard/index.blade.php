@@ -20,7 +20,7 @@
             <div class="col-lg-5 mb-2 mb-lg-0">
                 <form action="{{ route('admin.appointments.quick_checkin') }}" method="POST" class="input-group input-group-sm">
                     @csrf
-                    <input type="text" name="qr_payload" class="form-control border-primary" placeholder="Quét mã QR Kiosk hoặc nhập mã phiếu (TT-...) để Check-in ngay..." required>
+                    <input type="text" name="qr_payload" class="form-control border-primary" placeholder="Quét QR Kiosk hoặc nhập mã ca khám..." required>
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-primary font-weight-bold px-3">
                             <i class="fas fa-qrcode mr-1"></i> Check-in QR 1 Chạm

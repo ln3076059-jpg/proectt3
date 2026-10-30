@@ -52,7 +52,7 @@
                     <option value="">-- Tất cả bác sĩ --</option>
                     @foreach($doctors as $doc)
                         <option value="{{ $doc->id }}" {{ (string)$selectedDoctorId === (string)$doc->id ? 'selected' : '' }}>
-                            BS. {{ $doc->user->name ?? 'N/A' }} ({{ $doc->department->name ?? 'Đa khoa' }})
+                            {{ $doc->formatted_name ?? ($doc->user->name ?? 'N/A') }} ({{ $doc->department->name ?? 'Đa khoa' }})
                         </option>
                     @endforeach
                 </select>
@@ -109,7 +109,7 @@
                             <!-- Cột 2: Bác sĩ -->
                             <td>
                                 <div class="font-weight-bold text-primary">
-                                    BS. {{ $schedule->doctor->user->name ?? 'N/A' }}
+                                    {{ $schedule->doctor->formatted_name ?? ($schedule->doctor->user->name ?? 'N/A') }}
                                 </div>
                                 <span class="badge badge-info">{{ $schedule->doctor->department->name ?? 'Đa khoa' }}</span>
                             </td>

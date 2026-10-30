@@ -58,12 +58,12 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text bg-white text-info border-info"><i class="fas fa-barcode"></i></span>
                     </div>
-                    <input type="text" name="qr_code" id="qrCodeInput" class="form-control border-info font-weight-bold" value="{{ old('qr_code') }}" placeholder="Quét QR (PK125THAITHINH|...) hoặc nhập mã phiếu TT-2026..." required autocomplete="off">
+                    <input type="text" name="qr_code" id="qrCodeInput" class="form-control border-info font-weight-bold" value="{{ old('qr_code') }}" placeholder="Quét mã QR Kiosk hoặc nhập mã ca khám..." required autocomplete="off">
                 </div>
             </div>
             <div class="col-lg-4 d-flex" style="gap: 8px;">
                 <button type="submit" class="btn btn-info font-weight-bold flex-fill shadow-sm">
-                    <i class="fas fa-check-circle mr-1"></i> Tiếp đón (Check-in) ngay
+                    <i class="fas fa-check-circle mr-1"></i> Tiếp đón ngay
                 </button>
                 <button type="button" class="btn btn-outline-primary font-weight-bold shadow-sm" data-toggle="modal" data-target="#qrScannerModal" title="Quét bằng Camera hoặc tải ảnh phiếu QR">
                     <i class="fas fa-camera mr-1"></i> Quét ảnh / Camera
@@ -84,7 +84,7 @@
         <form action="{{ route('admin.appointments.index') }}" method="GET" class="form-row align-items-end">
             <div class="col-md-3 mb-2">
                 <label class="font-weight-bold text-gray-700 small">TỪ KHÓA TÌM KIẾM</label>
-                <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Mã lịch, tên bệnh nhân, SĐT...">
+                <input type="text" name="search" class="form-control" value="{{ request('search') }}" placeholder="Mã lịch, tên BN, SĐT...">
             </div>
             <div class="col-md-2 mb-2">
                 <label class="font-weight-bold text-gray-700 small">NGÀY HẸN KHÁM</label>
@@ -176,10 +176,7 @@
                             <!-- Cột 3: Bác sĩ & Khoa -->
                             <td>
                                 @php
-                                    $docName = $app->doctor->user->name ?? 'N/A';
-                                    if ($docName !== 'N/A' && !\Illuminate\Support\Str::startsWith($docName, 'BS.')) {
-                                        $docName = 'BS. ' . $docName;
-                                    }
+                                    $docName = $app->doctor->formatted_name ?? ($app->doctor->user->name ?? 'N/A');
                                 @endphp
                                 <div class="font-weight-bold text-gray-800">
                                     <i class="fas fa-user-md mr-1 text-primary"></i>{{ $docName }}

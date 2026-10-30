@@ -37,15 +37,15 @@
 
     <div class="container position-relative">
 
-      <div class="welcome position-relative" data-aos="fade-down" data-aos-delay="100">
-        <h2>CHÀO MỪNG ĐẾN VỚI 125 THÁI THỊNH</h2>
-        <p>Hệ thống Đặt lịch Khám Chuyên khoa &amp; Hồ sơ Bệnh án Điện tử Tiêu chuẩn Bộ Y Tế</p>
+      <div class="welcome position-relative" data-aos="fade-down" data-aos-delay="100" style="position: relative; z-index: 15;">
+        <h2 style="font-weight: 800; letter-spacing: -0.5px;">CHÀO MỪNG ĐẾN VỚI 125 THÁI THỊNH</h2>
+        <p style="color: #374151; font-weight: 500;">Hệ thống Đặt lịch Khám Chuyên khoa &amp; Hồ sơ Bệnh án Điện tử Tiêu chuẩn Bộ Y Tế</p>
       </div><!-- End Welcome -->
 
       <!-- Quick Search Bar inside Medilab Hero -->
-      <div class="row mt-4" data-aos="fade-up" data-aos-delay="150">
+      <div class="row mt-4" data-aos="fade-up" data-aos-delay="150" style="position: relative; z-index: 20;">
         <div class="col-lg-10 col-xl-8">
-          <div class="p-3 rounded-3 shadow-sm position-relative" style="background: rgba(255, 255, 255, 0.94); border: 1px solid rgba(25, 119, 204, 0.2);">
+          <div class="p-3.5 rounded-3 position-relative" style="background: #ffffff; border: 1px solid rgba(25, 119, 204, 0.25); box-shadow: 0 10px 30px rgba(25, 119, 204, 0.12); z-index: 20;">
             <form action="{{ route('services.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2" autocomplete="off">
               <div class="input-group">
                 <span class="input-group-text bg-white border-end-0 text-primary"><i class="bi bi-search"></i></span>
@@ -56,14 +56,15 @@
                   class="form-control border-start-0"
                   placeholder="Tìm gói khám, bác sĩ, chuyên khoa hoặc triệu chứng lâm sàng..."
                   aria-label="Tìm kiếm dịch vụ khám"
+                  style="font-size: 15px;"
                 >
               </div>
-              <button type="submit" class="btn btn-primary rounded-pill px-4 flex-shrink-0" style="background-color: var(--accent-color); border-color: var(--accent-color);">
+              <button type="submit" class="btn btn-primary rounded-pill px-4 flex-shrink-0 fw-semibold" style="background-color: var(--accent-color); border-color: var(--accent-color);">
                 Tìm dịch vụ
               </button>
             </form>
 
-            <div id="heroSearchDropdown" class="d-none rounded-3 shadow-lg p-3" style="position: absolute; left: 0; right: 0; top: calc(100% + 6px); z-index: 1050; background: #fff; border: 1px solid #d6e8f8; max-height: 360px; overflow-y: auto;">
+            <div id="heroSearchDropdown" class="d-none rounded-3 p-3" style="position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 1060; background: #fff; border: 1px solid #c7dff3; box-shadow: 0 12px 36px rgba(0,0,0,0.15); max-height: 360px; overflow-y: auto;">
             </div>
 
             <div class="d-flex flex-wrap align-items-center gap-2 mt-2 pt-1" style="font-size: 13px;">

@@ -89,7 +89,7 @@
       <div class="row gy-4">
         @foreach($doctors as $idx => $doc)
           @php
-            $name = $doc->user->name ?? 'BS.CKII Chuyên khoa';
+            $name = $doc->formatted_name ?? $doc->user->name ?? 'BS.CKII Chuyên khoa';
             $fallbackAvatar = $medilabDoctors[$idx % count($medilabDoctors)];
             $avatar = !empty($doc->avatar) ? asset('storage/'.$doc->avatar) : $fallbackAvatar;
             $deptName = $doc->department->name ?? 'Đa khoa';

@@ -107,7 +107,7 @@
                 <div class="row mb-3">
                     <div class="col-sm-6">
                         <small class="text-gray-600 d-block">Bác sĩ phụ trách:</small>
-                        <strong class="text-gray-900">BS. {{ $appointment->doctor->user->name ?? 'N/A' }}</strong>
+                        <strong class="text-gray-900">{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'N/A' }}</strong>
                         <div class="small text-muted">{{ $appointment->doctor->specialization ?? '' }}</div>
                     </div>
                     <div class="col-sm-6">

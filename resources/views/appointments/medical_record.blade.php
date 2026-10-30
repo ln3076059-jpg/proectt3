@@ -315,7 +315,7 @@
                                 @endif
                             </div>
                             <div class="small text-muted">
-                                Đặt lịch tái khám 1 chạm với <strong>BS. {{ optional(optional($appointment->doctor)->user)->name ?? 'Chuyên khoa' }}</strong> hoặc lưu lời nhắc vào lịch điện thoại.
+                                Đặt lịch tái khám 1 chạm với <strong>{{ optional($appointment->doctor)->formatted_name ?? optional(optional($appointment->doctor)->user)->name ?? 'Bác sĩ chuyên khoa' }}</strong> hoặc lưu lời nhắc vào lịch điện thoại.
                             </div>
                         </div>
                     </div>
@@ -364,7 +364,7 @@
                         </small>
                         <strong class="text-danger d-block fs-6 mb-1">{{ $record->diagnosis ?? 'Đang cập nhật chẩn đoán' }}</strong>
                         <span class="badge bg-primary-subtle text-primary">
-                            <i class="fas fa-check-circle me-1"></i>Đã xác nhận bởi BS. {{ optional(optional($appointment->doctor)->user)->name ?? 'Chuyên khoa' }}
+                            <i class="fas fa-check-circle me-1"></i>Đã xác nhận bởi {{ optional($appointment->doctor)->formatted_name ?? optional(optional($appointment->doctor)->user)->name ?? 'Bác sĩ chuyên khoa' }}
                         </span>
                     </div>
                 </div>

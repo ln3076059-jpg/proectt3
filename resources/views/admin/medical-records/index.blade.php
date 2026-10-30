@@ -126,7 +126,7 @@
                             <!-- Cột 4: Bác sĩ & Chẩn đoán -->
                             <td class="align-middle">
                                 <div class="font-weight-bold text-gray-800">
-                                    BS. {{ optional(optional(optional($record->appointment)->doctor)->user)->name ?? 'N/A' }}
+                                    {{ optional(optional($record->appointment)->doctor)->formatted_name ?? optional(optional(optional($record->appointment)->doctor)->user)->name ?? 'N/A' }}
                                 </div>
                                 <div class="small text-danger font-weight-bold mt-1">
                                     Chẩn đoán: {{ \Illuminate\Support\Str::limit($record->diagnosis ?: 'Đang theo dõi lâm sàng', 85) }}

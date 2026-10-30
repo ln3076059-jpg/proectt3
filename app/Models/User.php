@@ -87,4 +87,16 @@ class User extends Authenticatable
     {
         return $this->hasOne(Doctor::class, 'user_id');
     }
+
+    /**
+     * Tên bác sĩ hiển thị chuẩn y khoa (tự động xử lý tiền tố, tránh lặp BS. BS.)
+     */
+    public function getFormattedDoctorNameAttribute(): string
+    {
+        $raw = trim($this->name ?? 'Bác sĩ');
+        if (preg_match('/^(BS\.|BS|BSCK|ThS|TS|PGS|GS)\b/iu', $raw)) {
+            return $raw;
+        }
+        return 'BS. ' . $raw;
+    }
 }

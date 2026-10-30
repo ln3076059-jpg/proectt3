@@ -224,11 +224,11 @@
                                         @foreach($doctors as $doc)
                                             <option value="{{ $doc->id }}"
                                                     data-dept="{{ $doc->department_id }}"
-                                                    data-name="{{ $doc->user->name ?? 'Bác sĩ' }}"
+                                                    data-name="{{ $doc->formatted_name ?? $doc->user->name ?? 'Bác sĩ' }}"
                                                     data-spec="{{ $doc->specialization ?? '' }}"
                                                     data-avatar="{{ $doc->avatar ? asset('storage/' . $doc->avatar) : '' }}"
                                                     {{ (old('doctor_id', $selectedDoctorId) == $doc->id) ? 'selected' : '' }}>
-                                                {{ $doc->user->name ?? 'Bác sĩ' }} ({{ $doc->department->name ?? 'Chuyên khoa' }})
+                                                {{ $doc->formatted_name ?? $doc->user->name ?? 'Bác sĩ' }} ({{ $doc->department->name ?? 'Chuyên khoa' }})
                                             </option>
                                         @endforeach
                                     </select>

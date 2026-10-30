@@ -61,7 +61,7 @@
                         </div>
                     @endif
                 </div>
-                <h5 class="font-weight-bold text-gray-900 mb-1">BS. {{ $user->name }}</h5>
+                <h5 class="font-weight-bold text-gray-900 mb-1">{{ $user->formatted_doctor_name ?? $user->name }}</h5>
                 <p class="text-primary font-weight-bold mb-2">{{ $doctor->specialization ?? 'Bác sĩ chuyên khoa' }}</p>
                 <div class="badge badge-info px-3 py-2 mb-3">{{ $doctor->department->name ?? 'Đa khoa' }}</div>
 

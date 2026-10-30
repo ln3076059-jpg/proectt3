@@ -144,7 +144,7 @@
                                 <div>
                                     <div class="d-flex align-items-center flex-wrap gap-2 mb-1">
                                         <h6 class="fw-bold text-dark mb-0">
-                                            {{ $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}
+                                            {{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}
                                         </h6>
                                         <span class="med-badge-spec">
                                             {{ $appointment->doctor->department->name ?? $appointment->department->name ?? 'Đa khoa' }}
@@ -208,7 +208,7 @@
                                         class="ts-btn-secondary js-open-quick-qr"
                                         data-code="{{ $qrCodeVal }}"
                                         data-patient="{{ $qrPatientVal }}"
-                                        data-doctor="{{ $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}"
+                                        data-doctor="{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}"
                                         data-date="{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') }}"
                                         data-qr="{{ $qrImgUrl }}"
                                         data-show-url="{{ route('appointments.show', $appointment->id) }}">

@@ -7,7 +7,7 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <div>
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
-            <i class="fas fa-calendar-check text-primary mr-2"></i>Điều phối Lịch trực: BS. {{ $doctor->user->name ?? $doctor->name }}
+            <i class="fas fa-calendar-check text-primary mr-2"></i>Điều phối Lịch trực: {{ $doctor->formatted_name ?? $doctor->user->name ?? $doctor->name }}
         </h1>
         <p class="text-muted small mb-0">Theo dõi dung lượng slot khám và danh sách bệnh nhân đặt lịch theo ngày</p>
     </div>
@@ -42,7 +42,7 @@
                         <i class="fas fa-user-md fa-3x"></i>
                     </div>
                 @endif
-                <h5 class="font-weight-bold text-gray-800 mb-1">BS. {{ $doctor->user->name ?? $doctor->name }}</h5>
+                <h5 class="font-weight-bold text-gray-800 mb-1">{{ $doctor->formatted_name ?? $doctor->user->name ?? $doctor->name }}</h5>
                 <p class="text-primary font-weight-bold mb-2">{{ $doctor->specialization ?? 'Bác sĩ chuyên khoa' }}</p>
                 <div class="badge badge-info px-3 py-2 mb-3">{{ $doctor->department->name ?? 'Đa khoa' }}</div>
 

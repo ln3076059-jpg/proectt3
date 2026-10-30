@@ -128,7 +128,7 @@
                                         <small class="text-gray-600">{{ \Carbon\Carbon::parse($app->appointment_date)->format('d/m/Y') }} {{ $app->appointment_time ? substr($app->appointment_time, 0, 5) : '' }}</small>
                                     </td>
                                     <td class="align-middle">
-                                        <div class="font-weight-bold text-gray-800">BS. {{ $app->doctor->user->name ?? 'N/A' }}</div>
+                                        <div class="font-weight-bold text-gray-800">{{ $app->doctor->formatted_name ?? $app->doctor->user->name ?? 'N/A' }}</div>
                                         <small class="text-muted">{{ $app->service->name ?? 'Khám chuyên khoa' }}</small>
                                     </td>
                                     <td class="text-center align-middle">

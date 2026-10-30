@@ -59,7 +59,7 @@
                 </h6>
             </div>
             <div class="card-body">
-                <p class="mb-2"><strong class="text-gray-700">Bác sĩ:</strong> <span class="font-weight-bold text-gray-800">BS. {{ $doctor->user->name ?? 'N/A' }}</span></p>
+                <p class="mb-2"><strong class="text-gray-700">Bác sĩ:</strong> <span class="font-weight-bold text-gray-800">{{ $doctor->formatted_name ?? $doctor->user->name ?? 'N/A' }}</span></p>
                 <p class="mb-2"><strong class="text-gray-700">Khoa chuyên môn:</strong> <span class="badge badge-info">{{ $doctor->department->name ?? 'Đa khoa' }}</span></p>
                 <p class="mb-2"><strong class="text-gray-700">Gói dịch vụ:</strong> {{ optional($medicalRecord->appointment)->service->name ?? 'Khám chuyên khoa' }}</p>
                 <p class="mb-2"><strong class="text-gray-700">CCHN:</strong> {{ $doctor->license_number ?: 'Đang cập nhật' }}</p>

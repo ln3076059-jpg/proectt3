@@ -163,7 +163,7 @@
                         <tr class="collapse" id="slots-{{ $schedule->id }}">
                             <td colspan="5" class="bg-light p-3">
                                 <h6 class="font-weight-bold text-primary mb-3">
-                                    <i class="far fa-clock mr-1"></i> Chi tiết các khung giờ của ca: {{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }} (BS. {{ $schedule->doctor->user->name ?? '' }})
+                                    <i class="far fa-clock mr-1"></i> Chi tiết các khung giờ của ca: {{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }} ({{ $schedule->doctor->formatted_name ?? $schedule->doctor->user->name ?? 'Bác sĩ' }})
                                 </h6>
                                 <div class="row">
                                     @forelse($schedule->timeSlots as $slot)

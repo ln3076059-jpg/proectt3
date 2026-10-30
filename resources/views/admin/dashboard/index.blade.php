@@ -310,7 +310,7 @@
                             @forelse($topDoctors as $doc)
                                 <tr>
                                     <td class="font-weight-bold text-gray-800">
-                                        <i class="fas fa-user-md text-info mr-2"></i>BS. {{ $doc->user->name ?? 'N/A' }}
+                                        <i class="fas fa-user-md text-info mr-2"></i>{{ $doc->formatted_name ?? $doc->user->name ?? 'N/A' }}
                                     </td>
                                     <td>
                                         <span class="badge badge-info">{{ $doc->department->name ?? 'Chưa phân khoa' }}</span>
@@ -379,7 +379,7 @@
 
                             <!-- Cột 3: Bác sĩ & Khoa -->
                             <td>
-                                <div class="font-weight-bold text-gray-800">BS. {{ $app->doctor->user->name ?? 'N/A' }}</div>
+                                <div class="font-weight-bold text-gray-800">{{ $app->doctor->formatted_name ?? $app->doctor->user->name ?? 'N/A' }}</div>
                                 <div class="small text-muted">{{ $app->doctor->department->name ?? '' }}</div>
                                 <div class="small text-info">{{ $app->service->name ?? 'Khám chuyên khoa' }}</div>
                             </td>

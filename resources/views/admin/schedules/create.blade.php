@@ -39,7 +39,7 @@
                             <option value="">-- Chọn bác sĩ --</option>
                             @foreach($doctors as $doc)
                                 <option value="{{ $doc->id }}" {{ old('doctor_id') == $doc->id ? 'selected' : '' }}>
-                                    BS. {{ $doc->user->name ?? 'N/A' }} ({{ $doc->department->name ?? 'Đa khoa' }})
+                                    {{ $doc->formatted_name ?? $doc->user->name ?? 'N/A' }} ({{ $doc->department->name ?? 'Đa khoa' }})
                                 </option>
                             @endforeach
                         </select>

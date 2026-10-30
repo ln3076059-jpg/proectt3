@@ -17,7 +17,7 @@
         <p class="text-muted small mb-0">
             Mã lịch hẹn: <span class="font-weight-bold text-primary">{{ $appointment->appointment_code ?? '#'.str_pad($appointment->id, 5, '0', STR_PAD_LEFT) }}</span>
             | Ngày hẹn: <span class="font-weight-bold">{{ \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y H:i') }}</span>
-            | Bác sĩ phụ trách: <span class="font-weight-bold text-gray-800">BS. {{ $appointment->doctor->user->name ?? 'N/A' }}</span>
+            | Bác sĩ phụ trách: <span class="font-weight-bold text-gray-800">{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'N/A' }}</span>
             | Trạng thái: 
             @if($appointment->status === 'completed')
                 <span class="badge badge-success">Đã hoàn thành khám</span>
@@ -49,7 +49,7 @@
 @if($isReadOnly)
     <div class="alert alert-info alert-dismissible fade show shadow-sm" role="alert">
         <i class="fas fa-info-circle mr-2"></i>
-        <strong>Chế độ xem tiền sử y khoa (Read-Only):</strong> Bạn đang xem hồ sơ bệnh án thuộc phụ trách của <strong>BS. {{ $appointment->doctor->user->name ?? 'bác sĩ khác' }}</strong> (Khoa {{ $appointment->doctor->department->name ?? 'Đa khoa' }}). Bạn có toàn quyền tra cứu tiền sử bệnh và kết quả cận lâm sàng của bệnh nhân nhưng không thể chỉnh sửa chẩn đoán của ca khám này.
+        <strong>Chế độ xem tiền sử y khoa (Read-Only):</strong> Bạn đang xem hồ sơ bệnh án thuộc phụ trách của <strong>{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'bác sĩ khác' }}</strong> (Khoa {{ $appointment->doctor->department->name ?? 'Đa khoa' }}). Bạn có toàn quyền tra cứu tiền sử bệnh và kết quả cận lâm sàng của bệnh nhân nhưng không thể chỉnh sửa chẩn đoán của ca khám này.
     </div>
 @endif
 
@@ -764,7 +764,7 @@
             <div><em>Hà Nội, ngày {{ now()->format('d') }} tháng {{ now()->format('m') }} năm {{ now()->format('Y') }}</em></div>
             <div class="mt-1"><strong>BÁC SĨ KHÁM BỆNH</strong></div>
             <div style="height: 65px;"></div>
-            <div><strong>BS. {{ $appointment->doctor->user->name ?? 'Chuyên khoa' }}</strong></div>
+            <div><strong>{{ $appointment->doctor->formatted_name ?? $appointment->doctor->user->name ?? 'BS. Chuyên khoa' }}</strong></div>
         </div>
     </div>
 </div>

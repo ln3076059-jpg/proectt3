@@ -6,7 +6,7 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-        <i class="fas fa-user-edit text-primary mr-2"></i>Chỉnh sửa hồ sơ: BS. {{ $doctor->user->name ?? $doctor->name }}
+        <i class="fas fa-user-edit text-primary mr-2"></i>Chỉnh sửa hồ sơ: {{ $doctor->formatted_name ?? $doctor->user->name ?? $doctor->name }}
     </h1>
     <a href="{{ route('admin.doctors.index') }}" class="btn btn-sm btn-secondary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Quay lại danh sách

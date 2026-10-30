@@ -119,7 +119,7 @@
                                         <small class="text-muted">{{ \Carbon\Carbon::parse($apt->appointment_date)->format('d/m/Y H:i') }}</small>
                                     </td>
                                     <td class="align-middle">
-                                        <div class="font-weight-bold text-gray-800">BS. {{ $apt->doctor->user->name ?? 'N/A' }}</div>
+                                        <div class="font-weight-bold text-gray-800">{{ $apt->doctor->formatted_name ?? $apt->doctor->user->name ?? 'N/A' }}</div>
                                         <small class="text-info d-block">{{ $apt->doctor->department->name ?? 'Đa khoa' }}</small>
                                         @if($apt->medicalRecord && $apt->medicalRecord->diagnosis)
                                             <small class="text-danger font-weight-bold d-block mt-1">

@@ -55,8 +55,8 @@
       </nav>
     </div><!-- End Page Title -->
 
-    <section class="section pt-4">
-      <div class="container">
+    <section class="section pt-4 pb-5">
+      <div class="container-fluid px-3 px-md-4 px-xl-5" style="max-width: 1540px;">
         @php
           $patient = Auth::user()->patient ?? null;
           $avatarUrl = ($patient && !empty($patient->avatar))
@@ -93,18 +93,18 @@
           </div>
         </div>
 
-        <div class="row g-4">
-          {{-- LEFT ACCOUNT SIDEBAR --}}
-          <div class="col-lg-3 d-none d-lg-block">
-            <div class="tiki-profile-sidebar sticky-top" style="top: 96px;">
-              <div class="tiki-profile-user-card p-3 d-flex align-items-center gap-3" style="background-color: #f1f7fc; border-bottom: 1px solid #d6e8f8;">
-                <img src="{{ $avatarUrl }}" class="tiki-profile-avatar" alt="Ảnh đại diện {{ Auth::user()->name }}">
+        <div class="row g-4 flex-nowrap">
+          {{-- LEFT ACCOUNT SIDEBAR (SLIM & ELEGANT 270PX) --}}
+          <div class="col-auto d-none d-lg-block" style="width: 270px; flex-shrink: 0;">
+            <div class="tiki-profile-sidebar sticky-top shadow-sm" style="top: 96px; border-radius: 16px; overflow: hidden; border: 1px solid #e2e8f0; background: #fff;">
+              <div class="tiki-profile-user-card p-3 d-flex align-items-center gap-3" style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <img src="{{ $avatarUrl }}" class="tiki-profile-avatar rounded-circle shadow-sm" style="width: 48px; height: 48px; object-fit: cover; border: 2px solid #fff;" alt="Ảnh đại diện {{ Auth::user()->name }}">
                 <div class="text-truncate">
-                  <span class="ts-small d-block" style="color: var(--default-color);">Hồ sơ bệnh nhân</span>
-                  <strong style="font-size: 15px; color: var(--heading-color); font-family: var(--heading-font);">{{ Auth::user()->name }}</strong>
+                  <span class="small d-block text-muted" style="font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;">Hồ sơ bệnh nhân</span>
+                  <strong class="d-block text-truncate" style="font-size: 14.5px; color: #1e293b;">{{ Auth::user()->name }}</strong>
                   @if($patient && $patient->insurance_number)
-                    <span class="ts-small d-block" style="color: #047857;">
-                      <i class="bi bi-shield-check me-1"></i>Đã liên kết thẻ BHYT
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-0.5" style="font-size: 10px; font-weight: 600;">
+                      <i class="bi bi-shield-check me-1"></i>Đã có BHYT
                     </span>
                   @endif
                 </div>
@@ -141,8 +141,8 @@
             </div>
           </div>
 
-          {{-- MAIN PATIENT CONTENT AREA --}}
-          <div class="col-lg-9 col-12">
+          {{-- MAIN PATIENT CONTENT AREA (EXPANSIVE & AIRY) --}}
+          <div class="col flex-grow-1" style="min-width: 0;">
             @yield('content')
           </div>
         </div>

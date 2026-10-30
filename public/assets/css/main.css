@@ -763,14 +763,15 @@ h6 {
   position: fixed;
   visibility: hidden;
   opacity: 0;
-  right: 15px;
-  bottom: 15px;
+  right: 24px;
+  bottom: 84px;
   z-index: 99999;
   background-color: var(--accent-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
-  transition: all 0.4s;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(25, 119, 204, 0.25);
+  transition: all 0.3s ease;
 }
 
 .scroll-top i {

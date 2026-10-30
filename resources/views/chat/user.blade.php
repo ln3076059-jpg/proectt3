@@ -63,9 +63,9 @@
 <style>
     #chat-widget {
         position: fixed;
-        bottom: 70px;
-        right: 15px;
-        z-index: 9999;
+        bottom: 24px;
+        right: 24px;
+        z-index: 1040;
         font-family: var(--default-font, "Roboto", sans-serif);
     }
 

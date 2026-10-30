@@ -3,10 +3,10 @@
 @section('title', 'Đặt lịch khám bệnh - Phòng khám Thái Thịnh')
 
 @section('content')
-<div class="ts-frame py-5">
+<div class="container-fluid px-3 px-md-4 px-xl-5 py-4" style="max-width: 1540px;">
     {{-- Breadcrumb & Title --}}
     <div class="row justify-content-center mb-4">
-        <div class="col-lg-10">
+        <div class="col-12 col-xl-11">
             <nav class="tiki-breadcrumb" aria-label="breadcrumb">
                 <a href="{{ route('home') }}">Trang chủ</a>
                 <span>/</span>
@@ -28,7 +28,7 @@
 
     {{-- Alert Messages --}}
     <div class="row justify-content-center">
-        <div class="col-lg-10">
+        <div class="col-12 col-xl-11">
             @if ($errors->any())
                 <div class="p-4 mb-4" style="background-color: var(--status-danger-bg); color: var(--status-danger-ink); border-radius: var(--radius);" role="alert">
                     <strong>Vui lòng kiểm tra lại thông tin:</strong>
@@ -56,8 +56,8 @@
 
     {{-- Main Booking Container --}}
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="tiki-card p-0 overflow-hidden">
+        <div class="col-12 col-xl-11">
+            <div class="tiki-card p-0 overflow-hidden shadow-sm" style="border: 1px solid #e2e8f0; border-radius: 16px;">
                 {{-- Step Progress Header --}}
                 <div class="p-4" style="background-color: var(--surface-soft);">
                     <div class="row text-center position-relative g-2">
@@ -110,22 +110,38 @@
                                 Bước 1 · Chọn đối tượng, chuyên khoa &amp; bác sĩ điều trị
                             </h2>
 
-                            {{-- Chọn đối tượng khám: Bản thân hoặc Người thân --}}
-                            <div class="p-4 mb-4" style="background-color: var(--bg); border-radius: var(--radius);">
-                                <label class="form-label mb-3">
-                                    Người khám bệnh là:
+                            {{-- Chọn đối tượng khám: Bản thân hoặc Người thân (Modern Segmented Cards) --}}
+                            <div class="mb-4">
+                                <label class="form-label fw-bold mb-2.5 text-dark small text-uppercase" style="letter-spacing: 0.5px;">
+                                    <i class="fas fa-user-tag text-primary me-1.5"></i>Đối tượng bệnh nhân tiếp đón:
                                 </label>
-                                <div class="d-flex flex-wrap gap-4 mb-2">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="booking_for" id="bookingForSelf" value="self" checked>
-                                        <label class="form-check-label fw-semibold" for="bookingForSelf">
-                                            Khám cho bản thân ({{ Auth::user()->name }})
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="d-flex align-items-center gap-3 p-3.5 rounded-3 border bg-white shadow-xs cursor-pointer h-100 transition-all" for="bookingForSelf" id="labelBookingSelf" style="border-color: #cbd5e1; cursor: pointer;">
+                                            <input class="form-check-input mt-0 fs-5" type="radio" name="booking_for" id="bookingForSelf" value="self" checked style="cursor: pointer;">
+                                            <div>
+                                                <div class="fw-bold text-dark fs-6 d-flex align-items-center gap-2">
+                                                    <span>Khám cho bản thân</span>
+                                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-0.5 small" style="font-size: 11px;">Chủ tài khoản</span>
+                                                </div>
+                                                <small class="text-muted d-block mt-0.5">
+                                                    <strong>{{ Auth::user()->name }}</strong> • SĐT: {{ optional(Auth::user()->patient)->phone ?? Auth::user()->phone ?? 'Đã xác thực' }}
+                                                </small>
+                                            </div>
                                         </label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="booking_for" id="bookingForRelative" value="relative">
-                                        <label class="form-check-label fw-semibold" for="bookingForRelative">
-                                            Đặt cho người thân (Con nhỏ, Bố/Mẹ, Vợ/Chồng...)
+                                    <div class="col-md-6">
+                                        <label class="d-flex align-items-center gap-3 p-3.5 rounded-3 border bg-white shadow-xs cursor-pointer h-100 transition-all" for="bookingForRelative" id="labelBookingRelative" style="border-color: #cbd5e1; cursor: pointer;">
+                                            <input class="form-check-input mt-0 fs-5" type="radio" name="booking_for" id="bookingForRelative" value="relative" style="cursor: pointer;">
+                                            <div>
+                                                <div class="fw-bold text-dark fs-6 d-flex align-items-center gap-2">
+                                                    <span>Đặt lịch cho người thân</span>
+                                                    <span class="badge bg-info-subtle text-info rounded-pill px-2.5 py-0.5 small" style="font-size: 11px;">Hồ sơ độc lập</span>
+                                                </div>
+                                                <small class="text-muted d-block mt-0.5">
+                                                    Đăng ký cho Con nhỏ, Bố/Mẹ, Vợ/Chồng với mã bệnh án riêng biệt
+                                                </small>
+                                            </div>
                                         </label>
                                     </div>
                                 </div>
@@ -274,29 +290,34 @@
                                 </div>
                             </div>
 
-                            {{-- Specific Date Input & Reload Slots --}}
-                            <div class="row g-3 align-items-center mb-4">
-                                <div class="col-12 col-md-8 col-lg-7">
-                                    <label for="appointment_date" class="form-label fw-semibold mb-1" style="color: var(--ink);">
-                                        <i class="far fa-calendar-alt text-primary me-1"></i>Hoặc chọn ngày cụ thể *
-                                    </label>
-                                    <div class="input-group">
-                                        <input type="date"
-                                               class="form-control"
-                                               id="appointment_date"
-                                               name="appointment_date"
-                                               min="{{ now()->format('Y-m-d') }}"
-                                               max="{{ now()->addDays(14)->format('Y-m-d') }}"
-                                               value="{{ old('appointment_date', $selectedDate) }}"
-                                               required
-                                               style="height: 42px; border-radius: 8px 0 0 8px; border-color: #dce8f4; font-size: 14.5px;">
-                                        <button type="button" class="btn btn-outline-primary d-inline-flex align-items-center gap-2 px-3 fw-semibold" id="btnReloadSlots" title="Tải lại danh sách khung giờ" style="height: 42px; border-radius: 0 8px 8px 0; border-color: #1977cc; white-space: nowrap;">
-                                            <i class="fas fa-sync-alt" id="reloadIcon"></i>
-                                            <span>Tải lại khung giờ</span>
-                                        </button>
+                            {{-- Specific Date Input & Reload Slots Toolbar --}}
+                            <div class="p-3.5 mb-4 rounded-3 border" style="background-color: #f8fafc; border-color: #e2e8f0;">
+                                <div class="row g-3 align-items-center justify-content-between">
+                                    <div class="col-12 col-md-7 col-lg-6">
+                                        <label for="appointment_date" class="form-label fw-bold mb-1.5 text-dark small">
+                                            <i class="far fa-calendar-alt text-primary me-1.5"></i>Hoặc chọn một ngày khám cụ thể:
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="date"
+                                                   class="form-control"
+                                                   id="appointment_date"
+                                                   name="appointment_date"
+                                                   min="{{ now()->format('Y-m-d') }}"
+                                                   max="{{ now()->addDays(14)->format('Y-m-d') }}"
+                                                   value="{{ old('appointment_date', $selectedDate) }}"
+                                                   required
+                                                   style="height: 44px; border-radius: 10px 0 0 10px; border-color: #cbd5e1; font-size: 14.5px; font-weight: 500;">
+                                            <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2 px-3.5 fw-semibold shadow-sm" id="btnReloadSlots" title="Tải lại danh sách khung giờ" style="height: 44px; border-radius: 0 10px 10px 0; white-space: nowrap;">
+                                                <i class="fas fa-sync-alt" id="reloadIcon"></i>
+                                                <span>Tải lại khung giờ</span>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="ts-small mt-1 text-muted">
-                                        <i class="fas fa-info-circle me-1 text-primary"></i>Bạn có thể đặt trước tối đa 14 ngày
+                                    <div class="col-12 col-md-5 col-lg-5 text-md-end">
+                                        <div class="d-inline-flex align-items-center gap-2 bg-white px-3 py-2 rounded-pill border shadow-2xs">
+                                            <i class="fas fa-calendar-check text-success"></i>
+                                            <span class="small text-muted">Đặt trước tối đa: <strong class="text-dark">14 ngày</strong></span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -860,19 +881,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Render single slot element
     function createSlotCard(slot) {
         const col = document.createElement('div');
-        col.className = 'col-6 col-md-4 col-lg-3';
+        col.className = 'col-6 col-sm-4 col-md-3 col-xl-2';
 
         const isAvail = slot.is_available;
-        let badgeClass = 'bg-secondary';
-        let badgeText = slot.reason;
-        let borderClass = '';
+        let badgeClass = 'bg-secondary text-white';
+        let badgeText = slot.reason || 'Đã kín';
 
         if (isAvail) {
             if (slot.remaining === 1) {
-                badgeClass = 'tiki-status-badge pending';
+                badgeClass = 'bg-warning-subtle text-warning-emphasis border border-warning-subtle';
                 badgeText = 'Còn 1 chỗ';
             } else {
-                badgeClass = 'tiki-status-badge completed';
+                badgeClass = 'bg-success-subtle text-success-emphasis border border-success-subtle';
                 badgeText = `Còn ${slot.remaining} chỗ`;
             }
         }
@@ -880,10 +900,12 @@ document.addEventListener('DOMContentLoaded', function () {
         col.innerHTML = `
             <div class="slot-card p-3 ${isAvail ? '' : 'disabled'}" data-slot-id="${slot.id}" data-time="${slot.formatted_time}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span class="fw-bold ts-num slot-time">${slot.formatted_time}</span>
-                    <span class="${badgeClass} slot-badge">${badgeText}</span>
+                    <span class="fw-bold ts-num slot-time" style="font-size: 14px; letter-spacing: -0.2px;">${slot.formatted_time}</span>
+                    <span class="badge ${badgeClass} rounded-pill px-2 py-0.5" style="font-size: 11px; font-weight: 600;">${badgeText}</span>
                 </div>
-                <span class="ts-small slot-subtext" style="color: var(--muted);">${isAvail ? 'Có thể đăng ký' : 'Đã kín lịch'}</span>
+                <div class="small slot-subtext" style="font-size: 11.5px;">
+                    ${isAvail ? '<span class="text-success fw-medium"><i class="fas fa-check-circle me-1" style="font-size: 10px;"></i>Có thể đăng ký</span>' : '<span class="text-muted"><i class="fas fa-ban me-1" style="font-size: 10px;"></i>Đã kín lịch</span>'}
+                </div>
             </div>
         `;
 

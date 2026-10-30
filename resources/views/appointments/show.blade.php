@@ -6,19 +6,26 @@
 @push('styles')
 <style>
 /* ========================================================
-   TIKI CLINICAL DESIGN SYSTEM · PHÒNG KHÁM 125 THÁI THỊNH
+   MEDILAB PREMIUM CLINICAL DESIGN SYSTEM · 125 THÁI THỊNH
    ======================================================== */
+.appointment-detail-page {
+    padding-bottom: 90px;
+}
+
 .clinical-card {
-    background-color: var(--surface);
-    border: 0;
-    border-radius: var(--radius);
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+    overflow: hidden;
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
 }
 
 .clinical-header-title {
-    font-family: var(--font-display);
-    font-size: var(--step-lead);
+    font-family: var(--font-display, "Poppins", sans-serif);
+    font-size: 1.25rem;
     font-weight: 700;
-    color: var(--ink);
+    color: #1e293b;
     letter-spacing: -0.015em;
 }
 
@@ -26,51 +33,55 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: var(--step-small);
+    font-size: 13px;
     font-weight: 600;
-    padding: 5px 12px;
-    border-radius: 6px;
+    padding: 6px 14px;
+    border-radius: 9999px;
 }
 .clinical-badge.pending {
-    background-color: var(--status-warn-bg);
-    color: var(--status-warn-ink);
+    background-color: #fffbeb;
+    color: #b45309;
+    border: 1px solid #fef3c7;
 }
 .clinical-badge.confirmed,
 .clinical-badge.received {
-    background-color: var(--surface-soft);
-    color: var(--accent);
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
 }
 .clinical-badge.completed {
-    background-color: var(--status-ok-bg);
-    color: var(--status-ok-ink);
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
 }
 .clinical-badge.cancelled {
-    background-color: var(--status-danger-bg);
-    color: var(--status-danger-ink);
+    background-color: #fef2f2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
 }
 
 /* 5-STAGE CLINICAL JOURNEY STEPPER */
 .clinical-journey {
     position: relative;
-    padding: 18px 8px 8px 8px;
+    padding: 24px 16px 16px 16px;
 }
 .clinical-journey-line-bg {
     position: absolute;
-    top: 36px;
+    top: 44px;
     left: 8%;
     right: 8%;
-    height: 4px;
-    background-color: var(--bg);
-    border-radius: 4px;
+    height: 6px;
+    background-color: #f1f5f9;
+    border-radius: 6px;
     z-index: 1;
 }
 .clinical-journey-line-fill {
     position: absolute;
-    top: 36px;
+    top: 44px;
     left: 8%;
-    height: 4px;
-    background-color: var(--accent);
-    border-radius: 4px;
+    height: 6px;
+    background: linear-gradient(90deg, #1977cc, #0ea5e9);
+    border-radius: 6px;
     z-index: 1;
     transition: width 0.5s ease;
 }
@@ -88,43 +99,57 @@
     text-align: center;
 }
 .clinical-journey-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: var(--radius);
-    background-color: var(--bg);
-    color: var(--muted);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 2px solid #cbd5e1;
+    color: #64748b;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    font-size: var(--step-small);
-    margin-bottom: 8px;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    font-size: 15px;
+    margin-bottom: 10px;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 .clinical-journey-step.active .clinical-journey-circle {
-    background-color: var(--accent);
-    color: var(--accent-ink);
+    background: linear-gradient(135deg, #1977cc, #0284c7);
+    border-color: #1977cc;
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(25, 119, 204, 0.4);
+    transform: scale(1.08);
 }
 .clinical-journey-step.completed .clinical-journey-circle {
-    background-color: var(--status-ok-bg);
-    color: var(--status-ok-ink);
+    background-color: #10b981;
+    border-color: #10b981;
+    color: #ffffff;
+    box-shadow: 0 3px 10px rgba(16, 185, 129, 0.3);
 }
 .clinical-journey-label {
-    font-size: var(--step-small);
+    font-size: 13.5px;
     font-weight: 600;
-    color: var(--muted);
-    margin-bottom: 2px;
+    color: #475569;
+    margin-bottom: 3px;
 }
 .clinical-journey-step.active .clinical-journey-label {
-    color: var(--accent);
+    color: #1977cc;
     font-weight: 700;
 }
 .clinical-journey-step.completed .clinical-journey-label {
-    color: var(--ink);
+    color: #0f172a;
+    font-weight: 700;
 }
 .clinical-journey-sub {
-    font-size: var(--step-small);
-    color: var(--muted);
+    font-size: 12px;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    border: 1px solid #e2e8f0;
+    display: inline-block;
+    margin-top: 2px;
 }
 
 @media (max-width: 576px) {
@@ -135,38 +160,59 @@
 
 /* INFO CARDS */
 .clinical-info-card {
-    background-color: var(--surface);
-    border: 0;
-    border-radius: var(--radius);
-    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px 22px;
     height: 100%;
+    box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.clinical-info-card:hover {
+    box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
+    border-color: #cbd5e1;
 }
 .clinical-info-header {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: var(--step-small);
+    gap: 10px;
+    font-size: 12.5px;
     font-weight: 700;
-    color: var(--muted);
-    padding-bottom: 10px;
-    margin-bottom: 12px;
+    color: #475569;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding-bottom: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #f1f5f9;
+}
+.clinical-info-header-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
 }
 
 /* PREPARATION CHECKLIST */
 .prep-checklist {
-    background-color: var(--status-ok-bg);
-    border-radius: var(--radius);
-    padding: 16px 18px;
+    background-color: #f0fdf4;
+    border: 1px solid #dcfce7;
+    border-radius: 12px;
+    padding: 18px 20px;
 }
 .prep-checklist-item {
-    font-size: var(--step-small);
-    color: var(--status-ok-ink);
+    font-size: 13.5px;
+    color: #166534;
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 12px;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 .prep-checklist-item:last-child {
     margin-bottom: 0;
@@ -174,11 +220,36 @@
 
 /* PRICE & INVOICE */
 .clinical-price-display {
-    font-family: var(--font-display);
-    font-size: var(--step-lead);
+    font-family: var(--font-display, "Poppins", sans-serif);
+    font-size: 1.35rem;
     font-weight: 700;
-    color: var(--accent);
+    color: #1977cc;
     font-variant-numeric: tabular-nums;
+}
+
+/* QR PASS CARD */
+.qr-pass-card {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-top: 5px solid #1977cc;
+    border-radius: 16px;
+    padding: 24px 20px;
+    box-shadow: 0 6px 24px -4px rgba(25, 119, 204, 0.12);
+    text-align: center;
+    position: relative;
+}
+.qr-pass-frame {
+    width: 190px;
+    height: 190px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
 }
 
 /* PRINT MEDIA STYLESHEET (PROFESSIONAL MEDICAL VOUCHER) */
@@ -459,91 +530,111 @@
     </div>
 
     {{-- CLINICAL 3-COLUMN INFORMATION GRID --}}
-    <div class="row g-3 mb-3">
+    <div class="row g-4 mb-4">
         {{-- BOX 1: BỆNH NHÂN & ĐỊNH DANH Y TẾ --}}
         <div class="col-md-4">
             <div class="clinical-info-card">
                 <div class="clinical-info-header">
-                    <i class="fas fa-id-card-alt text-primary"></i>
-                    <span>{{ $appointment->booking_for === 'relative' ? 'HỒ SƠ KHÁM (ĐẶT HỘ NGƯỜI THÂN)' : 'HỒ SƠ BỆNH NHÂN' }}</span>
+                    <span class="clinical-info-header-icon bg-primary-subtle text-primary">
+                        <i class="fas fa-id-card-alt"></i>
+                    </span>
+                    <span>{{ $appointment->booking_for === 'relative' ? 'HỒ SƠ KHÁM (ĐẶT HỘ)' : 'HỒ SƠ BỆNH NHÂN' }}</span>
                 </div>
-                <div>
+                <div class="flex-grow-1 d-flex flex-column justify-content-between">
                     @if($appointment->booking_for === 'relative')
-                        <h6 class="fw-bold text-dark mb-1 fs-6">{{ $appointment->relative_name }}</h6>
-                        <div class="mb-2">
-                            <span class="badge bg-danger-subtle text-danger rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;">
-                                <i class="fas fa-users me-1"></i>Quan hệ: {{ $appointment->relative_relationship }}
-                            </span>
-                            @if($appointment->relative_dob)
-                                <span class="badge bg-light text-secondary border ms-1" style="font-size: 11px;">
-                                    Sinh ngày: {{ \Carbon\Carbon::parse($appointment->relative_dob)->format('d/m/Y') }}
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1 fs-5">{{ $appointment->relative_name }}</h6>
+                            <div class="mb-2 d-flex flex-wrap gap-1">
+                                <span class="badge bg-danger-subtle text-danger rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11px;">
+                                    <i class="fas fa-users me-1"></i>Quan hệ: {{ $appointment->relative_relationship }}
                                 </span>
-                            @endif
+                                @if($appointment->relative_dob)
+                                    <span class="badge bg-light text-secondary border" style="font-size: 11px;">
+                                        Sinh ngày: {{ \Carbon\Carbon::parse($appointment->relative_dob)->format('d/m/Y') }}
+                                    </span>
+                                @endif
+                            </div>
                         </div>
-                        <div class="p-2 bg-light rounded-2 small text-secondary">
-                            <i class="far fa-user me-1"></i>Tài khoản người đại diện: <strong>{{ $appointment->patient->name ?? optional($appointment->patient->user)->name }}</strong>
-                            <br><i class="fas fa-phone-alt me-1 text-muted"></i>SĐT: {{ $appointment->patient->phone ?? optional($appointment->patient->user)->phone ?? '---' }}
+                        <div class="pt-2.5 border-top small text-secondary mt-3">
+                            <div class="mb-1"><i class="far fa-user me-1.5 text-primary"></i>Người đại diện: <strong>{{ $appointment->patient->name ?? optional($appointment->patient->user)->name }}</strong></div>
+                            <div><i class="fas fa-phone-alt me-1.5 text-success"></i>SĐT: <strong>{{ $appointment->patient->phone ?? optional($appointment->patient->user)->phone ?? '---' }}</strong></div>
                         </div>
                     @else
-                        <h6 class="fw-bold text-dark mb-1 fs-6">{{ $appointment->patient->name ?? optional($appointment->patient->user)->name }}</h6>
-                        <div class="small text-muted mb-1.5">
-                            <i class="fas fa-phone me-1 text-primary"></i>{{ $appointment->patient->phone ?? optional($appointment->patient->user)->phone ?? 'Chưa cập nhật SĐT' }}
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <h5 class="fw-bold text-dark mb-0 fs-5">{{ $appointment->patient->name ?? optional($appointment->patient->user)->name }}</h5>
+                                <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-1 fw-bold" style="font-size: 11.5px;">
+                                    #BN-{{ str_pad($appointment->patient_id, 5, '0', STR_PAD_LEFT) }}
+                                </span>
+                            </div>
+                            <div class="small text-secondary mb-1.5 d-flex align-items-center gap-2">
+                                <i class="fas fa-phone-alt text-primary" style="width: 16px;"></i>
+                                <span>{{ $appointment->patient->phone ?? optional($appointment->patient->user)->phone ?? 'Chưa cập nhật SĐT' }}</span>
+                            </div>
+                            <div class="small text-secondary mb-2 d-flex align-items-center gap-2">
+                                <i class="fas fa-envelope text-primary" style="width: 16px;"></i>
+                                <span class="text-truncate">{{ $appointment->patient->email ?? optional($appointment->patient->user)->email ?? 'Chưa có email' }}</span>
+                            </div>
                         </div>
-                        <div class="small text-muted mb-2">
-                            <i class="fas fa-envelope me-1 text-primary"></i>{{ $appointment->patient->email ?? optional($appointment->patient->user)->email ?? 'Chưa có email' }}
-                        </div>
-                        <div class="p-2 bg-light rounded-2 small text-secondary">
-                            <i class="fas fa-hospital-user me-1 text-primary"></i>Mã hồ sơ BN: <strong>#BN-{{ str_pad($appointment->patient_id, 5, '0', STR_PAD_LEFT) }}</strong>
+                        <div class="pt-2.5 border-top small text-muted mt-3 d-flex align-items-center gap-1.5">
+                            <i class="fas fa-check-circle text-success"></i>
+                            <span>Hồ sơ y tế điện tử đã được xác thực</span>
                         </div>
                     @endif
                 </div>
             </div>
         </div>
 
-        {{-- BOX 2: LỊCH KHÁM, BÁC SĨ & ĐỊỀU HƯỚNG PHÒNG --}}
+        {{-- BOX 2: LỊCH KHÁM, BÁC SĨ & ĐIỀU HƯỚNG PHÒNG --}}
         <div class="col-md-4">
             <div class="clinical-info-card">
                 <div class="clinical-info-header">
-                    <i class="fas fa-stethoscope text-primary"></i>
-                    <span>LỊCH HẸN &amp; PHÒNG KHÁM CHUYÊN KHOA</span>
+                    <span class="clinical-info-header-icon bg-info-subtle text-info">
+                        <i class="fas fa-stethoscope"></i>
+                    </span>
+                    <span>LỊCH HẸN &amp; PHÒNG KHÁM</span>
                 </div>
-                <div>
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <strong class="text-primary fs-6">
-                            <i class="far fa-calendar-check me-1"></i>
-                            {{ $appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') : '---' }}
-                        </strong>
-                        <span class="badge bg-primary-subtle text-primary fw-bold" style="font-size: 11.5px;">
-                            <i class="far fa-clock me-1"></i>{{ $appointment->timeSlot ? $appointment->timeSlot->formatted_time : ($appointment->medical_examination ?? 'Trong giờ') }}
-                        </span>
+                <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center justify-content-between mb-2.5">
+                            <strong class="text-primary fs-6">
+                                <i class="far fa-calendar-check me-1.5"></i>
+                                {{ $appointment->appointment_date ? \Carbon\Carbon::parse($appointment->appointment_date)->format('d/m/Y') : '---' }}
+                            </strong>
+                            <span class="badge bg-primary text-white rounded-pill px-3 py-1 fw-bold" style="font-size: 12px;">
+                                <i class="far fa-clock me-1"></i>{{ $appointment->timeSlot ? $appointment->timeSlot->formatted_time : ($appointment->medical_examination ?? 'Trong giờ') }}
+                            </span>
+                        </div>
+
+                        <div class="text-dark fw-bold mb-1 fs-6">
+                            <i class="fas fa-user-md text-primary me-2"></i>{{ $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}
+                        </div>
+                        <div class="small text-muted mb-2 ps-4">
+                            Khoa: <strong>{{ $appointment->doctor->department->name ?? 'Đa khoa' }}</strong>
+                        </div>
                     </div>
 
-                    <div class="small text-dark fw-bold mb-1">
-                        <i class="fas fa-user-md text-primary me-1.5"></i>
-                        {{ $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa' }}
-                    </div>
-                    <div class="small text-muted mb-2">
-                        Khoa: <strong>{{ $appointment->doctor->department->name ?? 'Đa khoa' }}</strong>
-                    </div>
-
-                    {{-- PHÒNG KHÁM & SỐ THỨ TỰ (QUY CHẾ TIẾP ĐÓN CHUẨN Y KHOA) --}}
                     @php
                         $deptName = $appointment->doctor->department->name ?? 'Đa khoa';
                         $clinicArea = 'Khu khám ' . $deptName . ' (Tầng 2, Nhà A)';
                     @endphp
-                    <div class="p-2.5 bg-light rounded-2 border">
-                        <div class="d-flex justify-content-between align-items-center mb-1.5">
-                            <small class="text-muted"><i class="fas fa-door-open me-1 text-primary"></i>Khu tiếp nhận:</small>
-                            <span class="small fw-bold text-dark">{{ $clinicArea }}</span>
+                    <div class="pt-2 border-top mt-2">
+                        <div class="mb-2">
+                            <span class="small text-muted d-block" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.3px;">
+                                <i class="fas fa-map-marker-alt me-1 text-primary"></i>Khu tiếp nhận &amp; Buồng khám:
+                            </span>
+                            <div class="small fw-bold text-dark mt-0.5" style="font-size: 12.5px; line-height: 1.35;">
+                                {{ $clinicArea }}
+                            </div>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center pt-1.5 border-top border-slate-100">
                             <small class="text-muted"><i class="fas fa-sort-numeric-up me-1 text-success"></i>Số thứ tự (STT):</small>
                             @if($appointment->status === 'checked_in' || $appointment->status === 'in_progress')
-                                <span class="badge bg-success text-white fw-bold px-2 py-1"><i class="fas fa-check-circle me-1"></i>Đã cấp STT tại Quầy</span>
+                                <span class="badge bg-success text-white fw-bold px-2.5 py-1 rounded-pill"><i class="fas fa-check-circle me-1"></i>Đã cấp STT tại Quầy</span>
                             @elseif($appointment->status === 'completed')
-                                <span class="badge bg-secondary text-white fw-bold px-2 py-1"><i class="fas fa-flag-checkered me-1"></i>Đã hoàn tất khám</span>
+                                <span class="badge bg-secondary text-white fw-bold px-2.5 py-1 rounded-pill"><i class="fas fa-flag-checkered me-1"></i>Đã hoàn tất</span>
                             @else
-                                <span class="badge bg-primary-subtle text-primary fw-bold px-2 py-1"><i class="fas fa-qrcode me-1"></i>Cấp tự động khi quét QR</span>
+                                <span class="badge bg-primary-subtle text-primary fw-bold px-2.5 py-1 rounded-pill"><i class="fas fa-qrcode me-1"></i>Cấp tự động khi quét QR</span>
                             @endif
                         </div>
                     </div>
@@ -555,42 +646,49 @@
         <div class="col-md-4">
             <div class="clinical-info-card">
                 <div class="clinical-info-header">
-                    <i class="fas fa-file-invoice-dollar text-primary"></i>
+                    <span class="clinical-info-header-icon bg-success-subtle text-success">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </span>
                     <span>HÌNH THỨC THANH TOÁN &amp; BHYT</span>
                 </div>
-                <div>
-                    <div class="mb-2">
-                        <small class="text-muted d-block" style="font-size: 11px;">PHƯƠNG THỨC:</small>
-                        <span class="small fw-bold text-dark">
-                            {{ $appointment->payment_method ? strtoupper($appointment->payment_method) : 'Thanh toán trực tiếp / Cổng VNPAY' }}
-                        </span>
-                    </div>
+                <div class="flex-grow-1 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="small text-muted">Phương thức:</span>
+                            <span class="small fw-bold text-dark badge bg-light border px-2.5 py-1">
+                                {{ $appointment->payment_method ? strtoupper($appointment->payment_method) : 'Cổng VNPAY / Trực tiếp' }}
+                            </span>
+                        </div>
 
-                    <div class="mb-2">
-                        <small class="text-muted d-block" style="font-size: 11px;">TRẠNG THÁI VIỆN PHÍ:</small>
-                        @if(in_array($appointment->payment_status, ['paid', 'success']))
-                            @if($appointment->refund_status === 'refunded')
-                                <span class="badge bg-info-subtle text-info-emphasis fw-bold px-2.5 py-1" style="font-size: 11.5px;">
-                                    <i class="fas fa-undo-alt me-1"></i>Đã hoàn trả viện phí (100%)
-                                </span>
-                            @elseif($appointment->status === 'cancelled' || $appointment->refund_status === 'pending')
-                                <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-2.5 py-1" style="font-size: 11.5px;">
-                                    <i class="fas fa-hourglass-half me-1"></i>Đã thu — Chờ hoàn tiền
-                                </span>
+                        <div class="mb-2.5">
+                            <span class="small text-muted d-block mb-1">Trạng thái viện phí:</span>
+                            @if(in_array($appointment->payment_status, ['paid', 'success']))
+                                @if($appointment->refund_status === 'refunded')
+                                    <span class="badge bg-info-subtle text-info-emphasis fw-bold px-3 py-1.5 rounded-pill" style="font-size: 12px;">
+                                        <i class="fas fa-undo-alt me-1"></i>Đã hoàn trả viện phí (100%)
+                                    </span>
+                                @elseif($appointment->status === 'cancelled' || $appointment->refund_status === 'pending')
+                                    <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-1.5 rounded-pill" style="font-size: 12px;">
+                                        <i class="fas fa-hourglass-half me-1"></i>Đã thu — Chờ hoàn tiền
+                                    </span>
+                                @else
+                                    <span class="badge bg-success text-white fw-bold px-3 py-1.5 rounded-pill shadow-sm" style="font-size: 12px;">
+                                        <i class="fas fa-check-circle me-1"></i>Đã hoàn tất thanh toán (100%)
+                                    </span>
+                                @endif
                             @else
-                                <span class="badge bg-success-subtle text-success fw-bold px-2.5 py-1" style="font-size: 11.5px;">
-                                    <i class="fas fa-check-circle me-1"></i>Đã hoàn tất thanh toán (100%)
+                                <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-3 py-1.5 rounded-pill" style="font-size: 12px;">
+                                    <i class="fas fa-clock me-1"></i>Chưa thanh toán (Thanh toán tại Quầy / VNPAY)
                                 </span>
                             @endif
-                        @else
-                            <span class="badge bg-warning-subtle text-warning-emphasis fw-bold px-2.5 py-1" style="font-size: 11.5px;">
-                                <i class="fas fa-clock me-1"></i>Chưa thanh toán (Thanh toán tại Quầy / VNPAY)
-                            </span>
-                        @endif
+                        </div>
                     </div>
 
-                    <div class="p-2 bg-light rounded-2 small text-secondary">
-                        <i class="fas fa-shield-alt text-success me-1"></i>BHYT / Bảo hiểm bảo lãnh: Xuất trình thẻ khi quét QR tiếp đón tại quầy lễ tân.
+                    <div class="p-2.5 bg-success-subtle text-success-emphasis rounded-3 small border border-success-subtle d-flex align-items-start gap-2 mt-2">
+                        <i class="fas fa-shield-alt fs-5 mt-0.5 text-success"></i>
+                        <span style="font-size: 11.5px; line-height: 1.4;">
+                            <strong>Quyền lợi BHYT:</strong> Xuất trình CCCD hoặc thẻ BHYT khi quét mã QR tiếp đón tại quầy lễ tân để được bảo lãnh trực tiếp.
+                        </span>
                     </div>
                 </div>
             </div>
@@ -738,43 +836,54 @@
                 </div>
 
                 {{-- ACTION TOOLBAR (NO-PRINT) --}}
-                <div class="p-3 bg-white border-top d-flex justify-content-end gap-2 flex-wrap no-print">
-                    @php
-                        $cancelCheck = $appointment->canBeCancelledByPatient(2);
-                        $rescheduleCheck = $appointment->canBeRescheduledByPatient(2);
-                    @endphp
+                <div class="p-3 bg-white border-top d-flex justify-content-between align-items-center gap-2 flex-wrap no-print">
+                    <div>
+                        <a href="{{ route('appointments.index') }}" class="btn btn-outline-secondary btn-sm px-3 rounded-pill shadow-2xs">
+                            <i class="fas fa-arrow-left me-1"></i> Quay lại danh sách
+                        </a>
+                    </div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                        @php
+                            $cancelCheck = $appointment->canBeCancelledByPatient(2);
+                            $rescheduleCheck = $appointment->canBeRescheduledByPatient(2);
+                        @endphp
 
-                    @if(in_array($appointment->status, ['pending', 'confirmed']))
-                        @if($rescheduleCheck['can'])
-                            <button type="button" class="btn btn-outline-primary btn-sm px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#rescheduleModal">
-                                <i class="fas fa-calendar-alt me-1"></i> Dời lịch khám
-                            </button>
+                        @if(in_array($appointment->status, ['pending', 'confirmed']))
+                            @if($rescheduleCheck['can'])
+                                <button type="button" class="btn btn-outline-primary btn-sm px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#rescheduleModal">
+                                    <i class="fas fa-calendar-alt me-1"></i> Dời lịch khám
+                                </button>
+                            @endif
+
+                            @if($cancelCheck['can'])
+                                <button type="button" class="btn btn-outline-danger btn-sm px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                                    <i class="fas fa-times-circle me-1"></i> Hủy lịch hẹn
+                                </button>
+                            @endif
+
+                            @if(!in_array($appointment->payment_status, ['paid', 'success']))
+                                <a href="{{ route('payment.checkout', $appointment->id) }}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">
+                                    <i class="fas fa-credit-card me-1"></i> Thanh toán trực tuyến VNPay
+                                </a>
+                            @endif
                         @endif
 
-                        @if($cancelCheck['can'])
-                            <button type="button" class="btn btn-outline-danger btn-sm px-3 rounded-pill" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                                <i class="fas fa-times-circle me-1"></i> Hủy lịch hẹn
-                            </button>
-                        @endif
-
-                        @if(!in_array($appointment->payment_status, ['paid', 'success']))
-                            <a href="{{ route('payment.checkout', $appointment->id) }}" class="btn btn-primary btn-sm px-4 rounded-pill shadow-sm">
-                                <i class="fas fa-credit-card me-1"></i> Thanh toán trực tuyến VNPay
+                        @if(in_array($appointment->status, ['completed', 'cancelled']))
+                            <a href="{{ route('appointments.create', ['doctor_id' => $appointment->doctor_id, 'department_id' => optional($appointment->doctor)->department_id, 'service_id' => $appointment->service_id]) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill shadow-sm">
+                                <i class="fas fa-redo me-1"></i> Đặt lịch tái khám với Bác sĩ này
                             </a>
                         @endif
-                    @endif
 
-                    @if(in_array($appointment->status, ['completed', 'cancelled']))
-                        <a href="{{ route('appointments.create', ['doctor_id' => $appointment->doctor_id, 'department_id' => optional($appointment->doctor)->department_id, 'service_id' => $appointment->service_id]) }}" class="btn btn-outline-primary btn-sm px-3 rounded-pill shadow-sm">
-                            <i class="fas fa-redo me-1"></i> Đặt lịch tái khám với Bác sĩ này
-                        </a>
-                    @endif
+                        @if($appointment->status === 'completed' && $appointment->medicalRecord)
+                            <a href="{{ route('appointments.record', $appointment->id) }}" class="btn btn-success btn-sm px-3 rounded-pill shadow-sm">
+                                <i class="fas fa-file-medical-alt me-1"></i> Xem hồ sơ bệnh án điện tử (EMR)
+                            </a>
+                        @endif
 
-                    @if($appointment->status === 'completed' && $appointment->medicalRecord)
-                        <a href="{{ route('appointments.record', $appointment->id) }}" class="btn btn-success btn-sm px-3 rounded-pill shadow-sm">
-                            <i class="fas fa-file-medical-alt me-1"></i> Xem hồ sơ bệnh án điện tử (EMR)
-                        </a>
-                    @endif
+                        <button type="button" class="btn btn-outline-dark btn-sm px-3 rounded-pill" onclick="window.print()">
+                            <i class="fas fa-print me-1"></i> In phiếu
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

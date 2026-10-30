@@ -122,4 +122,81 @@ class SecurityAndIntegrityTest extends TestCase
         $medRecord->delete();
         $this->assertDatabaseMissing('prescription_items', ['id' => $item->id]);
     }
+
+    /**
+     * Kiểm tra chuẩn hóa học hàm/học vị bác sĩ (formatted_name) không bao giờ lặp "BS. BS."
+     */
+    public function test_doctor_formatted_name_prevents_duplicate_title_prefix(): void
+    {
+        $doctorWithTitle = new User(['name' => 'BS. CKII. Nguyễn Quang Minh']);
+        $this->assertEquals('BS. CKII. Nguyễn Quang Minh', $doctorWithTitle->formatted_doctor_name);
+        $this->assertStringNotContainsString('BS. BS.', $doctorWithTitle->formatted_doctor_name);
+
+        $doctorWithAcademic = new User(['name' => 'ThS. BS. Trần Thị Thu Hà']);
+        $this->assertEquals('ThS. BS. Trần Thị Thu Hà', $doctorWithAcademic->formatted_doctor_name);
+        $this->assertStringNotContainsString('BS. ThS.', $doctorWithAcademic->formatted_doctor_name);
+
+        $doctorPlain = new User(['name' => 'Lê Văn Hùng']);
+        $this->assertEquals('BS. Lê Văn Hùng', $doctorPlain->formatted_doctor_name);
+    }
+
+    /**
+     * Kiểm tra nghiệp vụ: Xóa lịch hẹn pending phải hoàn trả chỗ (booked_count) và không cho mở khóa slot đã đầy
+     */
+    public function test_admin_delete_pending_appointment_releases_slot_and_blocks_unlocking_full_slot(): void
+    {
+        $admin = User::where('email', 'admin@thaithinh.vn')->firstOrFail();
+        $doctor = Doctor::where('is_active', true)->firstOrFail();
+        $service = Service::where('department_id', $doctor->department_id)->first() ?? Service::firstOrFail();
+        $patientUser = User::whereHas('role', fn ($q) => $q->where('name', 'patient'))->firstOrFail();
+
+        $targetDate = now()->addDays(35)->toDateString();
+        $schedule = \App\Models\WorkingSchedule::create([
+            'doctor_id' => $doctor->id,
+            'date' => $targetDate,
+            'day_of_week' => \Carbon\Carbon::parse($targetDate)->dayOfWeek,
+            'start_time' => '09:00:00',
+            'end_time' => '10:00:00',
+            'status' => \App\Models\WorkingSchedule::STATUS_ACTIVE,
+        ]);
+
+        $slot = \App\Models\TimeSlot::create([
+            'working_schedule_id' => $schedule->id,
+            'doctor_id' => $doctor->id,
+            'date' => $targetDate,
+            'start_time' => '09:00:00',
+            'end_time' => '09:30:00',
+            'capacity' => 1,
+            'booked_count' => 0,
+            'status' => \App\Models\TimeSlot::STATUS_AVAILABLE,
+            'is_active' => true,
+        ]);
+
+        $appt = app(\App\Services\AppointmentService::class)->bookAppointment([
+            'doctor_id' => $doctor->id,
+            'service_id' => $service->id,
+            'date' => $targetDate,
+            'time_slot_id' => $slot->id,
+        ], $patientUser);
+
+        $slot->refresh();
+        $this->assertEquals(1, $slot->booked_count);
+        $this->assertEquals(\App\Models\TimeSlot::STATUS_LOCKED, $slot->status);
+
+        // Không cho phép mở khóa slot khi booked_count >= capacity
+        $this->actingAs($admin, 'web_admin')
+            ->patch(route('admin.schedules.slots.toggle', $slot->id))
+            ->assertRedirect();
+        $slot->refresh();
+        $this->assertEquals(\App\Models\TimeSlot::STATUS_LOCKED, $slot->status, 'Không được mở khóa slot đang đầy chỗ');
+
+        // Xóa lịch hẹn đang pending -> Phải tự động giải phóng booked_count về 0 và mở khóa slot
+        $this->actingAs($admin, 'web_admin')
+            ->delete(route('admin.appointments.destroy', $appt->id))
+            ->assertRedirect(route('admin.appointments.index'));
+
+        $slot->refresh();
+        $this->assertEquals(0, $slot->booked_count, 'Xóa lịch hẹn pending phải hoàn trả lại booked_count cho TimeSlot');
+        $this->assertEquals(\App\Models\TimeSlot::STATUS_AVAILABLE, $slot->status);
+    }
 }

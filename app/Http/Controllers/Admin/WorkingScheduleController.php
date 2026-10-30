@@ -225,6 +225,9 @@ class WorkingScheduleController extends Controller
             if ($slot->start_date_time->isPast()) {
                 return back()->with('error', 'Khung giờ này đã qua thời gian tiếp nhận, không thể mở lại.');
             }
+            if ($slot->booked_count >= $slot->capacity) {
+                return back()->with('error', "Khung giờ này đã đủ số lượng tiếp nhận ({$slot->booked_count}/{$slot->capacity}), vui lòng nâng giới hạn tiếp nhận trước khi mở khóa.");
+            }
             $slot->status = TimeSlot::STATUS_AVAILABLE;
             $msg = 'Đã mở khóa khung giờ khám.';
         }
@@ -291,7 +294,7 @@ class WorkingScheduleController extends Controller
                     ->get();
 
                 $deptId = optional($schedule->doctor)->department_id;
-                $oldDocName = optional($schedule->doctor->user)->name ?? 'Bác sĩ';
+                $oldDocName = optional($schedule->doctor)->formatted_name ?? 'Bác sĩ';
 
                 foreach ($affectedAppointments as $appt) {
                     $oldSlot = $appt->timeSlot;
@@ -344,7 +347,7 @@ class WorkingScheduleController extends Controller
                         }
                         $backupSlot->save();
 
-                        $newDocName = optional($backupSlot->doctor->user)->name ?? 'Bác sĩ cùng khoa';
+                        $newDocName = optional($backupSlot->doctor)->formatted_name ?? 'Bác sĩ cùng khoa';
                         $oldTimeStr = $oldSlot ? substr((string) $oldSlot->start_time, 0, 5) : '';
                         $newTimeStr = substr((string) $backupSlot->start_time, 0, 5);
                         $timeShiftNote = ($oldTimeStr && $oldTimeStr !== $newTimeStr)
@@ -353,6 +356,9 @@ class WorkingScheduleController extends Controller
 
                         $appt->doctor_id = $backupSlot->doctor_id;
                         $appt->time_slot_id = $backupSlot->id;
+                        if (!empty($backupSlot->start_time) && isset($slotDateStr)) {
+                            $appt->appointment_date = $slotDateStr . ' ' . $backupSlot->start_time;
+                        }
                         $appt->save();
 
                         \App\Models\AppointmentStatusHistory::create([
@@ -361,7 +367,7 @@ class WorkingScheduleController extends Controller
                             'to_status' => $appt->status,
                             'changed_by_user_id' => $user ? $user->id : null,
                             'action_role' => 'admin',
-                            'note' => "Điều chuyển tự động từ BS. {$oldDocName} sang BS. {$newDocName} (cùng chuyên khoa) do bác sĩ nghỉ đột xuất{$timeShiftNote}.",
+                            'note' => "Điều chuyển tự động từ {$oldDocName} sang {$newDocName} (cùng chuyên khoa) do bác sĩ nghỉ đột xuất{$timeShiftNote}.",
                         ]);
 
                         $reassignedCount++;
@@ -372,7 +378,7 @@ class WorkingScheduleController extends Controller
                             'to_status' => $appt->status,
                             'changed_by_user_id' => $user ? $user->id : null,
                             'action_role' => 'admin',
-                            'note' => "Cảnh báo vận hành: BS. {$oldDocName} báo nghỉ đột xuất. Chưa có bác sĩ cùng khoa trống giờ tương ứng — cần Lễ tân liên hệ dời lịch.",
+                            'note' => "Cảnh báo vận hành: {$oldDocName} báo nghỉ đột xuất. Chưa có bác sĩ cùng khoa trống giờ tương ứng — cần Lễ tân liên hệ dời lịch.",
                         ]);
 
                         $flaggedCount++;

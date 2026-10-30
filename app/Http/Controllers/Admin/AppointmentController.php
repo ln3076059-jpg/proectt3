@@ -265,11 +265,11 @@ class AppointmentController extends Controller
                 "Quét mã QR tiếp đón nhanh tại Quầy Lễ tân ({$extractedCode})"
             );
 
-            $docName = $appointment->doctor->user->name ?? 'Bác sĩ chuyên khoa';
+            $docName = optional($appointment->doctor)->formatted_name ?? 'Bác sĩ chuyên khoa';
             $deptName = $appointment->doctor->department->name ?? 'Đa khoa';
 
             return redirect()->route('admin.appointments.show', $appointment->id)
-                ->with('success', "Tiếp đón QR thành công! Bệnh nhân {$appointment->patient_display_name} (#{$appointment->appointment_code}) đã Check-in vào khoa {$deptName} — BS. {$docName}.");
+                ->with('success', "Tiếp đón QR thành công! Bệnh nhân {$appointment->patient_display_name} (#{$appointment->appointment_code}) đã Check-in vào khoa {$deptName} — {$docName}.");
         } catch (\Exception $e) {
             return back()->with('error', 'Lỗi khi tiếp đón QR: ' . $e->getMessage());
         }
@@ -282,19 +282,31 @@ class AppointmentController extends Controller
     {
         $appointment = Appointment::with('medicalRecord')->findOrFail($id);
 
-        if ($appointment->medicalRecord) {
-            return back()->with('error', 'Không thể xóa lịch hẹn đã phát sinh hồ sơ bệnh án để bảo đảm tính toàn vẹn dữ liệu.');
+        if ($appointment->medicalRecord || in_array($appointment->status, [Appointment::STATUS_CHECKED_IN, Appointment::STATUS_COMPLETED], true)) {
+            return back()->with('error', 'Không thể xóa lịch hẹn đã tiếp đón hoặc đã phát sinh hồ sơ bệnh án để bảo đảm tính toàn vẹn dữ liệu.');
         }
 
         $user = Auth::guard('web_admin')->user() ?: Auth::user();
 
-        // Chuyển sang trạng thái hủy thay vì xóa vĩnh viễn nếu đã xác nhận
-        if (in_array($appointment->status, [Appointment::STATUS_CONFIRMED, Appointment::STATUS_COMPLETED])) {
+        // Chuyển sang trạng thái hủy thay vì xóa vĩnh viễn nếu đã xác nhận hoặc đã thanh toán
+        if ($appointment->status === Appointment::STATUS_CONFIRMED || $appointment->payment_status === Appointment::PAYMENT_SUCCESS) {
             $this->appointmentService->cancelAppointment($appointment, $user, 'Quản trị viên xóa lịch');
             return back()->with('success', 'Lịch hẹn đã được chuyển sang trạng thái Đã hủy để lưu vết.');
         }
 
-        $appointment->delete();
+        \Illuminate\Support\Facades\DB::transaction(function () use ($appointment) {
+            if ($appointment->time_slot_id && $appointment->status === Appointment::STATUS_PENDING) {
+                $slot = \App\Models\TimeSlot::where('id', $appointment->time_slot_id)->lockForUpdate()->first();
+                if ($slot) {
+                    $slot->booked_count = max(0, $slot->booked_count - 1);
+                    if ($slot->status === \App\Models\TimeSlot::STATUS_LOCKED && $slot->booked_count < $slot->capacity && !$slot->start_date_time->isPast()) {
+                        $slot->status = \App\Models\TimeSlot::STATUS_AVAILABLE;
+                    }
+                    $slot->save();
+                }
+            }
+            $appointment->delete();
+        });
 
         return redirect()->route('admin.appointments.index')
             ->with('success', 'Xóa lịch hẹn thành công.');

@@ -19,7 +19,7 @@ class HomeController extends Controller
     public function welcome()
     {
         $departments = Department::all();
-        $doctors = Doctor::with(['user', 'department'])->get();
+        $doctors = Doctor::with(['user', 'department'])->where('is_active', true)->get();
         $services = Service::with('department')->get();
 
         return view('welcome', compact('departments', 'doctors', 'services'));
@@ -29,7 +29,7 @@ class HomeController extends Controller
     public function advisorPage(Request $request)
     {
         // 1. Lấy triệu chứng và nhóm đối tượng từ request
-        $symptomQuery = trim((string) $request->input('symptom'));
+        $symptomQuery = trim((string) ($request->input('symptom') ?: $request->input('q')));
         $patientGroup = (string) $request->input('patient_group', 'adult');
 
         // 2. Lấy danh sách tất cả khoa
@@ -67,6 +67,7 @@ class HomeController extends Controller
         $departments = Department::all();
 
         $doctors = Doctor::with(['user', 'department'])
+            ->where('is_active', true)
             ->when($selectedDepartmentId, function ($query) use ($selectedDepartmentId) {
                 $query->where('department_id', $selectedDepartmentId);
             })
@@ -80,7 +81,7 @@ class HomeController extends Controller
             ->paginate(8)
             ->appends(request()->query());
 
-        // Lấy các ngày có ca trống trong 14 ngày tới cho các bác sĩ đang hiển thị
+        // Lấy các ngày có ca trống trong 14 ngày tới cho các bác sĩ đang hiển thị (loại bỏ các khung giờ đã qua trong ngày hôm nay)
         $doctorIds = $doctors->getCollection()->pluck('id');
         $upcomingDatesByDoctor = [];
         if ($doctorIds->isNotEmpty()) {
@@ -92,7 +93,8 @@ class HomeController extends Controller
                 ->whereRaw('booked_count < capacity')
                 ->orderBy('date', 'asc')
                 ->orderBy('start_time', 'asc')
-                ->get();
+                ->get()
+                ->reject(fn ($s) => $s->start_date_time->isPast());
 
             foreach ($slots->groupBy('doctor_id') as $docId => $docSlots) {
                 $upcomingDatesByDoctor[$docId] = $docSlots
@@ -151,7 +153,7 @@ class HomeController extends Controller
     public function servicesPage(Request $request)
     {
         // 1. Lấy triệu chứng và khoa từ request
-        $symptomQuery = $request->input('symptom');
+        $symptomQuery = $request->input('symptom', $request->input('q'));
         $selectedDepartmentId = $request->input('department_id');
         $sort = (string) $request->input('sort', '');
         $departments = Department::all();
@@ -226,6 +228,7 @@ class HomeController extends Controller
             if ($departmentIds->isNotEmpty()) {
                 $suggestedDepartments = Department::whereIn('id', $departmentIds)->get();
                 $suggestedDoctors = Doctor::with(['user', 'department'])
+                    ->where('is_active', true)
                     ->whereIn('department_id', $departmentIds)
                     ->get();
             }
@@ -258,6 +261,7 @@ class HomeController extends Controller
         if ($departmentIds->isNotEmpty()) {
             $suggestedDepartments = Department::whereIn('id', $departmentIds)->take(4)->get();
             $suggestedDoctors = Doctor::with(['user', 'department'])
+                ->where('is_active', true)
                 ->whereIn('department_id', $departmentIds)
                 ->take(8)
                 ->get();

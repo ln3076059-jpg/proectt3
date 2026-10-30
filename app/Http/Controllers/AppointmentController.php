@@ -338,7 +338,8 @@ class AppointmentController extends Controller
             ->whereRaw('booked_count < capacity')
             ->orderBy('date', 'asc')
             ->orderBy('start_time', 'asc')
-            ->get();
+            ->get()
+            ->reject(fn ($s) => $s->start_date_time->isPast());
 
         $nextAvailableDates = $upcomingSlots
             ->groupBy(fn ($s) => Carbon::parse($s->date)->toDateString())

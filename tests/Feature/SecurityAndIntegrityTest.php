@@ -286,5 +286,40 @@ class SecurityAndIntegrityTest extends TestCase
         $apptSoon->update(['time_slot_id' => $timeSlotSoon->id]);
         $cancelCheck = $apptSoon->fresh(['timeSlot'])->canBeCancelledByPatient(2);
         $this->assertFalse($cancelCheck['can'], 'Lịch hẹn chỉ còn 90 phút (< 2 tiếng) phải bị chặn hủy chính xác theo phút');
+
+        // 4. Kiểm tra TestType có đơn giá riêng (price = 320,000đ), tính đúng vào bảng kê viện phí và chặn xóa khi đã có chỉ định CLS
+        $testType = \App\Models\TestType::create([
+            'name' => 'Siêu âm Doppler Tim 4D Chuyên sâu',
+            'description' => 'Đánh giá huyết động học van tim',
+            'department_id' => $doctor->department_id,
+            'price' => 320000,
+            'created_by' => $admin->id,
+        ]);
+
+        $medRecord = \App\Models\MedicalRecord::create([
+            'appointment_id' => $appt->id,
+            'patient_id' => $patientUser->patient->id,
+            'doctor_id' => $doctor->id,
+            'symptom' => 'Khó thở khi gắng sức',
+            'diagnosis' => 'Theo dõi hở van hai lá',
+        ]);
+
+        \App\Models\LabTest::create([
+            'medical_record_id' => $medRecord->id,
+            'department_id' => $doctor->department_id,
+            'test_type_id' => $testType->id,
+            'test_name' => $testType->name,
+            'requested_by' => $doctor->user_id,
+            'status' => 'requested',
+        ]);
+
+        $breakdown = $appt->fresh(['service', 'medicalRecord.labTests.test_type', 'medicalRecord.prescriptionItems.medicine'])->calculateCostBreakdown();
+        $this->assertEquals(320000, $breakdown['lab_test_fee'], 'Bảng kê viện phí phải lấy đúng đơn giá price = 320,000đ của TestType');
+
+        // Thử xóa TestType đang được sử dụng trong LabTest -> phải bị chặn
+        $this->actingAs($admin, 'web_admin')
+            ->delete(route('admin.test-types.destroy', $testType->id))
+            ->assertRedirect();
+        $this->assertDatabaseHas('test_types', ['id' => $testType->id]);
     }
 }

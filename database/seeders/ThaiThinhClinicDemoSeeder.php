@@ -131,6 +131,7 @@ class ThaiThinhClinicDemoSeeder extends Seeder
                 'department' => 'Khoa Tim mạch',
                 'specialization' => 'Bác sĩ Chuyên khoa II Tim mạch',
                 'license_number' => '012456/HN-CCHN',
+                'room_number' => 'P.201 - Tầng 2',
                 'description' => 'Hơn 20 năm kinh nghiệm điều trị bệnh mạch vành, rối loạn nhịp tim tại các bệnh viện tuyến trung ương.',
             ],
             [
@@ -140,6 +141,7 @@ class ThaiThinhClinicDemoSeeder extends Seeder
                 'department' => 'Khoa Tai Mũi Họng',
                 'specialization' => 'Thạc sĩ Tai Mũi Họng',
                 'license_number' => '013789/HN-CCHN',
+                'room_number' => 'P.205 - Tầng 2',
                 'description' => 'Chuyên gia nội soi chẩn đoán sớm các bệnh lý vùng họng thanh quản và viêm xoang mũi.',
             ],
             [
@@ -149,6 +151,7 @@ class ThaiThinhClinicDemoSeeder extends Seeder
                 'department' => 'Khoa Nhi',
                 'specialization' => 'Bác sĩ Chuyên khoa I Nhi khoa',
                 'license_number' => '015678/HN-CCHN',
+                'room_number' => 'P.302 - Tầng 3',
                 'description' => '15 năm kinh nghiệm khám chữa bệnh hô hấp nhi, dị ứng và tư vấn tiêm chủng an toàn.',
             ],
             [
@@ -158,6 +161,7 @@ class ThaiThinhClinicDemoSeeder extends Seeder
                 'department' => 'Khoa Nội tổng quát',
                 'specialization' => 'Bác sĩ Chuyên khoa II Nội khoa',
                 'license_number' => '019234/HN-CCHN',
+                'room_number' => 'P.102 - Tầng 1',
                 'description' => 'Nguyên Trưởng khoa Khám bệnh, chuyên gia điều trị đái tháo đường và rối loạn chuyển hóa.',
             ],
         ];
@@ -181,6 +185,7 @@ class ThaiThinhClinicDemoSeeder extends Seeder
                     'department_id' => $departments[$d['department']]->id,
                     'specialization' => $d['specialization'],
                     'license_number' => $d['license_number'],
+                    'room_number' => $d['room_number'],
                     'description' => $d['description'],
                     'is_active' => true,
                     'birth_date' => Carbon::now()->subYears(45)->toDateString(),
@@ -483,11 +488,11 @@ class ThaiThinhClinicDemoSeeder extends Seeder
         if (\App\Models\TestType::count() === 0) {
             $adminUser = User::whereHas('role', fn($q) => $q->where('name', 'like', '%admin%'))->first() ?? User::first();
             $types = [
-                ['name' => 'Xét nghiệm Tổng phân tích tế bào máu ngoại vi', 'description' => 'Đánh giá 24 thông số tế bào máu', 'department_id' => $deptList[0]->id ?? null, 'created_by' => $adminUser?->id],
-                ['name' => 'Xét nghiệm Đường huyết đói (Glucose)', 'description' => 'Sàng lọc và theo dõi bệnh đái tháo đường', 'department_id' => $deptList[0]->id ?? null, 'created_by' => $adminUser?->id],
-                ['name' => 'Xét nghiệm Men gan (AST, ALT)', 'description' => 'Đánh giá tổn thương tế bào gan', 'department_id' => $deptList[0]->id ?? null, 'created_by' => $adminUser?->id],
-                ['name' => 'Xét nghiệm Chức năng thận (Ure, Creatinin)', 'description' => 'Đánh giá mức độ lọc cầu thận', 'department_id' => $deptList[0]->id ?? null, 'created_by' => $adminUser?->id],
-                ['name' => 'Nội soi Tai Mũi Họng ống mềm', 'description' => 'Khảo sát niêm mạc vòm họng và thanh quản', 'department_id' => $deptList[1]->id ?? null, 'created_by' => $adminUser?->id],
+                ['name' => 'Xét nghiệm Tổng phân tích tế bào máu ngoại vi', 'description' => 'Đánh giá 24 thông số tế bào máu', 'department_id' => $deptList[0]->id ?? null, 'price' => 150000, 'created_by' => $adminUser?->id],
+                ['name' => 'Xét nghiệm Đường huyết đói (Glucose)', 'description' => 'Sàng lọc và theo dõi bệnh đái tháo đường', 'department_id' => $deptList[0]->id ?? null, 'price' => 80000, 'created_by' => $adminUser?->id],
+                ['name' => 'Xét nghiệm Men gan (AST, ALT)', 'description' => 'Đánh giá tổn thương tế bào gan', 'department_id' => $deptList[0]->id ?? null, 'price' => 120000, 'created_by' => $adminUser?->id],
+                ['name' => 'Xét nghiệm Chức năng thận (Ure, Creatinin)', 'description' => 'Đánh giá mức độ lọc cầu thận', 'department_id' => $deptList[0]->id ?? null, 'price' => 120000, 'created_by' => $adminUser?->id],
+                ['name' => 'Nội soi Tai Mũi Họng ống mềm', 'description' => 'Khảo sát niêm mạc vòm họng và thanh quản', 'department_id' => $deptList[1]->id ?? null, 'price' => 250000, 'created_by' => $adminUser?->id],
             ];
             foreach ($types as $t) {
                 \App\Models\TestType::create($t);
@@ -499,9 +504,12 @@ class ThaiThinhClinicDemoSeeder extends Seeder
         if (\App\Models\LabTest::count() === 0 && $medRecord && isset($deptList[0])) {
             $adminUser = User::whereHas('role', fn($q) => $q->where('name', 'like', '%admin%'))->first() ?? User::first();
             $docUser = User::whereHas('role', fn($q) => $q->where('name', 'like', '%doctor%'))->first() ?? $adminUser;
+            $firstTestType = \App\Models\TestType::where('name', 'like', '%Tổng phân tích tế bào máu%')->first();
+            $secondTestType = \App\Models\TestType::where('name', 'like', '%Đường huyết%')->first();
             \App\Models\LabTest::create([
                 'medical_record_id' => $medRecord->id,
                 'department_id' => $deptList[0]->id,
+                'test_type_id' => $firstTestType?->id,
                 'test_name' => 'Xét nghiệm Tổng phân tích tế bào máu ngoại vi',
                 'note' => 'Bệnh nhân sốt cao nghi nhiễm khuẩn',
                 'requested_by' => $docUser?->id,
@@ -511,6 +519,7 @@ class ThaiThinhClinicDemoSeeder extends Seeder
             \App\Models\LabTest::create([
                 'medical_record_id' => $medRecord->id,
                 'department_id' => $deptList[0]->id,
+                'test_type_id' => $secondTestType?->id,
                 'test_name' => 'Xét nghiệm Đường huyết đói (Glucose)',
                 'note' => 'Kiểm tra đường huyết định kỳ',
                 'requested_by' => $docUser?->id,

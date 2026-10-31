@@ -69,9 +69,9 @@ class DepartmentController extends Controller
 
         $data = $request->only('name', 'description');
 
-        // Thêm is_active nếu cột tồn tại
+        // Thêm is_active nếu cột tồn tại (mặc định true nếu form không gửi lên)
         if (Schema::hasColumn('departments', 'is_active')) {
-            $data['is_active'] = $request->boolean('is_active');
+            $data['is_active'] = $request->has('is_active') ? $request->boolean('is_active') : true;
         }
 
         if ($request->hasFile('image')) {
@@ -112,9 +112,11 @@ class DepartmentController extends Controller
         // Lấy dữ liệu hợp lệ
         $data = $request->only('name', 'description');
 
-        // Thêm is_active nếu cột tồn tại
+        // Thêm is_active nếu cột tồn tại (giữ nguyên giá trị hiện tại nếu form không gửi lên)
         if (Schema::hasColumn('departments', 'is_active')) {
-            $data['is_active'] = $request->boolean('is_active');
+            $data['is_active'] = $request->has('is_active')
+                ? $request->boolean('is_active')
+                : (bool) ($department->is_active ?? true);
         }
 
         // Xử lý upload ảnh mới nếu có

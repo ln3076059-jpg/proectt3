@@ -47,14 +47,20 @@ class TestTypeController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'department_id' => 'nullable|exists:departments,id',
+            'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
         ]);
+
+        $price = ($request->filled('price') && is_numeric($request->input('price')))
+            ? (float) $request->input('price')
+            : 150000;
 
         // Tạo loại xét nghiệm mới
         TestType::create([
             'name' => $request->name,
             'description' => $request->description,
             'department_id' => $request->department_id,
+            'price' => $price,
             'created_by' => auth('web_admin')->id() ?? auth()->id(),
         ]);
 
@@ -78,19 +84,31 @@ class TestTypeController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'department_id' => 'nullable|exists:departments,id',
+            'price' => 'nullable|numeric|min:0',
             'description' => 'nullable|string',
         ]);
 
+        $data = $request->only('name', 'description', 'department_id');
+        if ($request->filled('price') && is_numeric($request->input('price'))) {
+            $data['price'] = (float) $request->input('price');
+        }
+
         // Cập nhật thông tin loại xét nghiệm
-        $type->update($request->only('name', 'description', 'department_id'));
+        $type->update($data);
 
         return redirect()->route('admin.test-types.index')->with('success', 'Đã cập nhật loại xét nghiệm!');
     }
 
-    // Xóa loại xét nghiệm khỏi database
+    // Xóa loại xét nghiệm khỏi database (chặn nếu đã phát sinh chỉ định CLS)
     public function destroy($id)
     {
-        TestType::findOrFail($id)->delete();
+        $type = TestType::findOrFail($id);
+
+        if (\App\Models\LabTest::where('test_type_id', $type->id)->exists()) {
+            return back()->with('error', 'Không thể xóa loại xét nghiệm này vì đã có phiếu xét nghiệm cận lâm sàng sử dụng.');
+        }
+
+        $type->delete();
 
         return back()->with('success', 'Đã xóa loại xét nghiệm.');
     }

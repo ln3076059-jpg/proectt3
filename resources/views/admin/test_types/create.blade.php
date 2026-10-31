@@ -32,19 +32,28 @@
                         @enderror
                     </div>
 
-                    <div class="form-group">
-                        <label class="font-weight-bold text-gray-700">Khoa phòng phụ trách <span class="text-danger">*</span></label>
-                        <select name="department_id" class="form-control @error('department_id') is-invalid @enderror" required>
-                            <option value="">-- Chọn khoa phòng --</option>
-                            @foreach($departments as $dept)
-                                <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
-                                    {{ $dept->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('department_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    <div class="form-row">
+                        <div class="form-group col-md-7">
+                            <label class="font-weight-bold text-gray-700">Khoa phòng phụ trách <span class="text-danger">*</span></label>
+                            <select name="department_id" class="form-control @error('department_id') is-invalid @enderror" required>
+                                <option value="">-- Chọn khoa phòng --</option>
+                                @foreach($departments as $dept)
+                                    <option value="{{ $dept->id }}" {{ old('department_id') == $dept->id ? 'selected' : '' }}>
+                                        {{ $dept->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('department_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="form-group col-md-5">
+                            <label class="font-weight-bold text-gray-700">Chi phí xét nghiệm (VNĐ)</label>
+                            <input type="number" name="price" min="0" step="1000" class="form-control @error('price') is-invalid @enderror" value="{{ old('price', 150000) }}" placeholder="150000">
+                            @error('price')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
 
                     <div class="form-group">

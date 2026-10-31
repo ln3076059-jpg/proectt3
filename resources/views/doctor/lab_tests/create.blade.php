@@ -56,7 +56,7 @@
                             <option value="" data-name="" data-dept="">-- Chọn loại xét nghiệm mẫu --</option>
                             @foreach($testTypes as $tt)
                                 <option value="{{ $tt->id }}" data-name="{{ $tt->name }}" data-dept="{{ $tt->department_id }}" {{ old('test_type_id') == $tt->id ? 'selected' : '' }}>
-                                    {{ $tt->name }} @if($tt->department) ({{ $tt->department->name }}) @endif
+                                    {{ $tt->name }} @if($tt->department) ({{ $tt->department->name }}) @endif - {{ number_format((float) ($tt->price ?? 150000), 0, ',', '.') }} đ
                                 </option>
                             @endforeach
                         </select>

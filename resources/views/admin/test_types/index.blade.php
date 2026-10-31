@@ -108,7 +108,10 @@
                                 <div class="font-weight-bold text-primary">
                                     <i class="fas fa-vial text-info mr-1"></i>{{ $type->name }}
                                 </div>
-                                <small class="text-gray-500">Mã: #XN-{{ str_pad($type->id, 4, '0', STR_PAD_LEFT) }}</small>
+                                <small class="text-gray-500">
+                                    Mã: #XN-{{ str_pad($type->id, 4, '0', STR_PAD_LEFT) }}
+                                    • Chi phí: <strong class="text-success">{{ number_format((float) ($type->price ?? 150000), 0, ',', '.') }} đ</strong>
+                                </small>
                             </td>
 
                             <!-- Cột 3: Khoa -->

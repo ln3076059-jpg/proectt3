@@ -20,6 +20,14 @@ return new class extends Migration
             });
         }
 
+        if (Schema::hasTable('test_types')) {
+            Schema::table('test_types', function (Blueprint $table) {
+                if (!Schema::hasColumn('test_types', 'price')) {
+                    $table->decimal('price', 12, 2)->default(150000)->after('department_id');
+                }
+            });
+        }
+
         if (Schema::hasTable('appointments')) {
             Schema::table('appointments', function (Blueprint $table) {
                 if (!Schema::hasColumn('appointments', 'payment_reference')) {
@@ -63,6 +71,12 @@ return new class extends Migration
         if (Schema::hasTable('doctors') && Schema::hasColumn('doctors', 'room_number')) {
             Schema::table('doctors', function (Blueprint $table) {
                 $table->dropColumn('room_number');
+            });
+        }
+
+        if (Schema::hasTable('test_types') && Schema::hasColumn('test_types', 'price')) {
+            Schema::table('test_types', function (Blueprint $table) {
+                $table->dropColumn('price');
             });
         }
 

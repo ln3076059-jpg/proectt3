@@ -174,7 +174,7 @@ class AppointmentController extends Controller
             'timeSlot',
             'statusHistories.changedByUser',
             'medicalRecord.prescriptionItems.medicine',
-            'medicalRecord.labTests',
+            'medicalRecord.labTests.test_type',
         ])->findOrFail($id);
 
         // Kiểm tra quyền: Chỉ chủ sở hữu, bác sĩ phụ trách hoặc admin mới được xem

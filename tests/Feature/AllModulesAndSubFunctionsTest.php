@@ -1292,4 +1292,241 @@ class AllModulesAndSubFunctionsTest extends TestCase
         \Illuminate\Support\Facades\Artisan::call('app:auto-approve-paid-appointments');
         $this->assertEquals(Appointment::STATUS_CONFIRMED, $paidPendingAppt->fresh()->status);
     }
+
+    /**
+     * MODULE 10: Kịch bản Khép kín Phối hợp 3 Tác nhân (BỆNH NHÂN ↔ ADMIN ↔ BÁC SĨ)
+     * Kiểm thử liên hoàn từ lúc Admin mở lịch trực -> Bệnh nhân đặt lịch & hỏi Chat -> Lễ tân duyệt & quét QR Check-in
+     * -> Bác sĩ khám & chỉ định CLS -> Kỹ thuật viên Admin trả kết quả CLS -> Bác sĩ kê đơn hoàn tất EMR
+     * -> Thu ngân Admin tất toán viện phí đa tầng BHYT -> Bệnh nhân xem bệnh án, đơn thuốc & tải kết quả xét nghiệm.
+     */
+    public function test_module_10_three_actors_patient_doctor_admin_end_to_end_closed_loop(): void
+    {
+        Storage::fake('public');
+
+        // =====================================================================
+        // BƯỚC 1 - [TÁC NHÂN ADMIN]: Cấu hình Buồng khám Bác sĩ, Danh mục Xét nghiệm & Mở Ca trực mới
+        // =====================================================================
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->put(route('admin.doctors.update', $this->doctor->id), [
+                'name' => $this->doctorUser->name,
+                'email' => $this->doctorUser->email,
+                'phone' => $this->doctorUser->phone ?? '0912111001',
+                'department_id' => $this->department->id,
+                'specialization' => $this->doctor->specialization ?? 'Chuyên khoa Nội',
+                'license_number' => $this->doctor->license_number ?? '012456/HN-CCHN',
+                'room_number' => 'P.208 - Tầng 2',
+                'is_active' => 1,
+            ])
+            ->assertRedirect(route('admin.doctors.index'));
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.test-types.store'), [
+                'name' => 'Xét nghiệm Sinh hóa Gan Thận Chuyên sâu 3 Tác Nhân',
+                'department_id' => $this->department->id,
+                'price' => 280000,
+                'description' => 'AST, ALT, GGT, Ure, Creatinin',
+            ])
+            ->assertRedirect(route('admin.test-types.index'));
+
+        $customTestType = TestType::where('name', 'Xét nghiệm Sinh hóa Gan Thận Chuyên sâu 3 Tác Nhân')->firstOrFail();
+        $this->assertEquals(280000, (float) $customTestType->price);
+
+        $loopDate = Carbon::today()->addDays(18)->toDateString();
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.schedules.store'), [
+                'doctor_id' => $this->doctor->id,
+                'date' => $loopDate,
+                'start_time' => '08:00',
+                'end_time' => '11:00',
+                'slot_duration' => 30,
+                'capacity' => 3,
+                'note' => 'Ca trực phối hợp 3 tác nhân',
+            ])
+            ->assertRedirect();
+
+        $loopSlot = TimeSlot::where('doctor_id', $this->doctor->id)
+            ->whereDate('date', $loopDate)
+            ->where('status', TimeSlot::STATUS_AVAILABLE)
+            ->firstOrFail();
+
+        // =====================================================================
+        // BƯỚC 2 - [TÁC NHÂN BỆNH NHÂN]: Cập nhật BHYT, Tra cứu AI, Đặt lịch khám & Nhắn tin Chat CSKH
+        // =====================================================================
+        $this->actingAs($this->patientUser, 'web')
+            ->patch(route('profile.update'), [
+                'name' => $this->patientUser->name,
+                'email' => $this->patientUser->email,
+                'phone' => '0988777666',
+                'address' => '125 Thái Thịnh, Đống Đa, Hà Nội',
+                'insurance_number' => 'DN4010123456789',
+            ])
+            ->assertRedirect();
+
+        $this->actingAs($this->patientUser, 'web')
+            ->getJson(route('appointments.time-slots', [
+                'doctor_id' => $this->doctor->id,
+                'date' => $loopDate,
+            ]))
+            ->assertStatus(200)
+            ->assertJsonPath('success', true);
+
+        $this->actingAs($this->patientUser, 'web')
+            ->post(route('appointments.store'), [
+                'department_id' => $this->department->id,
+                'doctor_id' => $this->doctor->id,
+                'service_id' => $this->service->id,
+                'appointment_date' => $loopDate,
+                'time_slot_id' => $loopSlot->id,
+                'booking_for' => 'self',
+                'note' => 'Mệt mỏi, đau tức vùng hạ sườn phải',
+            ])
+            ->assertRedirect();
+
+        $loopAppt = Appointment::where('patient_id', $this->patient->id)
+            ->where('time_slot_id', $loopSlot->id)
+            ->latest('id')
+            ->firstOrFail();
+
+        // Bệnh nhân nhắn tin hỏi CSKH
+        $this->actingAs($this->patientUser, 'web')
+            ->postJson(route('chat.send'), [
+                'receiver_id' => $this->adminUser->id,
+                'message' => "Tôi vừa đặt lịch mã {$loopAppt->appointment_code}, đi khám có cần nhịn ăn sáng không?",
+            ])
+            ->assertStatus(200)
+            ->assertJsonPath('status', 'success');
+
+        // =====================================================================
+        // BƯỚC 3 - [TÁC NHÂN ADMIN / LỄ TÂN]: Phản hồi Chat, Duyệt lịch & Quét QR Kiosk Check-in 1 chạm
+        // =====================================================================
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->postJson(route('admin.chat.send'), [
+                'receiver_id' => $this->patientUser->id,
+                'message' => 'Chào anh/chị, anh/chị vui lòng nhịn ăn sáng để làm xét nghiệm sinh hóa gan thận chính xác nhé!',
+            ])
+            ->assertStatus(200)
+            ->assertJsonPath('status', 'success');
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->patch(route('admin.appointments.status', $loopAppt->id), [
+                'status' => Appointment::STATUS_CONFIRMED,
+                'note' => 'Lễ tân xác nhận lịch hẹn qua điện thoại',
+            ])
+            ->assertRedirect();
+
+        $kioskQrString = "PK125THAITHINH|MA:{$loopAppt->appointment_code}|BN:{$this->patient->name}|NGAY:{$loopDate}";
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.appointments.quick_checkin'), [
+                'qr_code' => $kioskQrString,
+            ])
+            ->assertRedirect(route('admin.appointments.show', $loopAppt->id));
+
+        $this->assertEquals(Appointment::STATUS_CHECKED_IN, $loopAppt->fresh()->status);
+
+        // =====================================================================
+        // BƯỚC 4 - [TÁC NHÂN BÁC SĨ]: Tiếp nhận trên Hàng đợi, Mở EMR & Chỉ định Xét nghiệm CLS
+        // =====================================================================
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.dashboard', ['date' => $loopDate]))
+            ->assertStatus(200)
+            ->assertSee($loopAppt->appointment_code);
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.patient.record', $loopAppt->id))
+            ->assertStatus(200);
+
+        $loopRecord = MedicalRecord::where('appointment_id', $loopAppt->id)->firstOrFail();
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->post(route('doctor.lab_tests.store', $loopRecord->id), [
+                'test_type_id' => $customTestType->id,
+                'test_name' => $customTestType->name,
+                'department_id' => $this->department->id,
+                'note' => 'Ưu tiên kiểm tra men gan AST, ALT',
+            ])
+            ->assertRedirect(route('doctor.patient.record', $loopAppt->id));
+
+        $loopLabTest = LabTest::where('medical_record_id', $loopRecord->id)->latest('id')->firstOrFail();
+        $this->assertEquals($customTestType->id, $loopLabTest->test_type_id);
+
+        // =====================================================================
+        // BƯỚC 5 - [TÁC NHÂN ADMIN / KỸ THUẬT VIÊN CLS]: Tải kết quả xét nghiệm lên hệ thống
+        // =====================================================================
+        $labFile = UploadedFile::fake()->image('ket-qua-sinh-hoa-gan-than.jpg', 800, 1000);
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.lab_tests.saveUpload', $loopLabTest->id), [
+                'image' => $labFile,
+                'note' => 'Men gan AST = 32 U/L, ALT = 35 U/L (Bình thường). Chức năng thận bình thường.',
+            ])
+            ->assertRedirect(route('admin.lab_tests.index'));
+
+        $this->assertEquals('completed', $loopLabTest->fresh()->status);
+
+        // =====================================================================
+        // BƯỚC 6 - [TÁC NHÂN BÁC SĨ]: Đọc kết quả CLS, Kê đơn thuốc (trừ kho) & Hoàn tất Khám bệnh
+        // =====================================================================
+        $medStockBefore = (int) $this->medicine->fresh()->stock;
+        $followUpDateStr = Carbon::today()->addDays(30)->format('d/m/Y');
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->put(route('doctor.records.update', $loopRecord->id), [
+                'diagnosis' => 'Rối loạn tiêu hóa - Theo dõi chức năng gan (K30)',
+                'description' => "[Sinh hiệu: Mạch: 76 l/p | HA: 120/75 mmHg | Nhiệt độ: 36.6 °C | SpO2: 99% | BMI: 21.8 (Bình thường)]\nBụng mềm, gan lách không to.",
+                'doctor_conclusion' => "Ăn uống hạn chế dầu mỡ. Hẹn tái khám vào ngày {$followUpDateStr}.",
+                'status' => Appointment::STATUS_COMPLETED,
+                'prescription_items' => [
+                    [
+                        'medicine_id' => $this->medicine->id,
+                        'quantity' => 10,
+                        'unit' => 'Viên',
+                        'usage' => 'Uống sáng 1 viên, tối 1 viên sau ăn',
+                        'note' => 'Uống đủ nước',
+                    ],
+                ],
+            ])
+            ->assertRedirect();
+
+        $this->assertEquals(Appointment::STATUS_COMPLETED, $loopAppt->fresh()->status);
+        $this->assertEquals($medStockBefore - 10, (int) $this->medicine->fresh()->stock);
+
+        // =====================================================================
+        // BƯỚC 7 - [TÁC NHÂN ADMIN / THU NGÂN]: Tất toán Viện phí Đa tầng (Khám + CLS 280k + Thuốc - BHYT 80%)
+        // =====================================================================
+        $expectedBreakdown = $loopAppt->fresh(['patient', 'service', 'medicalRecord.labTests.test_type', 'medicalRecord.prescriptionItems.medicine'])->calculateCostBreakdown();
+        $this->assertEquals(280000, $expectedBreakdown['lab_test_fee']);
+        $this->assertEquals(10 * (float) $this->medicine->price, $expectedBreakdown['prescription_fee']);
+        $this->assertTrue($expectedBreakdown['has_bhyt']);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->patch(route('admin.appointments.payment', $loopAppt->id), [
+                'payment_method' => 'Thẻ ATM / QR tại quầy Thu ngân',
+                'include_full_clinical_costs' => 1,
+                'apply_bhyt' => 1,
+            ])
+            ->assertRedirect();
+
+        $loopAppt->refresh();
+        $this->assertEquals(Appointment::PAYMENT_SUCCESS, $loopAppt->payment_status);
+        $this->assertEquals($expectedBreakdown['patient_copay_amount'], (float) $loopAppt->total_amount);
+
+        // =====================================================================
+        // BƯỚC 8 - [TÁC NHÂN BỆNH NHÂN]: Xem Bảng kê đã tất toán, Bệnh án EMR, Đơn thuốc & Tải ảnh Xét nghiệm
+        // =====================================================================
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('appointments.show', $loopAppt->id))
+            ->assertStatus(200)
+            ->assertSee('P.208 - Tầng 2')
+            ->assertSee('Đã hoàn tất thanh toán (100%)');
+
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('appointments.record', $loopAppt->id))
+            ->assertStatus(200)
+            ->assertSee('Rối loạn tiêu hóa - Theo dõi chức năng gan (K30)')
+            ->assertSee('LỊCH NHẮC UỐNG THUỐC TRONG NGÀY')
+            ->assertSee($followUpDateStr);
+
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('lab_tests.attachment', $loopLabTest->id))
+            ->assertStatus(200);
+    }
 }

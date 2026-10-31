@@ -625,7 +625,10 @@
 
                     @php
                         $deptName = $appointment->doctor->department->name ?? 'Đa khoa';
-                        $clinicArea = 'Khu khám ' . $deptName . ' (Tầng 2, Nhà A)';
+                        $doctorRoom = trim((string) ($appointment->doctor->room_number ?? ''));
+                        $clinicArea = $doctorRoom !== ''
+                            ? "Buồng {$doctorRoom} · Khu khám {$deptName}"
+                            : 'Khu khám ' . $deptName . ' (Tầng 2, Nhà A)';
                     @endphp
                     <div class="p-2.5 rounded-3 mt-2" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                         <div class="mb-1.5">

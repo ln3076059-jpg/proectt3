@@ -12,6 +12,16 @@
 
 {{-- Chat CSS --}}
 <link rel="stylesheet" href="{{ asset('css/chat/chat_admin.css') }}">
+<style>
+    #user-list .user-item.active .text-gray-800,
+    #user-list .user-item.active .text-muted,
+    #user-list .user-item.active .text-gray-400 {
+        color: #ffffff !important;
+    }
+    #user-list .user-item.active small.text-muted {
+        color: rgba(255, 255, 255, 0.88) !important;
+    }
+</style>
 
 <!-- Chat Card (SB Admin 2) -->
 <div class="card shadow mb-4">
@@ -35,8 +45,12 @@
                         @foreach($users as $user)
                             @php
                                 $latestAppt = optional(optional($user->patient)->appointments)->first();
+                                $docDisplayName = optional(optional(optional($latestAppt)->doctor)->user)->name ?? 'Chuyên khoa';
+                                if (!preg_match('/^(BS|ThS|TS|PGS|GS)/iu', $docDisplayName)) {
+                                    $docDisplayName = 'BS. ' . $docDisplayName;
+                                }
                                 $apptSummary = $latestAppt
-                                    ? ('#' . ($latestAppt->appointment_code ?: $latestAppt->id) . ' • ' . \Carbon\Carbon::parse($latestAppt->appointment_date)->format('d/m/Y') . ' • BS. ' . (optional(optional($latestAppt->doctor)->user)->name ?? 'Chuyên khoa') . ' (' . $latestAppt->status . ')')
+                                    ? ('#' . ($latestAppt->appointment_code ?: $latestAppt->id) . ' • ' . \Carbon\Carbon::parse($latestAppt->appointment_date)->format('d/m/Y') . ' • ' . $docDisplayName . ' (' . $latestAppt->status . ')')
                                     : 'Chưa có lịch hẹn khám';
                                 $phoneStr = optional($user->patient)->phone ?: ($user->phone ?: 'Chưa cập nhật SĐT');
                             @endphp

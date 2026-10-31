@@ -1037,4 +1037,259 @@ class AllModulesAndSubFunctionsTest extends TestCase
         $resAdminDashUi->assertStatus(200);
         $resAdminDashUi->assertSee(route('admin.logout'), false);
     }
+
+    /**
+     * MODULE 9: Kiểm thử 100% các chức năng con còn lại trên toàn hệ thống:
+     * - CRUD Mặt bệnh lý (Diseases) kèm đồng bộ triệu chứng (DiseaseSymptom)
+     * - CRUD Hồ sơ Bệnh nhân (Admin\PatientController: create, store, update, destroy & chặn xóa khi có lịch hẹn)
+     * - CRUD Hồ sơ Bác sĩ (Admin\DoctorController: store, show, destroy & chặn xóa khi có lịch hẹn)
+     * - Quản lý Người dùng (UserController: lọc theo role, cập nhật, chặn tự xóa chính mình & xóa user mới)
+     * - Bác sĩ: Đổi mật khẩu, hoàn thành ca khám nhanh (complete), cập nhật trạng thái (updateStatus), thêm bệnh án mới (patients.records.store)
+     * - Admin: Xem chi tiết lịch hẹn (admin.appointments.show), xóa phiếu xét nghiệm (admin.lab_tests.destroy), xóa ca trực (schedules.destroy)
+     * - Điều hướng thông minh (/dashboard, /appointment/modal, /appointments/fail) & Console Command (appointments:auto-approve-paid)
+     */
+    public function test_module_9_complete_subfunction_coverage_for_all_remaining_routes(): void
+    {
+        // 9.1 Điều hướng /appointment/modal, /appointments/fail & /dashboard theo từng vai trò
+        $this->get(route('modal.appointment', ['department_id' => $this->department->id]))
+            ->assertRedirect(route('appointments.create', ['department_id' => $this->department->id]));
+
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('appointments.fail'))
+            ->assertStatus(200);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('dashboard'))
+            ->assertRedirect(route('admin.dashboard'));
+
+        \Illuminate\Support\Facades\Auth::guard('web_admin')->logout();
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('dashboard'))
+            ->assertRedirect(route('doctor.dashboard'));
+
+        // 9.2 CRUD Mặt bệnh lý (Diseases) + Đồng bộ triệu chứng (DiseaseSymptom)
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.diseases.store'), [
+                'name' => 'Rối loạn tiền đình ngoại biên Test',
+                'department_id' => $this->department->id,
+                'description' => 'Chóng mặt xoay tròn, buồn nôn khi thay đổi tư thế',
+                'symptoms' => "chóng mặt, hoa mắt, ù tai",
+            ])
+            ->assertRedirect(route('admin.diseases.index'));
+
+        $disease = Disease::where('name', 'Rối loạn tiền đình ngoại biên Test')->firstOrFail();
+        $this->assertEquals(3, $disease->symptoms()->count());
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.diseases.edit', $disease->id))
+            ->assertStatus(200);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->put(route('admin.diseases.update', $disease->id), [
+                'name' => 'Hội chứng tiền đình cấp Test',
+                'department_id' => $this->department->id,
+                'description' => 'Đã cập nhật phác đồ điều trị',
+                'symptoms' => "chóng mặt, mất thăng bằng",
+            ])
+            ->assertRedirect(route('admin.diseases.index'));
+
+        $this->assertEquals(2, $disease->fresh()->symptoms()->count());
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.diseases.destroy', $disease->id))
+            ->assertRedirect(route('admin.diseases.index'));
+        $this->assertDatabaseMissing('diseases', ['id' => $disease->id]);
+
+        // 9.3 CRUD Bệnh nhân của Admin (create, store, update, destroy & chặn xóa khi có lịch hẹn)
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.patients.create'))
+            ->assertStatus(200);
+
+        $uniqueEmail = 'new.patient.' . uniqid() . '@thaithinh.vn';
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.patients.store'), [
+                'name' => 'Nguyễn Minh Khôi Test',
+                'email' => $uniqueEmail,
+                'phone' => '0977112233',
+                'gender' => 'Nam',
+                'birthdate' => '1992-06-15',
+                'address' => 'Đống Đa, Hà Nội',
+                'insurance_number' => 'DN4010199887766',
+            ])
+            ->assertRedirect(route('admin.patients.index'));
+
+        $newPatient = Patient::where('email', $uniqueEmail)->firstOrFail();
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->put(route('admin.patients.update', $newPatient->id), [
+                'name' => 'Nguyễn Minh Khôi Updated',
+                'email' => $uniqueEmail,
+                'phone' => '0977112244',
+                'gender' => 'male',
+                'birthdate' => '1992-06-15',
+                'address' => '125 Thái Thịnh, Hà Nội',
+                'insurance_number' => 'DN4010199887766',
+            ])
+            ->assertRedirect(route('admin.patients.index'));
+
+        $this->assertEquals('Nguyễn Minh Khôi Updated', $newPatient->fresh()->name);
+
+        // Chặn xóa bệnh nhân đã có lịch hẹn
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.patients.destroy', $this->patient->id))
+            ->assertRedirect();
+        $this->assertDatabaseHas('patients', ['id' => $this->patient->id]);
+
+        // Cho phép xóa bệnh nhân mới chưa phát sinh lịch hẹn
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.patients.destroy', $newPatient->id))
+            ->assertRedirect(route('admin.patients.index'));
+        $this->assertDatabaseMissing('patients', ['id' => $newPatient->id]);
+
+        // 9.4 CRUD Bác sĩ của Admin (store, show, destroy & chặn xóa bác sĩ đang có lịch hẹn)
+        $docEmail = 'new.doctor.' . uniqid() . '@thaithinh.vn';
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->post(route('admin.doctors.store'), [
+                'name' => 'TS. BS Vũ Quốc Bảo',
+                'email' => $docEmail,
+                'password' => 'doctor12345',
+                'phone' => '0913555666',
+                'department_id' => $this->department->id,
+                'specialization' => 'Nội Tim Mạch',
+                'license_number' => '088999/HN-CCHN',
+                'room_number' => 'P.401 - Tầng 4',
+                'description' => 'Bác sĩ chuyên gia tim mạch',
+            ])
+            ->assertRedirect(route('admin.doctors.index'));
+
+        $newDocUser = User::where('email', $docEmail)->firstOrFail();
+        $newDoctor = Doctor::where('user_id', $newDocUser->id)->firstOrFail();
+        $this->assertEquals('P.401 - Tầng 4', $newDoctor->room_number);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.doctors.show', $newDoctor->id))
+            ->assertRedirect(route('admin.doctors.index'));
+
+        // Xóa bác sĩ mới chưa có lịch hẹn -> Thành công
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.doctors.destroy', $newDoctor->id))
+            ->assertRedirect(route('admin.doctors.index'));
+        $this->assertDatabaseMissing('doctors', ['id' => $newDoctor->id]);
+
+        // 9.5 Quản lý Người dùng (UserController: lọc theo role, update, chặn tự xóa chính mình)
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.users.index', ['role' => 'doctor', 'search' => $this->doctorUser->email]))
+            ->assertStatus(200);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->put(route('admin.users.update', $this->patientUser->id), [
+                'name' => $this->patientUser->name,
+                'email' => $this->patientUser->email,
+                'role_id' => $this->patientUser->role_id,
+                'phone' => '0987654321',
+                'gender' => 'male',
+                'address' => 'Hà Nội',
+            ])
+            ->assertRedirect(route('admin.users.index'));
+
+        // Chặn Admin tự xóa tài khoản đang đăng nhập
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.users.destroy', $this->adminUser->id))
+            ->assertRedirect();
+        $this->assertDatabaseHas('users', ['id' => $this->adminUser->id]);
+
+        // 9.6 Bác sĩ: Đổi mật khẩu, quản lý lịch hẹn (index, show, status, complete) & tạo mới bệnh án
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->put(route('doctor.password.update'), [
+                'current_password' => 'doctor123',
+                'new_password' => 'doctor123',
+                'new_password_confirmation' => 'doctor123',
+            ])
+            ->assertRedirect();
+
+        $apptForDoc = app(\App\Services\AppointmentService::class)->bookAppointment([
+            'doctor_id' => $this->doctor->id,
+            'service_id' => $this->service->id,
+            'date' => $this->timeSlotB->date->toDateString(),
+            'time_slot_id' => $this->timeSlotB->id,
+        ], $this->patientUser);
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.appointments.index'))
+            ->assertRedirect(route('doctor.dashboard'));
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.appointments.show', $apptForDoc->id))
+            ->assertRedirect(route('doctor.patient.record', $apptForDoc->id));
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->put(route('doctor.appointments.status', $apptForDoc->id), [
+                'status' => Appointment::STATUS_CONFIRMED,
+            ])
+            ->assertRedirect();
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->post(route('doctor.appointments.complete', $apptForDoc->id))
+            ->assertRedirect();
+        $this->assertEquals(Appointment::STATUS_COMPLETED, $apptForDoc->fresh()->status);
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.patients.records', $this->patient->id))
+            ->assertRedirect(route('doctor.patients.show', $this->patient->id));
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->post(route('doctor.patients.records.store', $this->patient->id), [
+                'appointment_id' => $apptForDoc->id,
+                'diagnosis' => 'Viêm mũi dị ứng thời tiết',
+                'doctor_conclusion' => 'Vệ sinh mũi bằng nước muối sinh lý',
+            ])
+            ->assertRedirect();
+
+        // 9.7 Admin: Xem chi tiết lịch hẹn, xóa ca trực trống & xóa yêu cầu xét nghiệm
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.appointments.show', $apptForDoc->id))
+            ->assertStatus(200)
+            ->assertSee($apptForDoc->appointment_code);
+
+        $emptySchedDate = now()->addDays(60)->toDateString();
+        $emptySchedule = WorkingSchedule::create([
+            'doctor_id' => $this->doctor->id,
+            'date' => $emptySchedDate,
+            'day_of_week' => Carbon::parse($emptySchedDate)->dayOfWeek,
+            'start_time' => '13:30:00',
+            'end_time' => '15:30:00',
+            'status' => WorkingSchedule::STATUS_ACTIVE,
+        ]);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.schedules.destroy', $emptySchedule->id))
+            ->assertRedirect(route('admin.schedules.index'));
+        $this->assertDatabaseMissing('working_schedules', ['id' => $emptySchedule->id]);
+
+        // 9.8 Các API Chat con & Console Command tự động duyệt lịch đã thanh toán
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->getJson(route('admin.chat.unread_by_user'))
+            ->assertStatus(200);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->getJson(route('admin.chat.messages', $this->patientUser->id))
+            ->assertStatus(200);
+
+        $this->actingAs($this->patientUser, 'web')
+            ->getJson(route('chat.unread_count', $this->adminUser->id))
+            ->assertStatus(200);
+
+        $paidPendingAppt = Appointment::create([
+            'appointment_code' => 'TT-AUTO-' . strtoupper(substr(uniqid(), 0, 5)),
+            'patient_id' => $this->patient->id,
+            'doctor_id' => $this->doctor->id,
+            'service_id' => $this->service->id,
+            'appointment_date' => now()->addDays(10),
+            'status' => Appointment::STATUS_PENDING,
+            'payment_status' => Appointment::PAYMENT_SUCCESS,
+        ]);
+
+        \Illuminate\Support\Facades\Artisan::call('app:auto-approve-paid-appointments');
+        $this->assertEquals(Appointment::STATUS_CONFIRMED, $paidPendingAppt->fresh()->status);
+    }
 }

@@ -156,6 +156,19 @@ class LabTestController extends Controller
         $test->uploaded_by = auth('web_admin')->id() ?? auth()->id();
         $test->save();
 
+        // Ghi vết kiểm toán vào lịch sử trạng thái ca khám khi đã trả kết quả CLS
+        $appointment = optional($test->record)->appointment;
+        if ($appointment) {
+            \App\Models\AppointmentStatusHistory::create([
+                'appointment_id' => $appointment->id,
+                'from_status' => $appointment->status,
+                'to_status' => $appointment->status,
+                'changed_by_user_id' => $test->uploaded_by,
+                'action_role' => 'admin',
+                'note' => "Đã trả kết quả cận lâm sàng: {$test->test_name}" . ($test->note ? " ({$test->note})" : ''),
+            ]);
+        }
+
         return redirect()->route('admin.lab_tests.index')
             ->with('success', 'Đã upload kết quả thành công.');
     }

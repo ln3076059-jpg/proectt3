@@ -101,7 +101,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="font-weight-bold text-gray-700">Số chứng chỉ hành nghề (CCHN) <span class="text-danger">*</span></label>
                                 <input type="text" name="license_number" class="form-control @error('license_number') is-invalid @enderror" value="{{ old('license_number') }}" placeholder="Ví dụ: 012456/HN-CCHN" required>
@@ -110,7 +110,16 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold text-gray-700">Buồng khám phụ trách</label>
+                                <input type="text" name="room_number" class="form-control @error('room_number') is-invalid @enderror" value="{{ old('room_number') }}" placeholder="Ví dụ: P.201 - Tầng 2">
+                                @error('room_number')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="font-weight-bold text-gray-700">Ảnh chân dung bác sĩ</label>
                                 <input type="file" name="avatar" class="form-control-file @error('avatar') is-invalid @enderror">

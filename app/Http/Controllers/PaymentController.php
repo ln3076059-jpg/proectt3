@@ -86,12 +86,13 @@ class PaymentController extends Controller
                     return back()->with('error', 'Ca khám không hợp lệ.')->withInput();
                 }
 
-                $hoursUntilAppointment = now()->diffInHours($appointmentDateTime, false);
+                $minutesUntilAppointment = now()->diffInMinutes($appointmentDateTime, false);
+                $hoursUntilAppointment = $minutesUntilAppointment / 60;
 
-                if ($hoursUntilAppointment < 5) {
+                if ($minutesUntilAppointment < (5 * 60)) {
                     $dateString = Carbon::parse($validated['appointment_date'])->format('d/m/Y');
 
-                    if ($hoursUntilAppointment < 0) {
+                    if ($minutesUntilAppointment < 0) {
                         return back()->with(
                             'error',
                             'Không thể đặt lịch cho ca khám đã qua. ' .

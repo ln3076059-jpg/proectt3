@@ -12,6 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('doctors')) {
+            Schema::table('doctors', function (Blueprint $table) {
+                if (!Schema::hasColumn('doctors', 'room_number')) {
+                    $table->string('room_number', 100)->nullable()->after('license_number');
+                }
+            });
+        }
+
         if (Schema::hasTable('appointments')) {
             Schema::table('appointments', function (Blueprint $table) {
                 if (!Schema::hasColumn('appointments', 'payment_reference')) {
@@ -52,6 +60,12 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (Schema::hasTable('doctors') && Schema::hasColumn('doctors', 'room_number')) {
+            Schema::table('doctors', function (Blueprint $table) {
+                $table->dropColumn('room_number');
+            });
+        }
+
         if (Schema::hasTable('appointments')) {
             Schema::table('appointments', function (Blueprint $table) {
                 $cols = ['payment_reference', 'transaction_ref', 'payment_method', 'total_amount', 'total'];

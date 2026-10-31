@@ -313,14 +313,22 @@ class AppointmentController extends Controller
     }
 
     /**
-     * Áp dụng các bộ lọc tìm kiếm
+     * Áp dụng các bộ lọc tìm kiếm (Hỗ trợ bóc tách mã QR Kiosk, tên người thân và SĐT hồ sơ bệnh nhân)
      */
     private function applyFilters($query, Request $request): void
     {
         if ($request->filled('search')) {
-            $search = $request->search;
+            $rawSearch = trim((string) $request->search);
+            $search = $rawSearch;
+            if (preg_match('/MA:([^|\s]+)/i', $rawSearch, $m)) {
+                $search = trim($m[1]);
+            }
+            $search = ltrim($search, '#');
+
             $query->where(function ($q) use ($search) {
                 $q->where('appointment_code', 'like', "%{$search}%")
+                    ->orWhere('relative_name', 'like', "%{$search}%")
+                    ->orWhereHas('patient', fn($sq) => $sq->where('name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"))
                     ->orWhereHas('patient.user', fn($sq) => $sq->where('name', 'like', "%{$search}%")->orWhere('phone', 'like', "%{$search}%"))
                     ->orWhereHas('doctor.user', fn($sq) => $sq->where('name', 'like', "%{$search}%"));
             });

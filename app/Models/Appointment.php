@@ -304,11 +304,11 @@ class Appointment extends Model
         }
 
         if ($appointmentTime) {
-            $hoursLeft = now()->diffInHours($appointmentTime, false);
-            if ($hoursLeft < $deadlineHours) {
+            $minutesLeft = now()->diffInMinutes($appointmentTime, false);
+            if ($minutesLeft < ($deadlineHours * 60)) {
                 return [
                     'can' => false,
-                    'reason' => "Lịch khám chỉ được phép hủy trước giờ khám tối thiểu {$deadlineHours} tiếng. Hiện chỉ còn " . max(0, round(now()->diffInMinutes($appointmentTime, false) / 60, 1)) . " tiếng.",
+                    'reason' => "Lịch khám chỉ được phép hủy trước giờ khám tối thiểu {$deadlineHours} tiếng. Hiện chỉ còn " . max(0, round($minutesLeft / 60, 1)) . " tiếng.",
                 ];
             }
         }
@@ -337,8 +337,8 @@ class Appointment extends Model
         }
 
         if ($appointmentTime) {
-            $hoursLeft = now()->diffInHours($appointmentTime, false);
-            if ($hoursLeft < $deadlineHours) {
+            $minutesLeft = now()->diffInMinutes($appointmentTime, false);
+            if ($minutesLeft < ($deadlineHours * 60)) {
                 return [
                     'can' => false,
                     'reason' => "Lịch khám chỉ được phép dời trước giờ khám tối thiểu {$deadlineHours} tiếng.",

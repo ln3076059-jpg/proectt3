@@ -40,7 +40,7 @@ class DashboardController extends Controller
             'cancelled_appointments' => $cancelledCount,
             'paid_appointments' => Appointment::where('payment_status', Appointment::PAYMENT_SUCCESS)->count(),
             'pending_refunds' => Appointment::where('refund_status', Appointment::REFUND_PENDING)->count(),
-            'low_stock_medicines' => \App\Models\Medicine::where('stock', '<=', 15)->count(),
+            'low_stock_medicines' => \App\Models\Medicine::whereRaw('stock <= COALESCE(NULLIF(min_stock, 0), 15)')->count(),
             'pending_lab_tests' => \App\Models\LabTest::where('status', '!=', 'completed')->whereNull('image')->count(),
         ];
 

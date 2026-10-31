@@ -52,10 +52,10 @@
 
                     <div class="form-group">
                         <label class="font-weight-bold text-gray-700">Hoặc chọn từ danh mục loại xét nghiệm chuẩn</label>
-                        <select id="testTypeSelect" class="form-control">
+                        <select id="testTypeSelect" name="test_type_id" class="form-control">
                             <option value="" data-name="" data-dept="">-- Chọn loại xét nghiệm mẫu --</option>
                             @foreach($testTypes as $tt)
-                                <option value="{{ $tt->id }}" data-name="{{ $tt->name }}" data-dept="{{ $tt->department_id }}">
+                                <option value="{{ $tt->id }}" data-name="{{ $tt->name }}" data-dept="{{ $tt->department_id }}" {{ old('test_type_id') == $tt->id ? 'selected' : '' }}>
                                     {{ $tt->name }} @if($tt->department) ({{ $tt->department->name }}) @endif
                                 </option>
                             @endforeach

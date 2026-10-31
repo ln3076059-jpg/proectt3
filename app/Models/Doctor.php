@@ -15,6 +15,7 @@ class Doctor extends Model
         'specialization',
         'is_active',
         'license_number',
+        'room_number',
         'license_image',
         'avatar',
         'description',

@@ -103,7 +103,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label class="font-weight-bold text-gray-700">Số chứng chỉ hành nghề (CCHN) <span class="text-danger">*</span></label>
                                 <input type="text" name="license_number" class="form-control @error('license_number') is-invalid @enderror" value="{{ old('license_number', $doctor->license_number) }}" required>
@@ -112,7 +112,31 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold text-gray-700">Buồng khám phụ trách</label>
+                                <input type="text" name="room_number" class="form-control @error('room_number') is-invalid @enderror" value="{{ old('room_number', $doctor->room_number) }}" placeholder="Ví dụ: P.201 - Tầng 2">
+                                @error('room_number')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="font-weight-bold text-gray-700">Trạng thái công tác</label>
+                                <select name="is_active" class="form-control @error('is_active') is-invalid @enderror">
+                                    <option value="1" {{ (int) old('is_active', $doctor->is_active ?? 1) === 1 ? 'selected' : '' }}>Đang công tác (Nhận lịch khám)</option>
+                                    <option value="0" {{ (int) old('is_active', $doctor->is_active ?? 1) === 0 ? 'selected' : '' }}>Tạm ngừng nhận lịch</option>
+                                </select>
+                                @error('is_active')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="form-group">
                                 <label class="font-weight-bold text-gray-700">Ảnh chân dung</label>
                                 @if($doctor->avatar)

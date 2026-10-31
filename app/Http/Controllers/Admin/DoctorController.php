@@ -133,11 +133,13 @@ class DoctorController extends Controller
     {
         $doctors = Doctor::with('user')
             ->where('department_id', $departmentId)
+            ->where('is_active', true)
             ->get()
             ->map(function ($doctor) {
                 return [
                     'id' => $doctor->id,
-                    'name' => $doctor->user->name,
+                    'name' => $doctor->formatted_name,
+                    'room_number' => $doctor->room_number,
                     'department_id' => $doctor->department_id,
                 ];
             });
@@ -227,6 +229,8 @@ class DoctorController extends Controller
             'department_id' => 'required|exists:departments,id',
             'specialization' => 'nullable|string|max:255',
             'license_number' => 'nullable|string|max:255',
+            'room_number' => 'nullable|string|max:100',
+            'is_active' => 'nullable|boolean',
             'description' => 'nullable|string|max:2000',
             'avatar' => 'nullable|image|max:2048',
         ], [
@@ -258,8 +262,9 @@ class DoctorController extends Controller
             'department_id' => $request->department_id,
             'specialization' => $request->specialization,
             'license_number' => $request->license_number,
+            'room_number' => $request->room_number,
             'description' => $request->description,
-            'is_active' => true,
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : true,
         ];
 
         if ($request->hasFile('avatar')) {
@@ -299,6 +304,14 @@ class DoctorController extends Controller
             'license_number' => $request->license_number,
             'description' => $request->description,
         ];
+
+        if ($request->has('room_number')) {
+            $data['room_number'] = $request->room_number;
+        }
+
+        if ($request->has('is_active')) {
+            $data['is_active'] = $request->boolean('is_active');
+        }
 
         if ($request->hasFile('avatar')) {
             $data['avatar'] = $request->file('avatar')->store('doctors/avatar', 'public');

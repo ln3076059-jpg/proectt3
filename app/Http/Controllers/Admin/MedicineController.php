@@ -32,9 +32,9 @@ class MedicineController extends Controller
             if ($request->stock_status === 'out') {
                 $query->where('stock', '<=', 0);
             } elseif ($request->stock_status === 'low') {
-                $query->where('stock', '>', 0)->where('stock', '<=', 10);
+                $query->where('stock', '>', 0)->whereRaw('stock <= COALESCE(NULLIF(min_stock, 0), 15)');
             } elseif ($request->stock_status === 'available') {
-                $query->where('stock', '>', 10);
+                $query->whereRaw('stock > COALESCE(NULLIF(min_stock, 0), 15)');
             }
         }
 
@@ -43,8 +43,8 @@ class MedicineController extends Controller
 
         $stockStats = [
             'total' => Medicine::count(),
-            'available' => Medicine::where('stock', '>', 10)->count(),
-            'low' => Medicine::where('stock', '>', 0)->where('stock', '<=', 10)->count(),
+            'available' => Medicine::whereRaw('stock > COALESCE(NULLIF(min_stock, 0), 15)')->count(),
+            'low' => Medicine::where('stock', '>', 0)->whereRaw('stock <= COALESCE(NULLIF(min_stock, 0), 15)')->count(),
             'out' => Medicine::where('stock', '<=', 0)->count(),
         ];
 

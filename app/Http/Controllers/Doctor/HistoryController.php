@@ -14,8 +14,10 @@ class HistoryController extends Controller
         $user = $request->user();
         $doctorId = optional(optional($user)->doctor)->id;
 
-        // Lấy danh sách hồ sơ bệnh án của bác sĩ hiện tại
+        // Lấy danh sách hồ sơ bệnh án đã có chẩn đoán lâm sàng của bác sĩ hiện tại
         $query = MedicalRecord::with(['appointment.patient', 'appointment.service', 'prescriptionItems.medicine'])
+            ->whereNotNull('diagnosis')
+            ->where('diagnosis', '!=', '')
             ->when($doctorId, function ($q) use ($doctorId) {
                 $q->whereHas('appointment', function ($sq) use ($doctorId) {
                     $sq->where('doctor_id', $doctorId);

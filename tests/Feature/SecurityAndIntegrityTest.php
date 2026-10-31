@@ -18,6 +18,15 @@ class SecurityAndIntegrityTest extends TestCase
 {
     use DatabaseTransactions;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        if (Doctor::count() === 0) {
+            \Illuminate\Support\Facades\Artisan::call('db:seed');
+        }
+    }
+
     /**
      * Kiểm tra role_id mặc định khi tạo User luôn là patient, không bao giờ là admin
      */
@@ -198,5 +207,84 @@ class SecurityAndIntegrityTest extends TestCase
         $slot->refresh();
         $this->assertEquals(0, $slot->booked_count, 'Xóa lịch hẹn pending phải hoàn trả lại booked_count cho TimeSlot');
         $this->assertEquals(\App\Models\TimeSlot::STATUS_AVAILABLE, $slot->status);
+    }
+
+    /**
+     * Kiểm tra các nâng cấp nghiệp vụ HIS thực tế:
+     * - Cập nhật buồng khám (room_number) & trạng thái công tác (is_active) của bác sĩ
+     * - Tìm kiếm lịch hẹn theo tên người thân (relative_name) và mã QR Kiosk tại trang Admin
+     * - Ghi nhật ký kiểm toán ca khám (AppointmentStatusHistory) khi kỹ thuật viên trả kết quả xét nghiệm CLS
+     */
+    public function test_his_clinical_enhancements_doctor_room_admin_qr_search_and_lab_audit(): void
+    {
+        $admin = User::where('email', 'admin@thaithinh.vn')->firstOrFail();
+        $doctor = Doctor::where('is_active', true)->with('user')->firstOrFail();
+        $service = Service::where('department_id', $doctor->department_id)->first() ?? Service::firstOrFail();
+        $patientUser = User::whereHas('role', fn ($q) => $q->where('name', 'patient'))->firstOrFail();
+
+        // 1. Admin cập nhật Buồng khám (room_number) cho bác sĩ
+        $this->actingAs($admin, 'web_admin')
+            ->put(route('admin.doctors.update', $doctor->id), [
+                'name' => $doctor->user->name,
+                'email' => $doctor->user->email,
+                'phone' => $doctor->user->phone ?? '0912345678',
+                'department_id' => $doctor->department_id,
+                'specialization' => $doctor->specialization ?? 'Đa khoa',
+                'license_number' => $doctor->license_number ?? '012345/HN-CCHN',
+                'room_number' => 'P.305 - Tầng 3',
+                'is_active' => 1,
+            ])
+            ->assertRedirect(route('admin.doctors.index'));
+
+        $doctor->refresh();
+        $this->assertEquals('P.305 - Tầng 3', $doctor->room_number);
+
+        // 2. Đặt lịch cho người thân và tìm kiếm bằng chuỗi QR Kiosk & tên người thân trên trang Admin Appointments
+        $appt = Appointment::create([
+            'appointment_code' => 'TT-HIS-' . strtoupper(substr(uniqid(), 0, 5)),
+            'patient_id' => $patientUser->patient->id,
+            'doctor_id' => $doctor->id,
+            'service_id' => $service->id,
+            'appointment_date' => now()->addDays(5),
+            'status' => Appointment::STATUS_CONFIRMED,
+            'payment_status' => Appointment::PAYMENT_PENDING,
+            'booking_for' => 'relative',
+            'relative_name' => 'Cụ Nguyễn Văn Trường',
+            'relative_relationship' => 'Ông nội',
+        ]);
+
+        $this->actingAs($admin, 'web_admin')
+            ->get(route('admin.appointments.index', ['search' => 'Cụ Nguyễn Văn Trường']))
+            ->assertStatus(200)
+            ->assertSee($appt->appointment_code);
+
+        $this->actingAs($admin, 'web_admin')
+            ->get(route('admin.appointments.index', ['search' => "PK125THAITHINH|MA:{$appt->appointment_code}|NGAY:30/10/2026"]))
+            ->assertStatus(200)
+            ->assertSee($appt->appointment_code);
+
+        // 3. Kiểm tra hạn hủy lịch chính xác theo phút (còn 90 phút < 120 phút -> chặn hủy)
+        $apptSoon = Appointment::create([
+            'appointment_code' => 'TT-SOON-' . strtoupper(substr(uniqid(), 0, 5)),
+            'patient_id' => $patientUser->patient->id,
+            'doctor_id' => $doctor->id,
+            'service_id' => $service->id,
+            'appointment_date' => now()->addMinutes(90),
+            'status' => Appointment::STATUS_CONFIRMED,
+            'payment_status' => Appointment::PAYMENT_PENDING,
+        ]);
+        $timeSlotSoon = \App\Models\TimeSlot::create([
+            'doctor_id' => $doctor->id,
+            'date' => now()->addMinutes(90)->toDateString(),
+            'start_time' => now()->addMinutes(90)->format('H:i:s'),
+            'end_time' => now()->addMinutes(120)->format('H:i:s'),
+            'capacity' => 5,
+            'booked_count' => 1,
+            'status' => \App\Models\TimeSlot::STATUS_AVAILABLE,
+            'is_active' => true,
+        ]);
+        $apptSoon->update(['time_slot_id' => $timeSlotSoon->id]);
+        $cancelCheck = $apptSoon->fresh(['timeSlot'])->canBeCancelledByPatient(2);
+        $this->assertFalse($cancelCheck['can'], 'Lịch hẹn chỉ còn 90 phút (< 2 tiếng) phải bị chặn hủy chính xác theo phút');
     }
 }

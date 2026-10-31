@@ -38,7 +38,7 @@
           <li><a href="{{ route('services.index') }}" class="{{ request()->routeIs('services.*') ? 'active' : '' }}">Dịch vụ</a></li>
           <li><a href="{{ route('departments.index') }}" class="{{ request()->routeIs('departments.*') ? 'active' : '' }}">Chuyên khoa</a></li>
           <li><a href="{{ route('doctors.index') }}" class="{{ request()->routeIs('doctors.*') ? 'active' : '' }}">Bác sĩ</a></li>
-          <li><a href="{{ route('advisor.index') }}" class="{{ request()->routeIs('advisor.*') ? 'active' : '' }}">Tư vấn AI</a></li>
+          <li><a href="{{ route('advisor.index') }}" class="{{ request()->routeIs('advisor.*') ? 'active' : '' }}">Tư vấn triệu chứng</a></li>
           <li class="d-xl-none"><a href="{{ route('appointments.create') }}" class="fw-bold text-primary">Đặt lịch khám ngay</a></li>
           <li class="dropdown">
             @auth

@@ -469,18 +469,71 @@ class ThaiThinhClinicDemoSeeder extends Seeder
             }
         }
 
-        // 10. Diseases Seeding
+        // 10. Diseases & Symptoms Seeding
         $deptList = array_values($departments);
         if (\App\Models\Disease::count() === 0 && isset($deptList[0])) {
             $diseases = [
-                ['name' => 'Cảm cúm thông thường (Flu)', 'description' => 'Nhiễm virus đường hô hấp trên gây sốt, ho, sổ mũi', 'department_id' => $deptList[1]->id ?? $deptList[0]->id],
-                ['name' => 'Viêm họng cấp (Pharyngitis)', 'description' => 'Viêm niêm mạc họng do vi khuẩn hoặc virus', 'department_id' => $deptList[1]->id ?? $deptList[0]->id],
-                ['name' => 'Viêm loét dạ dày - tá tràng', 'description' => 'Đau thượng vị, ợ hơi, ợ chua liên quan đến acid dạ dày', 'department_id' => $deptList[3]->id ?? $deptList[0]->id],
-                ['name' => 'Tăng huyết áp vô căn', 'description' => 'Huyết áp tâm thu >= 140 mmHg hoặc tâm trương >= 90 mmHg', 'department_id' => $deptList[0]->id],
-                ['name' => 'Đái tháo đường Type 2', 'description' => 'Rối loạn chuyển hóa đường huyết mãn tính', 'department_id' => $deptList[3]->id ?? $deptList[0]->id],
+                [
+                    'name' => 'Cảm cúm thông thường (Flu)',
+                    'description' => 'Nhiễm virus đường hô hấp trên gây sốt cao, ho khan, sổ mũi, đau đầu',
+                    'department_id' => $deptList[1]->id ?? $deptList[0]->id,
+                    'symptoms' => ['Sốt cao', 'Ho khan', 'Đau đầu', 'Sổ mũi'],
+                ],
+                [
+                    'name' => 'Viêm họng cấp (Pharyngitis)',
+                    'description' => 'Viêm niêm mạc họng do vi khuẩn hoặc virus gây đau rát họng, sốt cao',
+                    'department_id' => $deptList[1]->id ?? $deptList[0]->id,
+                    'symptoms' => ['Đau rát họng', 'Ho khan', 'Sốt cao'],
+                ],
+                [
+                    'name' => 'Viêm loét dạ dày - tá tràng',
+                    'description' => 'Đau thượng vị, đau dạ dày, ợ hơi, ợ chua, buồn nôn liên quan đến acid dạ dày',
+                    'department_id' => $deptList[3]->id ?? $deptList[0]->id,
+                    'symptoms' => ['Đau dạ dày', 'Ợ chua', 'Buồn nôn'],
+                ],
+                [
+                    'name' => 'Tăng huyết áp & Thiếu máu cơ tim cục bộ',
+                    'description' => 'Huyết áp tăng cao, đau tức ngực, khó thở khi gắng sức, tim đập nhanh, chóng mặt',
+                    'department_id' => $deptList[0]->id,
+                    'symptoms' => ['Đau tức ngực', 'Khó thở', 'Tim đập nhanh', 'Chóng mặt', 'Đau đầu'],
+                ],
+                [
+                    'name' => 'Đái tháo đường Type 2',
+                    'description' => 'Rối loạn chuyển hóa đường huyết mãn tính gây mệt mỏi, khát nước nhiều',
+                    'department_id' => $deptList[3]->id ?? $deptList[0]->id,
+                    'symptoms' => ['Mệt mỏi', 'Chóng mặt', 'Mất ngủ'],
+                ],
             ];
             foreach ($diseases as $d) {
-                \App\Models\Disease::create($d);
+                $syms = $d['symptoms'] ?? [];
+                unset($d['symptoms']);
+                $diseaseModel = \App\Models\Disease::create($d);
+                foreach ($syms as $symName) {
+                    \App\Models\DiseaseSymptom::firstOrCreate([
+                        'disease_id' => $diseaseModel->id,
+                        'symptom_name' => $symName,
+                    ]);
+                }
+            }
+        }
+        if (\App\Models\ServiceSymptom::count() === 0 && !empty($services)) {
+            $svcSymptoms = [
+                0 => ['Đau tức ngực', 'Khó thở', 'Tim đập nhanh', 'Chóng mặt'],
+                1 => ['Đau tức ngực', 'Tim đập nhanh', 'Khó thở'],
+                2 => ['Đau rát họng', 'Ho khan', 'Sốt cao'],
+                3 => ['Sốt cao', 'Ho khan', 'Biếng ăn'],
+                4 => ['Đau dạ dày', 'Ợ chua', 'Buồn nôn', 'Mệt mỏi'],
+                5 => ['Đau đầu', 'Chóng mặt', 'Mất ngủ'],
+            ];
+            foreach ($svcSymptoms as $sIdx => $sNames) {
+                if (isset($services[$sIdx])) {
+                    foreach ($sNames as $sn) {
+                        \App\Models\ServiceSymptom::firstOrCreate([
+                            'service_id' => $services[$sIdx]->id,
+                            'symptom_name' => $sn,
+                        ]);
+                    }
+                }
             }
         }
 

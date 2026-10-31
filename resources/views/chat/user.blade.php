@@ -25,7 +25,7 @@
                 Thủ tục BHYT
             </button>
             <a href="{{ route('advisor.index') }}" class="ts-spec-btn text-decoration-none" style="color: var(--accent);">
-                <i class="bi bi-stars me-1"></i>Chẩn đoán triệu chứng AI
+                <i class="bi bi-clipboard2-pulse me-1"></i>Tra cứu triệu chứng
             </a>
         </div>
 
@@ -36,11 +36,11 @@
                 <div class="p-3 rounded border bg-white text-center">
                     <div class="fw-semibold mb-1" style="font-size: 13px;">Chào mừng bạn đến với PKĐK 125 Thái Thịnh</div>
                     <p class="ts-small mb-2" style="color: var(--muted);">
-                        Vui lòng đăng nhập để trò chuyện trực tiếp với Điều dưỡng CSKH hoặc sử dụng Trợ lý AI Tư vấn triệu chứng miễn phí.
+                        Vui lòng đăng nhập để trò chuyện trực tiếp với Điều dưỡng CSKH hoặc sử dụng công cụ Tư vấn triệu chứng miễn phí.
                     </p>
                     <div class="d-flex flex-wrap justify-content-center gap-2">
                         <a href="{{ route('patient.login') }}" class="ts-btn ts-btn-sm text-decoration-none">Đăng nhập Chat</a>
-                        <a href="{{ route('advisor.index') }}" class="ts-btn-secondary ts-btn-sm text-decoration-none">Tư vấn AI ngay</a>
+                        <a href="{{ route('advisor.index') }}" class="ts-btn-secondary ts-btn-sm text-decoration-none">Tư vấn triệu chứng</a>
                     </div>
                 </div>
             @endauth

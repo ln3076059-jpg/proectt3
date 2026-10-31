@@ -38,7 +38,7 @@
           <li><a href="{{ route('services.index', ['symptom' => 'Siêu âm']) }}">Siêu âm thai 5D</a></li>
           <li><a href="{{ route('services.index', ['symptom' => 'Tim mạch']) }}">Tầm soát Tim mạch</a></li>
           <li><a href="{{ route('services.index', ['symptom' => 'Xét nghiệm']) }}">Xét nghiệm ISO 15189</a></li>
-          <li><a href="{{ route('advisor.index') }}">Tư vấn triệu chứng AI</a></li>
+          <li><a href="{{ route('advisor.index') }}">Tư vấn triệu chứng</a></li>
         </ul>
       </div>
 

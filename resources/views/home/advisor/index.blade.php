@@ -1,6 +1,6 @@
 @extends('home.frontend')
 
-@section('title', 'Tư vấn Triệu chứng Thông minh · Phòng khám 125 Thái Thịnh')
+@section('title', 'Tư vấn Triệu chứng Lâm sàng · Phòng khám 125 Thái Thịnh')
 
 @section('content')
 <!-- Page Title -->
@@ -9,7 +9,7 @@
     <div class="container">
       <ol>
         <li><a href="{{ url('/') }}">Trang chủ</a></li>
-        <li class="current">Tư vấn Triệu chứng AI</li>
+        <li class="current">Tư vấn Triệu chứng</li>
       </ol>
     </div>
   </nav>
@@ -27,8 +27,8 @@
         <div class="row g-4 align-items-center">
             <div class="col-lg-6">
                 <span class="tiki-section-eyebrow">
-                    <i class="bi bi-stars"></i>
-                    <span>Trợ lý Phân loại Triệu chứng AI</span>
+                    <i class="bi bi-clipboard2-pulse"></i>
+                    <span>Hệ thống Phân loại Triệu chứng Lâm sàng</span>
                 </span>
                 <h1 class="tiki-hero-title mb-2">
                     Tra cứu triệu chứng &amp; Gợi ý đúng chuyên khoa
@@ -118,7 +118,7 @@
                       (isset($suggestedDepartments) && $suggestedDepartments->isNotEmpty()) ||
                       (isset($suggestedDoctors) && $suggestedDoctors->isNotEmpty()) ||
                       (isset($suggestedServices) && $suggestedServices->isNotEmpty());
-        $bookingNote = 'Triệu chứng tra cứu AI: ' . $symptomQuery;
+        $bookingNote = 'Triệu chứng tra cứu: ' . $symptomQuery;
     @endphp
     <section class="tiki-section">
         <div class="ts-frame">

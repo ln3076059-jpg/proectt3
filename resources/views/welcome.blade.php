@@ -73,7 +73,7 @@
               <a href="{{ route('services.index', ['symptom' => 'Siêu âm']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-1.5 px-2.5">Siêu âm thai 5D</a>
               <a href="{{ route('services.index', ['symptom' => 'Tim mạch']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-1.5 px-2.5">Tim mạch</a>
               <a href="{{ route('advisor.index') }}" class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle text-decoration-none py-1.5 px-2.5">
-                <i class="bi bi-robot me-1"></i>Tư vấn triệu chứng AI
+                <i class="bi bi-clipboard2-pulse me-1"></i>Tư vấn triệu chứng
               </a>
             </div>
           </div>
@@ -474,7 +474,7 @@
             <div class="faq-item">
               <h3>Chưa biết triệu chứng của mình thuộc chuyên khoa nào thì làm sao?</h3>
               <div class="faq-content">
-                <p>Bạn có thể sử dụng công cụ "Tư vấn triệu chứng AI" ngay trên thanh menu để mô tả các biểu hiện đang gặp phải. Hệ thống sẽ phân tích dấu hiệu lâm sàng và gợi ý đúng chuyên khoa, bác sĩ phụ trách cũng như gói khám phù hợp.</p>
+                <p>Bạn có thể sử dụng công cụ "Tư vấn triệu chứng" ngay trên thanh menu để mô tả các biểu hiện đang gặp phải. Hệ thống sẽ phân tích dấu hiệu lâm sàng và gợi ý đúng chuyên khoa, bác sĩ phụ trách cũng như gói khám phù hợp.</p>
               </div>
               <i class="faq-toggle bi bi-chevron-right"></i>
             </div><!-- End Faq item-->
@@ -656,7 +656,7 @@
         });
 
         html += '<a href="' + advisorUrlBase + '?symptom=' + encodeURIComponent(this.value.trim()) + '" class="d-flex align-items-center justify-content-between p-2 rounded-2 text-decoration-none mt-2" style="background: #f1f7fc; color: #1977cc; border: 1px dashed #1977cc;">' +
-            '<span><i class="bi bi-stars me-1"></i>Phân tích triệu chứng <strong>"' + this.value.trim() + '"</strong> bằng Trợ lý AI</span>' +
+            '<span><i class="bi bi-clipboard2-pulse me-1"></i>Phân tích triệu chứng <strong>"' + this.value.trim() + '"</strong> &amp; gợi ý chuyên khoa</span>' +
             '<span class="fw-bold">Chẩn đoán →</span>' +
         '</a>';
 

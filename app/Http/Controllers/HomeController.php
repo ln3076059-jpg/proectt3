@@ -324,7 +324,7 @@ class HomeController extends Controller
         $serviceIds = collect();
 
         foreach ($keywords as $keyword) {
-            $kw = strtolower($keyword);
+            $kw = mb_strtolower($keyword, 'UTF-8');
             $matchedSymptomIds = ServiceSymptom::whereRaw('LOWER(symptom_name) LIKE ?', ['%' . $kw . '%'])
                 ->pluck('service_id');
             $matchedDirectIds = Service::whereRaw('LOWER(name) LIKE ?', ['%' . $kw . '%'])
@@ -342,7 +342,7 @@ class HomeController extends Controller
         $diseaseIds = collect();
 
         foreach ($keywords as $keyword) {
-            $kw = strtolower($keyword);
+            $kw = mb_strtolower($keyword, 'UTF-8');
             $matchedSymptomIds = DiseaseSymptom::whereRaw('LOWER(symptom_name) LIKE ?', ['%' . $kw . '%'])
                 ->pluck('disease_id');
             $matchedDirectIds = Disease::whereRaw('LOWER(name) LIKE ?', ['%' . $kw . '%'])
@@ -360,7 +360,7 @@ class HomeController extends Controller
         return $symptoms->filter(function ($symptom) use ($keywords) {
             // Kiểm tra nếu triệu chứng khớp với từ khóa
             foreach ($keywords as $keyword) {
-                if (stripos($symptom->symptom_name, $keyword) !== false) {
+                if (mb_stripos((string) $symptom->symptom_name, (string) $keyword, 0, 'UTF-8') !== false) {
                     return true; //trả về true nếu khớp
                 }
             }
@@ -381,7 +381,7 @@ class HomeController extends Controller
             ->map(function ($service) use ($keywords) {
                 $score = $this->calculateMatchedSymptomsCount($service->symptoms, $keywords);
                 foreach ($keywords as $keyword) {
-                    if (stripos($service->name ?? '', $keyword) !== false || stripos($service->description ?? '', $keyword) !== false) {
+                    if (mb_stripos($service->name ?? '', (string) $keyword, 0, 'UTF-8') !== false || mb_stripos($service->description ?? '', (string) $keyword, 0, 'UTF-8') !== false) {
                         $score += 1;
                     }
                 }
@@ -407,7 +407,7 @@ class HomeController extends Controller
             ->map(function ($disease) use ($keywords) {
                 $score = $this->calculateMatchedSymptomsCount($disease->symptoms, $keywords);
                 foreach ($keywords as $keyword) {
-                    if (stripos($disease->name ?? '', $keyword) !== false || stripos($disease->description ?? '', $keyword) !== false) {
+                    if (mb_stripos($disease->name ?? '', (string) $keyword, 0, 'UTF-8') !== false || mb_stripos($disease->description ?? '', (string) $keyword, 0, 'UTF-8') !== false) {
                         $score += 1;
                     }
                 }

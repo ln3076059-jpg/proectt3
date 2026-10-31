@@ -306,7 +306,7 @@
               <span>← Về trang chủ 125 Thái Thịnh</span>
             </a>
             <a href="{{ route('advisor.index') }}" class="ts-link-action" style="font-size: 13px;">
-              <span>Tư vấn triệu chứng AI</span>
+              <span>Tư vấn triệu chứng</span>
             </a>
           </div>
         </div>

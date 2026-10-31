@@ -88,7 +88,7 @@
               <span>Hồ sơ cá nhân</span>
             </a>
             <a href="{{ route('advisor.index') }}" class="ts-filter-pill">
-              <span>Tư vấn triệu chứng AI</span>
+              <span>Tư vấn triệu chứng</span>
             </a>
           </div>
         </div>
@@ -127,8 +127,8 @@
                   <span>Đặt lịch khám mới</span>
                 </a>
                 <a href="{{ route('advisor.index') }}" class="tiki-profile-nav-link">
-                  <i class="bi bi-robot"></i>
-                  <span>Tư vấn triệu chứng AI</span>
+                  <i class="bi bi-clipboard2-pulse"></i>
+                  <span>Tư vấn triệu chứng</span>
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="mt-2 pt-2 border-top">
                   @csrf

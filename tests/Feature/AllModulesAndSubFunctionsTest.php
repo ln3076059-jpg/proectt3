@@ -1529,4 +1529,160 @@ class AllModulesAndSubFunctionsTest extends TestCase
             ->get(route('lab_tests.attachment', $loopLabTest->id))
             ->assertStatus(200);
     }
+
+    /**
+     * MODULE 11: Kiểm thử cô lập CSDL Test riêng (`phongkham_thaithinh_test`), toàn bộ các Tab chức năng con (`?tab=...`),
+     * các API/Route phụ và quy trình Đăng nhập/Đăng xuất của 3 Tác nhân (Bệnh nhân, Bác sĩ, Quản trị viên).
+     */
+    public function test_module_11_separated_subfunction_tabs_and_isolated_test_database_verification(): void
+    {
+        // 11.1 Xác minh tuyệt đối bài test đang chạy trên CSDL riêng `phongkham_thaithinh_test` và không chạm vào CSDL chính `phongkham_thaithinh`
+        $activeDbName = \Illuminate\Support\Facades\DB::connection()->getDatabaseName();
+        $this->assertSame('phongkham_thaithinh_test', $activeDbName, 'Phải chạy trên CSDL test độc lập phongkham_thaithinh_test');
+        $this->assertNotSame('phongkham_thaithinh', $activeDbName, 'Tuyệt đối không được chạy trên CSDL chính phongkham_thaithinh');
+
+        // Ghi nhận số bản ghi trên CSDL chính `phongkham_thaithinh` trước khi thực hiện các thao tác thêm/sửa/xóa trong test
+        $mainDbApptsBefore = (int) \Illuminate\Support\Facades\DB::selectOne('SELECT COUNT(*) AS cnt FROM `phongkham_thaithinh`.`appointments`')->cnt;
+        $mainDbUsersBefore = (int) \Illuminate\Support\Facades\DB::selectOne('SELECT COUNT(*) AS cnt FROM `phongkham_thaithinh`.`users`')->cnt;
+
+        // 11.2 Kiểm thử các Tab chức năng con đã tách trang của Phân hệ Bệnh nhân
+        $sampleAppt = app(\App\Services\AppointmentService::class)->bookAppointment([
+            'doctor_id' => $this->doctor->id,
+            'service_id' => $this->service->id,
+            'date' => $this->timeSlotA->date->toDateString(),
+            'time_slot_id' => $this->timeSlotA->id,
+            'note' => 'Kiểm thử tách tab chi tiết lịch hẹn',
+        ], $this->patientUser);
+
+        // Tab 1: Xem phiếu tiếp nhận & mã QR (?tab=pass)
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('appointments.show', ['appointment' => $sampleAppt->id, 'tab' => 'pass']))
+            ->assertStatus(200)
+            ->assertSee('1. Xem Phiếu Tiếp Nhận & Mã QR Kiosk');
+
+        // Tab 2: Theo dõi tiến trình 5 chặng & viện phí BHYT (?tab=progress)
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('appointments.show', ['appointment' => $sampleAppt->id, 'tab' => 'progress']))
+            ->assertStatus(200)
+            ->assertSee('2. Theo Dõi Tiến Trình 5 Chặng & Viện Phí BHYT');
+
+        // Tab Hồ sơ cá nhân (?tab=info) & Tab Đổi mật khẩu (?tab=password)
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('profile.edit', ['tab' => 'info']))
+            ->assertStatus(200)
+            ->assertSee('Cập nhật hồ sơ & BHYT');
+
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('profile.edit', ['tab' => 'password']))
+            ->assertStatus(200)
+            ->assertSee('Đổi Mật Khẩu');
+
+        // 11.3 Kiểm thử các Tab chức năng con đã tách trang của Phân hệ Bác sĩ
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.dashboard', ['tab' => 'overview', 'date' => $this->timeSlotA->date->toDateString()]))
+            ->assertStatus(200)
+            ->assertSee('Theo dõi ca trực');
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.dashboard', ['tab' => 'queue', 'date' => $this->timeSlotA->date->toDateString()]))
+            ->assertStatus(200)
+            ->assertSee('Tiếp nhận hàng đợi');
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.patient.record', ['appointment' => $sampleAppt->id, 'tab' => 'clinical']))
+            ->assertStatus(200)
+            ->assertSee('1. Khám lâm sàng & Sinh hiệu');
+
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get(route('doctor.patient.record', ['appointment' => $sampleAppt->id, 'tab' => 'prescription']))
+            ->assertStatus(200)
+            ->assertSee('2. Kê đơn thuốc & Cận lâm sàng');
+
+        // 11.4 Kiểm thử các Chức năng con Dashboard & Báo cáo Thống kê của Phân hệ Quản trị viên (Admin)
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.dashboard', ['tab' => 'overview']))
+            ->assertStatus(200)
+            ->assertSee('Tổng quan Phòng khám Thái Thịnh')
+            ->assertSee('Check-in QR 1 Chạm');
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.dashboard', ['tab' => 'charts']))
+            ->assertStatus(200)
+            ->assertSee('Biểu đồ doanh thu viện phí')
+            ->assertSee('Danh sách 10 Lịch hẹn mới nhất');
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.statistics.index', ['tab' => 'overview']))
+            ->assertStatus(200)
+            ->assertSee('Báo cáo & Thống kê Y tế Thái Thịnh (F12)', false)
+            ->assertSee('Doanh thu trong kỳ');
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->get(route('admin.statistics.index', ['tab' => 'ledger']))
+            ->assertStatus(200)
+            ->assertSee('Chi tiết quy mô hoạt động theo từng Chuyên khoa');
+
+        // 11.5 Kiểm thử các API / Route phụ còn lại (API gợi ý triệu chứng, lấy bác sĩ theo khoa, xóa phiếu xét nghiệm, guard hủy lịch GET)
+        $this->postJson(route('api.chat.ai'), ['message' => ''])
+            ->assertStatus(422);
+
+        $this->postJson(route('api.chat.ai'), ['message' => 'Bệnh nhân bị khó thở và đau tức ngực dữ dội'])
+            ->assertStatus(200)
+            ->assertJsonPath('is_emergency', true);
+
+        $this->actingAs($this->patientUser, 'web')
+            ->getJson("/departments/{$this->department->id}/doctors")
+            ->assertStatus(200);
+
+        $this->actingAs($this->patientUser, 'web')
+            ->get(route('appointments.cancel.view', $sampleAppt->id))
+            ->assertRedirect(route('appointments.show', $sampleAppt->id));
+
+        $sampleRecord = MedicalRecord::where('appointment_id', $sampleAppt->id)->firstOrFail();
+        $this->actingAs($this->doctorUser, 'web_doctor')
+            ->get("/doctor/records/{$sampleRecord->id}/lab-tests")
+            ->assertRedirect(route('doctor.patient.record', $sampleAppt->id));
+
+        $tempLab = LabTest::create([
+            'medical_record_id' => $sampleRecord->id,
+            'department_id' => $this->department->id,
+            'test_name' => 'Xét nghiệm tạm thời cần xóa',
+            'requested_by' => $this->doctorUser->id,
+            'status' => 'requested',
+        ]);
+
+        $this->actingAs($this->adminUser, 'web_admin')
+            ->delete(route('admin.lab_tests.destroy', $tempLab->id))
+            ->assertRedirect();
+        $this->assertDatabaseMissing('lab_tests', ['id' => $tempLab->id]);
+
+        // 11.6 Kiểm thử luồng POST Login & POST Logout chuyên biệt của cả 3 cổng (Patient, Doctor, Admin)
+        \Illuminate\Support\Facades\Auth::guard('web')->logout();
+        \Illuminate\Support\Facades\Auth::guard('web_doctor')->logout();
+        \Illuminate\Support\Facades\Auth::guard('web_admin')->logout();
+
+        $this->post(route('patient.login.submit'), [
+            'email' => $this->patientUser->email,
+            'password' => 'demo123',
+        ])->assertRedirect();
+        $this->post(route('patient.logout'))->assertRedirect();
+
+        $this->post(route('doctor.login.submit'), [
+            'email' => $this->doctorUser->email,
+            'password' => 'doctor123',
+        ])->assertRedirect(route('doctor.dashboard'));
+        $this->post(route('doctor.logout'))->assertRedirect(route('doctor.login'));
+
+        $this->post(route('admin.login.submit'), [
+            'email' => $this->adminUser->email,
+            'password' => 'admin123',
+        ])->assertRedirect(route('admin.dashboard'));
+        $this->post(route('admin.logout'))->assertRedirect(route('admin.login'));
+
+        // Xác minh CSDL chính `phongkham_thaithinh` hoàn toàn không bị thay đổi số lượng bản ghi sau toàn bộ quá trình test
+        $mainDbApptsAfter = (int) \Illuminate\Support\Facades\DB::selectOne('SELECT COUNT(*) AS cnt FROM `phongkham_thaithinh`.`appointments`')->cnt;
+        $mainDbUsersAfter = (int) \Illuminate\Support\Facades\DB::selectOne('SELECT COUNT(*) AS cnt FROM `phongkham_thaithinh`.`users`')->cnt;
+        $this->assertSame($mainDbApptsBefore, $mainDbApptsAfter, 'CSDL chính phongkham_thaithinh không được thay đổi bảng appointments');
+        $this->assertSame($mainDbUsersBefore, $mainDbUsersAfter, 'CSDL chính phongkham_thaithinh không được thay đổi bảng users');
+    }
 }

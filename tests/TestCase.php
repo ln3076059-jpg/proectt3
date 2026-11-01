@@ -23,9 +23,20 @@ abstract class TestCase extends BaseTestCase
 
         parent::setUp();
 
+        // Đảm bảo 100% mọi bài kiểm thử luôn chạy trên CSDL test riêng biệt `phongkham_thaithinh_test`
+        config(['database.connections.mysql.database' => 'phongkham_thaithinh_test']);
+        if (\Illuminate\Support\Facades\DB::connection()->getDatabaseName() !== 'phongkham_thaithinh_test') {
+            \Illuminate\Support\Facades\DB::purge('mysql');
+            \Illuminate\Support\Facades\DB::reconnect('mysql');
+        }
+
+        if (\Illuminate\Support\Facades\DB::connection()->getDatabaseName() !== 'phongkham_thaithinh_test') {
+            throw new \RuntimeException('LỖI CÔ LẬP CSDL: Bài test không được phép kết nối vào CSDL chính!');
+        }
+
         if (! static::$testDbEnsured) {
             if (! \Illuminate\Support\Facades\Schema::hasTable('doctors')) {
-                \Illuminate\Support\Facades\Artisan::call('migrate');
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--database' => 'mysql']);
             }
             static::$testDbEnsured = true;
         }

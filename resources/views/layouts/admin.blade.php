@@ -41,8 +41,45 @@
         .ms-auto { margin-left: auto !important; }
         .text-end { text-align: right !important; }
         .text-start { text-align: left !important; }
-        .gap-2 { gap: 0.5rem !important; }
+        .gap-1 { gap: 0.35rem !important; }
+        .gap-2 { gap: 0.6rem !important; }
         .gap-3 { gap: 1rem !important; }
+        .gap-4 { gap: 1.5rem !important; }
+        .table td:last-child:not([colspan]) {
+            white-space: nowrap;
+        }
+        .table td .btn:not(.btn-block) {
+            margin: 4px 5px !important;
+            vertical-align: middle;
+        }
+        .table td form.d-inline,
+        .table td form.d-inline-block {
+            display: inline-block !important;
+            margin: 0 !important;
+            vertical-align: middle;
+        }
+        .btn-group:not(.btn-group-toggle) {
+            display: inline-flex !important;
+            flex-wrap: wrap !important;
+            gap: 6px !important;
+            box-shadow: none !important;
+        }
+        .btn-group:not(.btn-group-toggle) > .btn {
+            border-radius: 0.35rem !important;
+            margin: 0 !important;
+        }
+        :not(.btn-group):not(.input-group):not(.input-group-append):not(.input-group-prepend) > .btn + .btn,
+        :not(.btn-group) > .btn + form.d-inline,
+        :not(.btn-group) > form.d-inline + .btn,
+        :not(.btn-group) > form.d-inline + form.d-inline {
+            margin-left: 6px;
+        }
+        .d-flex > .btn,
+        .d-inline-flex > .btn,
+        .modal-footer > .btn {
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
         .global-toast-notification {
             position: fixed;
             top: 75px;
@@ -77,7 +114,6 @@
             text-transform: uppercase;
             letter-spacing: 0.03em;
             border-bottom: 2px solid #e2e8f0;
-            white-space: nowrap;
         }
         .table td {
             vertical-align: middle;

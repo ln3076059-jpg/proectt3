@@ -4,24 +4,24 @@
 
 @section('content')
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
+<div class="d-sm-flex align-items-center justify-content-between flex-wrap mb-4" style="gap: 12px;">
     <div>
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
             <i class="fas fa-vials text-primary mr-2"></i>Quản lý Kết quả Xét nghiệm Cận lâm sàng
         </h1>
         <p class="text-muted small mb-0">Tiếp nhận phiếu chỉ định từ bác sĩ, tải lên hình ảnh kết quả và nhận xét cận lâm sàng</p>
     </div>
-    <div class="btn-group btn-group-sm mt-2 mt-sm-0 shadow-sm">
+    <div class="d-flex flex-wrap align-items-center mt-2 mt-sm-0" style="gap: 8px;">
         <a href="{{ route('admin.lab_tests.index', array_filter(['search' => request('search'), 'department_id' => request('department_id')])) }}"
-           class="btn {{ !request('status') ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
+           class="btn btn-sm shadow-sm {{ !request('status') ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
             Tất cả
         </a>
         <a href="{{ route('admin.lab_tests.index', array_filter(['status' => 'requested', 'search' => request('search'), 'department_id' => request('department_id')])) }}"
-           class="btn {{ request('status') === 'requested' ? 'btn-warning text-dark font-weight-bold' : 'btn-outline-warning text-dark bg-white' }}">
+           class="btn btn-sm shadow-sm {{ request('status') === 'requested' ? 'btn-warning text-dark font-weight-bold' : 'btn-outline-warning text-dark bg-white' }}">
             <i class="fas fa-hourglass-half mr-1"></i> Chờ kết quả
         </a>
         <a href="{{ route('admin.lab_tests.index', array_filter(['status' => 'completed', 'search' => request('search'), 'department_id' => request('department_id')])) }}"
-           class="btn {{ request('status') === 'completed' ? 'btn-success font-weight-bold' : 'btn-outline-success bg-white' }}">
+           class="btn btn-sm shadow-sm {{ request('status') === 'completed' ? 'btn-success font-weight-bold' : 'btn-outline-success bg-white' }}">
             <i class="fas fa-check-circle mr-1"></i> Đã có kết quả
         </a>
     </div>
@@ -73,8 +73,8 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2 mb-2 d-flex">
-                <button type="submit" class="btn btn-primary flex-grow-1 mr-1">
+            <div class="col-md-2 mb-2 d-flex" style="gap: 8px;">
+                <button type="submit" class="btn btn-primary flex-grow-1">
                     <i class="fas fa-search mr-1"></i> Lọc
                 </button>
                 @if(request()->filled('search') || request()->filled('department_id') || request()->filled('status'))
@@ -102,11 +102,11 @@
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>
-                        <th class="text-center" style="width: 55px;">STT</th>
+                        <th class="text-center" style="width: 50px;">STT</th>
                         <th>Loại xét nghiệm & Khoa thực hiện</th>
                         <th>Bệnh nhân & Bác sĩ chỉ định</th>
-                        <th style="width: 190px;">Thời gian & Trạng thái</th>
-                        <th class="text-center" style="width: 170px;">Chức năng</th>
+                        <th style="width: 155px;">Thời gian & Trạng thái</th>
+                        <th class="text-center" style="width: 165px;">Chức năng</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -165,33 +165,35 @@
                                 </div>
                             </td>
 
-                            <td class="text-center align-middle">
-                                <button type="button"
-                                        class="btn btn-primary btn-sm px-2 mr-1 shadow-sm js-open-lab-upload"
-                                        data-action="{{ route('admin.lab_tests.saveUpload', $test->id) }}"
-                                        data-test="{{ $test->test_name ?? optional($test->test_type)->name ?? 'Xét nghiệm' }}"
-                                        data-patient="{{ optional(optional($test->record)->patient)->name ?? 'Bệnh nhân' }}"
-                                        data-note="{{ $test->note ?? '' }}"
-                                        title="Tải lên kết quả nhanh">
-                                    <i class="fas fa-upload mr-1"></i> {{ $isDone ? 'Sửa KQ' : 'Trả KQ' }}
-                                </button>
-                                @if(!empty($test->image))
+                            <td class="text-center align-middle" style="white-space: nowrap;">
+                                <div class="d-inline-flex flex-nowrap align-items-center justify-content-center" style="gap: 8px;">
                                     <button type="button"
-                                            class="btn btn-info btn-circle btn-sm mr-1 js-open-lab-preview"
-                                            data-img="{{ asset('storage/' . $test->image) }}"
-                                            data-test="{{ $test->test_name ?? 'Xét nghiệm' }}"
+                                            class="btn btn-primary btn-sm px-2 shadow-sm js-open-lab-upload"
+                                            data-action="{{ route('admin.lab_tests.saveUpload', $test->id) }}"
+                                            data-test="{{ $test->test_name ?? optional($test->test_type)->name ?? 'Xét nghiệm' }}"
                                             data-patient="{{ optional(optional($test->record)->patient)->name ?? 'Bệnh nhân' }}"
-                                            title="Xem ảnh kết quả">
-                                        <i class="fas fa-image"></i>
+                                            data-note="{{ $test->note ?? '' }}"
+                                            title="Tải lên kết quả nhanh">
+                                        <i class="fas fa-upload mr-1"></i> {{ $isDone ? 'Sửa KQ' : 'Trả KQ' }}
                                     </button>
-                                @endif
-                                <form action="{{ route('admin.lab_tests.destroy', $test->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bản ghi xét nghiệm này?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-circle btn-sm" title="Xóa kết quả">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
+                                    @if(!empty($test->image))
+                                        <button type="button"
+                                                class="btn btn-info btn-circle btn-sm js-open-lab-preview"
+                                                data-img="{{ asset('storage/' . $test->image) }}"
+                                                data-test="{{ $test->test_name ?? 'Xét nghiệm' }}"
+                                                data-patient="{{ optional(optional($test->record)->patient)->name ?? 'Bệnh nhân' }}"
+                                                title="Xem ảnh kết quả">
+                                            <i class="fas fa-image"></i>
+                                        </button>
+                                    @endif
+                                    <form action="{{ route('admin.lab_tests.destroy', $test->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bản ghi xét nghiệm này?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-circle btn-sm" title="Xóa kết quả">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty

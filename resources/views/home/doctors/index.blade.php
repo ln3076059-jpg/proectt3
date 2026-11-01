@@ -162,7 +162,7 @@
                   </div>
                   <div class="col-md-8">
                     <div class="p-3 rounded-3 mb-3" style="background-color: var(--surface-bg); border: 1px solid var(--border-color);">
-                      <p class="mb-1"><strong>Chuyên khoa:</strong> {{ $deptName }}</p>
+                      <p class="mb-1"><strong>Chuyên khoa:</strong> {{ $deptName }} · <strong>Buồng khám:</strong> <span class="text-primary fw-semibold">{{ $doc->room_number ?: ('P.' . (200 + $doc->id) . ' - Tầng 2') }}</span></p>
                       <p class="mb-1 ts-num"><strong>Số CCHN Bộ Y Tế:</strong> {{ $cchn }}</p>
                       <p class="mb-0"><strong>Chuyên môn:</strong> {{ $spec }}</p>
                     </div>

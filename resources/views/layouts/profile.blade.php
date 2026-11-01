@@ -111,9 +111,13 @@
               </div>
 
               <nav class="tiki-profile-nav p-2 d-flex flex-column gap-1" aria-label="Menu tài khoản bệnh nhân">
-                <a href="{{ route('profile.edit') }}" class="tiki-profile-nav-link {{ request()->routeIs('profile.*') ? 'active' : '' }}">
+                <a href="{{ route('profile.edit') }}" class="tiki-profile-nav-link {{ (request()->routeIs('profile.*') && request('tab', 'info') !== 'password') ? 'active' : '' }}">
                   <i class="bi bi-person-vcard"></i>
                   <span>Thông tin tài khoản</span>
+                </a>
+                <a href="{{ route('profile.edit', ['tab' => 'password']) }}" class="tiki-profile-nav-link {{ (request()->routeIs('profile.*') && request('tab') === 'password') ? 'active' : '' }}">
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Đổi mật khẩu bảo mật</span>
                 </a>
                 <a href="{{ route('appointments.index') }}" class="tiki-profile-nav-link {{ (request()->routeIs('appointments.*') && !request()->routeIs('appointments.create')) ? 'active' : '' }}">
                   <i class="bi bi-calendar2-check"></i>

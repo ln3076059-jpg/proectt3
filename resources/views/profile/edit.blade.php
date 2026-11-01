@@ -4,14 +4,33 @@
 @section('breadcrumb_current', 'Thông tin tài khoản')
 
 @section('content')
+@php
+    $activeProfileTab = request('tab', 'info');
+@endphp
 <div>
-    {{-- Page Header --}}
+    {{-- Page Header & Sub-page Tabs --}}
     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
         <div>
             <h4 class="fw-bold text-dark mb-1 d-flex align-items-center gap-2">
-                <i class="far fa-user text-primary"></i> Thông Tin Tài Khoản
+                @if($activeProfileTab === 'password')
+                    <i class="fas fa-shield-alt text-primary"></i> Đổi Mật Khẩu &amp; Bảo Mật Tài Khoản
+                @else
+                    <i class="far fa-user text-primary"></i> Thông Tin Hồ Sơ &amp; Thẻ BHYT
+                @endif
             </h4>
-            <small class="text-muted">Quản lý hồ sơ cá nhân, thông tin liên hệ và bảo mật tài khoản</small>
+            <small class="text-muted">
+                {{ $activeProfileTab === 'password' ? 'Thiết lập mật khẩu mạnh và quản lý quyền riêng tư tài khoản bệnh nhân' : 'Quản lý hồ sơ hành chính, mã thẻ Bảo hiểm y tế (BHYT) và danh bạ người thân' }}
+            </small>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{{ route('profile.edit', ['tab' => 'info']) }}"
+               class="btn btn-sm {{ $activeProfileTab !== 'password' ? 'btn-tiki-primary' : 'btn-outline-secondary' }} rounded-pill px-3 fw-semibold">
+                <i class="far fa-id-card me-1"></i> Hồ sơ &amp; BHYT
+            </a>
+            <a href="{{ route('profile.edit', ['tab' => 'password']) }}"
+               class="btn btn-sm {{ $activeProfileTab === 'password' ? 'btn-tiki-primary' : 'btn-outline-secondary' }} rounded-pill px-3 fw-semibold">
+                <i class="fas fa-key me-1"></i> Đổi mật khẩu
+            </a>
         </div>
     </div>
 
@@ -37,6 +56,8 @@
         </div>
     @endif
 
+    {{-- TAB 1: Health Overview & Profile Information --}}
+    <div class="{{ $activeProfileTab === 'password' ? 'd-none' : '' }}">
     {{-- Health & Family Overview Card --}}
     <div class="tiki-card p-3 p-md-4 mb-4 border-primary-subtle" style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);">
         <div class="row g-3 align-items-center">
@@ -113,7 +134,10 @@
         </div>
         @include('profile.partials.update-profile-information-form')
     </div>
+    </div>
 
+    {{-- TAB 2: Change Password & Account Security --}}
+    <div class="{{ $activeProfileTab === 'password' ? '' : 'd-none' }}">
     {{-- Change Password Card --}}
     <div class="tiki-card p-4 mb-4">
         <div class="pb-3 mb-3 border-bottom">
@@ -132,6 +156,7 @@
             </h6>
         </div>
         @include('profile.partials.delete-user-form')
+    </div>
     </div>
 </div>
 @endsection

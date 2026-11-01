@@ -37,11 +37,27 @@
     </div>
 @endif
 
+@php
+    $activeAdminApptTab = request('tab', 'detail');
+@endphp
+
+<!-- Thanh chuyển màn hình quản trị Lịch hẹn (Tách riêng Hồ sơ Ca khám & Bảng kê Viện phí / Audit Trail) -->
+<div class="d-flex flex-wrap mb-3" style="gap: 10px;">
+    <a href="{{ route('admin.appointments.show', ['appointment' => $appointment->id, 'tab' => 'detail']) }}"
+       class="btn btn-sm {{ $activeAdminApptTab !== 'billing' ? 'btn-primary shadow-sm font-weight-bold' : 'btn-outline-primary bg-white' }} px-3 py-2">
+        <i class="fas fa-user-md mr-1"></i> 1. Hồ sơ Người khám, Bác sĩ &amp; Thao tác tiếp đón
+    </a>
+    <a href="{{ route('admin.appointments.show', ['appointment' => $appointment->id, 'tab' => 'billing']) }}"
+       class="btn btn-sm {{ $activeAdminApptTab === 'billing' ? 'btn-primary shadow-sm font-weight-bold' : 'btn-outline-primary bg-white' }} px-3 py-2">
+        <i class="fas fa-file-invoice-dollar mr-1"></i> 2. Bảng kê Viện phí Đa tầng BHYT &amp; Nhật ký Audit Trail
+    </a>
+</div>
+
 <div class="row">
     <!-- Left Column: Patient & Appointment Details -->
     <div class="col-lg-6 mb-4">
         <!-- Patient Card -->
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 {{ $activeAdminApptTab === 'billing' ? 'd-none' : '' }}">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-user-injured mr-1"></i> Thông tin Người khám bệnh
@@ -149,7 +165,7 @@
                     </div>
                 </div>
 
-                <div class="p-3 bg-light rounded border small mt-2">
+                <div class="p-3 bg-light rounded border small mt-2 {{ $activeAdminApptTab === 'billing' ? 'border-primary shadow-sm' : 'd-none' }}">
                     <div class="font-weight-bold text-primary text-uppercase mb-2">
                         <i class="fas fa-file-invoice-dollar mr-1"></i> Bảng kê Viện phí Đa tầng (Khám + CLS + Đơn thuốc & BHYT)
                     </div>
@@ -304,7 +320,7 @@
                 @endif
 
                 {{-- Thao tác nhanh 1-Click cho Lễ tân / Quản trị --}}
-                <div class="p-3 bg-light rounded border mb-3">
+                <div class="p-3 bg-light rounded border mb-3 {{ $activeAdminApptTab === 'billing' ? 'd-none' : '' }}">
                     <div class="small font-weight-bold text-primary text-uppercase mb-2">
                         <i class="fas fa-bolt mr-1 text-warning"></i> Thao tác nghiệp vụ nhanh (1-Click)
                     </div>
@@ -356,7 +372,7 @@
                 <hr>
 
                 <!-- Update Status Form -->
-                <form action="{{ route('admin.appointments.status', $appointment->id) }}" method="POST">
+                <form action="{{ route('admin.appointments.status', $appointment->id) }}" method="POST" class="{{ $activeAdminApptTab === 'billing' ? '' : 'd-none' }}">
                     @csrf
                     @method('PATCH')
                     <div class="form-group">
@@ -384,7 +400,7 @@
         </div>
 
         <!-- Audit Trail Card -->
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 {{ $activeAdminApptTab === 'billing' ? '' : 'd-none' }}">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-history mr-1"></i> Lịch sử thay đổi trạng thái (Audit Trail)

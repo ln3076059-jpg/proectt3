@@ -3,6 +3,9 @@
 @section('title', 'Bảng điều khiển Bác sĩ')
 
 @section('content')
+@php
+    $activeDoctorTab = request('tab', 'overview');
+@endphp
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <div>
@@ -13,23 +16,28 @@
             }
         @endphp
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
-            <i class="fas fa-stethoscope text-primary mr-2"></i>Bảng điều khiển Bác sĩ: {{ $docDisplayName }}
+            @if($activeDoctorTab === 'queue')
+                <i class="fas fa-user-check text-primary mr-2"></i>Danh sách Bệnh nhân tiếp đón &amp; Hàng đợi hôm nay
+            @else
+                <i class="fas fa-stethoscope text-primary mr-2"></i>Bảng điều khiển Bác sĩ: {{ $docDisplayName }}
+            @endif
         </h1>
         <p class="text-muted small mb-0">
             Chuyên khoa: <span class="font-weight-bold text-primary">{{ $doctor->department->name ?? 'Đa khoa' }}</span>
+            | Buồng khám: <span class="font-weight-bold text-info">{{ $doctor->room_number ?? 'P.201 - Tầng 2' }}</span>
             | CCHN: <span class="font-weight-bold">{{ $doctor->license_number ?? '012456/HN-CCHN' }}</span>
         </p>
     </div>
     <div class="mt-2 mt-sm-0 d-flex align-items-center">
+        <a href="{{ route('doctor.dashboard') }}" class="btn btn-sm {{ $activeDoctorTab !== 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm mr-2">
+            <i class="fas fa-tachometer-alt fa-sm mr-1"></i> Tổng quan ca trực
+        </a>
+        <a href="{{ route('doctor.dashboard', ['tab' => 'queue']) }}" class="btn btn-sm {{ $activeDoctorTab === 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm mr-2">
+            <i class="fas fa-clipboard-list fa-sm mr-1"></i> Hàng đợi tiếp đón ({{ $total }})
+        </a>
         <button type="button" id="toggleAutoRefreshBtn" class="btn btn-sm btn-outline-success shadow-sm mr-2" title="Tự động làm mới danh sách chờ mỗi 30 giây">
             <i class="fas fa-sync-alt fa-sm mr-1"></i> Tự động đồng bộ: <span id="autoRefreshState">Bật (30s)</span>
         </button>
-        <a href="{{ route('doctor.patient.history') }}" class="btn btn-sm btn-info shadow-sm mr-2">
-            <i class="fas fa-history fa-sm text-white-50 mr-1"></i> Lịch sử khám EMR
-        </a>
-        <a href="{{ route('doctor.profile.edit') }}" class="btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-user-cog fa-sm text-white-50 mr-1"></i> Hồ sơ bác sĩ
-        </a>
     </div>
 </div>
 
@@ -43,7 +51,7 @@
 @endif
 
 <!-- 4 Thẻ KPI chính chuẩn SB Admin 2 -->
-<div class="row">
+<div class="row {{ $activeDoctorTab === 'queue' ? 'd-none' : '' }}">
     <!-- Tổng lịch hẹn hôm nay -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card border-left-primary shadow h-100 py-2">
@@ -157,7 +165,7 @@
 @endif
 
 <!-- Search & Date Filter Card -->
-<div class="card shadow mb-4">
+<div class="card shadow mb-4 {{ $activeDoctorTab === 'queue' ? '' : 'd-none' }}">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between flex-wrap">
         <h6 class="m-0 font-weight-bold text-primary">
             <i class="fas fa-calendar-day mr-1"></i> Điều phối & Tra cứu lịch khám theo ngày
@@ -217,8 +225,65 @@
     </div>
 </div>
 
+<!-- Thẻ Tổng quan Ca trực Lâm sàng (Hiển thị trên màn hình Bảng điều khiển Tổng quan) -->
+<div class="row {{ $activeDoctorTab === 'queue' ? 'd-none' : '' }}">
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-clinic-medical mr-1"></i> Thông tin Ca trực &amp; Buồng khám Chuyên khoa
+                </h6>
+                <span class="badge badge-success px-2 py-1">Đang trực khám</span>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between py-2 border-bottom small">
+                    <span class="text-muted">Bác sĩ phụ trách:</span>
+                    <strong class="text-dark">{{ $docDisplayName }} ({{ $doctor->specialization ?? 'Chuyên khoa' }})</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom small">
+                    <span class="text-muted">Vị trí buồng khám:</span>
+                    <strong class="text-primary">{{ $doctor->room_number ?? 'P.201 - Tầng 2' }} ({{ $doctor->department->name ?? 'Khoa Khám bệnh' }})</strong>
+                </div>
+                <div class="d-flex justify-content-between py-2 border-bottom small">
+                    <span class="text-muted">Khung giờ làm việc:</span>
+                    <strong class="text-dark">Ca sáng (07:30 - 11:30) &amp; Ca chiều (13:30 - 17:00)</strong>
+                </div>
+                <div class="d-flex justify-content-between pt-2 small">
+                    <span class="text-muted">Tiến độ hoàn thành trong ngày:</span>
+                    <strong class="text-success">{{ $completed }}/{{ max(1, $total) }} ca đã kết luận EMR</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow h-100">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-bolt mr-1 text-warning"></i> Lối tắt Nghiệp vụ Lâm sàng
+                </h6>
+            </div>
+            <div class="card-body d-flex flex-column justify-content-between">
+                <p class="small text-muted mb-3">
+                    Hệ thống tự động ưu tiên bệnh nhân đã quét mã QR Check-in tại Kiosk tầng 1 lên đầu hàng đợi tiếp đón. Bác sĩ có thể chuyển sang màn hình <strong>Hàng đợi tiếp đón</strong> để lọc và gọi bệnh nhân vào phòng.
+                </p>
+                <div class="d-flex flex-wrap" style="gap: 10px;">
+                    <a href="{{ route('doctor.dashboard', ['tab' => 'queue']) }}" class="btn btn-primary btn-sm font-weight-bold shadow-sm px-3 py-2">
+                        <i class="fas fa-clipboard-list mr-1"></i> Mở Hàng đợi Tiếp đón ({{ $total }} ca)
+                    </a>
+                    <a href="{{ route('doctor.patient.history') }}" class="btn btn-outline-primary btn-sm font-weight-bold px-3 py-2">
+                        <i class="fas fa-file-medical-alt mr-1"></i> Lịch sử Bệnh án EMR
+                    </a>
+                    <a href="{{ route('doctor.patients.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2">
+                        <i class="fas fa-users mr-1"></i> Danh sách Bệnh nhân
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- DataTales (ĐÚNG 5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
-<div class="card shadow mb-4">
+<div class="card shadow mb-4 {{ $activeDoctorTab === 'queue' ? '' : 'd-none' }}">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
             <i class="fas fa-clipboard-list mr-1"></i> Danh sách bệnh nhân tiếp nhận khám ngày {{ \Carbon\Carbon::parse($selectedDate)->format('d/m/Y') }}

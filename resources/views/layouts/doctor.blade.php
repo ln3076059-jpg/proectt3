@@ -131,7 +131,7 @@
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
+            <li class="nav-item {{ (request()->routeIs('doctor.dashboard') && request('tab', 'overview') !== 'queue') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('doctor.dashboard') }}">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Bảng điều khiển Bác sĩ</span>
@@ -147,8 +147,8 @@
             </div>
 
             <!-- Nav Item - Today's Appointments -->
-            <li class="nav-item {{ request()->routeIs('doctor.appointments.*') || request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
-                <a class="nav-link" href="{{ route('doctor.dashboard') }}">
+            <li class="nav-item {{ request()->routeIs('doctor.appointments.*') || (request()->routeIs('doctor.dashboard') && request('tab') === 'queue') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('doctor.dashboard', ['tab' => 'queue']) }}">
                     <i class="fas fa-fw fa-calendar-check"></i>
                     <span>Bệnh nhân tiếp đón hôm nay</span>
                 </a>

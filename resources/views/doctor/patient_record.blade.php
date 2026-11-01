@@ -283,12 +283,33 @@
 
     <!-- Cột phải: Form Khám bệnh & Chẩn đoán EMR -->
     <div class="col-lg-8 mb-4">
+        @php
+            $activeEmrTab = request('tab', 'clinical');
+        @endphp
+        <div class="card shadow-sm mb-3 border-left-primary d-print-none">
+            <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between flex-wrap">
+                <div class="small font-weight-bold text-gray-700 my-1">
+                    <i class="fas fa-layer-group text-primary mr-1"></i> Phân trang Bệnh án điện tử:
+                </div>
+                <div class="btn-group btn-group-sm my-1">
+                    <a href="{{ route('doctor.patient.record', ['appointment' => $appointment->id, 'tab' => 'clinical']) }}"
+                       class="btn {{ $activeEmrTab !== 'prescription' ? 'btn-primary font-weight-bold' : 'btn-outline-primary' }}">
+                        <i class="fas fa-stethoscope mr-1"></i> 1. Khám lâm sàng &amp; Sinh hiệu
+                    </a>
+                    <a href="{{ route('doctor.patient.record', ['appointment' => $appointment->id, 'tab' => 'prescription']) }}"
+                       class="btn {{ $activeEmrTab === 'prescription' ? 'btn-primary font-weight-bold' : 'btn-outline-primary' }}">
+                        <i class="fas fa-pills mr-1"></i> 2. Kê đơn thuốc &amp; Cận lâm sàng ({{ ($record->prescriptionItems ? $record->prescriptionItems->count() : 0) + $labTests->count() }})
+                    </a>
+                </div>
+            </div>
+        </div>
+
         <form action="{{ route('doctor.records.update', $record) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <!-- Chẩn đoán lâm sàng Card -->
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4 {{ $activeEmrTab === 'prescription' ? 'd-none' : '' }}">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">
                         <i class="fas fa-stethoscope mr-1"></i> Chẩn đoán lâm sàng & Kết luận của Bác sĩ
@@ -403,7 +424,7 @@
             </div>
 
             <!-- Kê đơn thuốc điện tử Card -->
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4 {{ $activeEmrTab === 'prescription' ? '' : 'd-none' }}">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between flex-wrap">
                     <h6 class="m-0 font-weight-bold text-primary">
                         <i class="fas fa-pills mr-1"></i> Toa thuốc điều trị điện tử
@@ -566,7 +587,7 @@
         </form>
 
         <!-- Bảng danh sách Xét nghiệm đã chỉ định & Kết quả -->
-        <div class="card shadow mb-4">
+        <div class="card shadow mb-4 {{ $activeEmrTab === 'prescription' ? '' : 'd-none' }}">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-vials mr-1"></i> Kết quả Cận lâm sàng & Xét nghiệm đã chỉ định
@@ -626,7 +647,7 @@
 
         @if(!$isReadOnly)
             <!-- Chỉ định xét nghiệm cận lâm sàng mới Card -->
-            <div class="card shadow mb-4">
+            <div class="card shadow mb-4 {{ $activeEmrTab === 'prescription' ? '' : 'd-none' }}">
                 <div class="card-header py-3">
                     <h6 class="m-0 font-weight-bold text-primary">
                         <i class="fas fa-vial mr-1"></i> Chỉ định xét nghiệm Cận lâm sàng mới

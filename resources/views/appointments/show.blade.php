@@ -411,8 +411,24 @@
         </div>
     @endif
 
+    @php
+        $activeApptTab = request('tab', 'pass');
+    @endphp
+
+    {{-- THANH CHUYỂN MÀN HÌNH CHỨC NĂNG CA KHÁM (TÁCH RIÊNG PHIẾU QR & TIẾN TRÌNH LÂM SÀNG) --}}
+    <div class="d-flex flex-wrap gap-2 mb-3 no-print">
+        <a href="{{ route('appointments.show', ['appointment' => $appointment->id, 'tab' => 'pass']) }}"
+           class="btn {{ $activeApptTab !== 'progress' ? 'btn-primary shadow-sm' : 'btn-outline-primary bg-white' }} rounded-pill px-4 py-2 fw-bold small">
+            <i class="fas fa-qrcode me-1.5"></i> 1. Phiếu Tiếp Nhận Điện Tử &amp; Mã QR Kiosk
+        </a>
+        <a href="{{ route('appointments.show', ['appointment' => $appointment->id, 'tab' => 'progress']) }}"
+           class="btn {{ $activeApptTab === 'progress' ? 'btn-primary shadow-sm' : 'btn-outline-primary bg-white' }} rounded-pill px-4 py-2 fw-bold small">
+            <i class="fas fa-stream me-1.5"></i> 2. Tiến Trình 5 Chặng Lâm Sàng &amp; Viện Phí BHYT
+        </a>
+    </div>
+
     {{-- CLINICAL JOURNEY TRACKER (5 CHẶNG LÂM SÀNG CHUẨN Y KHOA) --}}
-    <div class="clinical-card p-3 mb-3">
+    <div class="clinical-card p-3 mb-3 {{ $activeApptTab === 'progress' ? 'border-primary shadow-sm' : 'd-none' }}">
         @php
             $statusStep = match($appointment->status) {
                 'pending' => 1,
@@ -533,7 +549,7 @@
     </div>
 
     {{-- CLINICAL 3-COLUMN INFORMATION GRID --}}
-    <div class="row g-4 mb-4">
+    <div class="row g-4 mb-4 {{ $activeApptTab === 'progress' ? 'd-none' : '' }}">
         {{-- BOX 1: BỆNH NHÂN & ĐỊNH DANH Y TẾ --}}
         <div class="col-md-4">
             <div class="clinical-info-card">
@@ -776,7 +792,7 @@
                 @endif
 
                 {{-- HƯỚNG DẪN CHUẨN BỊ TRƯỚC KHI KHÁM (SENIOR BA REQUIREMENT) --}}
-                <div class="p-3 border-bottom bg-white">
+                <div class="p-3 border-bottom bg-white {{ $activeApptTab === 'progress' ? 'd-none' : '' }}">
                     <h6 class="fw-bold text-dark mb-2 small d-flex align-items-center gap-1.5">
                         <i class="fas fa-clipboard-check text-success"></i> Hướng Dẫn Chuẩn Bị Trước Khi Đến Khám
                     </h6>
@@ -903,7 +919,7 @@
         {{-- RIGHT COLUMN: DIGITAL CHECK-IN PASS & AUDIT TRAIL (MOBILE ORDER 1, DESKTOP ORDER 2) --}}
         <div class="col-lg-4 order-1 order-lg-2">
             {{-- THẺ TIẾP ĐÓN ĐIỆN TỬ (DIGITAL CHECK-IN PASS) --}}
-            <div class="clinical-card p-3 text-center mb-3">
+            <div class="clinical-card p-3 text-center mb-3 {{ $activeApptTab === 'progress' ? 'd-none' : '' }}">
                 <div class="d-inline-flex align-items-center gap-1.5 px-3 py-1 rounded-pill bg-primary-subtle text-primary fw-bold mb-2" style="font-size: 11.5px;">
                     <i class="fas fa-qrcode"></i>
                     <span>MÃ TIẾP ĐÓN TỰ ĐỘNG (QR PASS)</span>
@@ -948,7 +964,7 @@
             </div>
 
             {{-- AUDIT TRAIL TIMELINE (LỊCH SỬ TIẾN TRÌNH LÂM SÀNG) --}}
-            <div class="clinical-card p-3 mb-3">
+            <div class="clinical-card p-3 mb-3 {{ $activeApptTab === 'progress' ? '' : 'd-none' }}">
                 <h6 class="fw-bold text-dark mb-2.5 small border-bottom pb-2">
                     <i class="fas fa-history text-primary me-1"></i>Tiến Trình Xử Lý Hồ Sơ
                 </h6>

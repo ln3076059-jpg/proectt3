@@ -107,6 +107,14 @@
             font-weight: 600;
             padding: 0.35em 0.65em;
         }
+        .btn-primary .text-muted,
+        .btn-primary .text-secondary,
+        .btn-primary .text-dark,
+        .btn-primary .text-gray-800,
+        .list-group-item.active,
+        .list-group-item.active * {
+            color: #ffffff !important;
+        }
     </style>
     @stack('styles')
 </head>
@@ -228,8 +236,9 @@
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="{{ route('doctor.dashboard') }}" title="Lịch hẹn khám hôm nay">
-                                <i class="fas fa-bell fa-fw"></i>
-                                <span class="badge badge-danger badge-counter">Hôm nay</span>
+                                <span class="badge badge-primary px-2 py-1" style="font-size: 11.5px; font-weight: 600;">
+                                    <i class="fas fa-calendar-check mr-1"></i>Ca trực hôm nay
+                                </span>
                             </a>
                         </li>
 

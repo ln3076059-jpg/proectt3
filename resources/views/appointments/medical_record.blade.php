@@ -130,11 +130,11 @@
                     <i class="fas fa-id-card-alt me-2"></i> THÔNG TIN BỆNH NHÂN KHÁM BỆNH
                 </h6>
                 @if($appointment->booking_for === 'relative')
-                    <span class="badge bg-danger-subtle text-danger fw-bold rounded-pill px-2.5 py-1">
+                    <span class="badge bg-danger-subtle text-danger fw-bold rounded-pill px-3 py-1">
                         <i class="fas fa-users me-1"></i>Ca khám đặt hộ người thân
                     </span>
                 @else
-                    <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-2.5 py-1">
+                    <span class="badge bg-primary-subtle text-primary fw-bold rounded-pill px-3 py-1">
                         <i class="fas fa-user me-1"></i>Bệnh nhân chính chủ
                     </span>
                 @endif
@@ -335,7 +335,7 @@
             @if(count($extractedVitals) > 0)
                 <div class="p-3 mb-4 rounded-3 border bg-white">
                     <div class="small fw-bold text-primary mb-2">
-                        <i class="fas fa-heartbeat text-danger me-1.5"></i>CHỈ SỐ SINH HIỆU GHI NHẬN TẠI BUỒNG KHÁM
+                        <i class="fas fa-heartbeat text-danger me-2"></i>CHỈ SỐ SINH HIỆU GHI NHẬN TẠI BUỒNG KHÁM
                     </div>
                     <div class="d-flex flex-wrap gap-2">
                         @foreach($extractedVitals as $vitalItem)
@@ -351,7 +351,7 @@
             <div class="row g-3 mb-4">
                 <div class="col-md-6">
                     <div class="p-3 border rounded-3 bg-white h-100">
-                        <small class="text-muted fw-bold d-block mb-1.5" style="font-size: 12px;">
+                        <small class="text-muted fw-bold d-block mb-2" style="font-size: 12px;">
                             <i class="fas fa-notes-medical text-primary me-1"></i>TRIỆU CHỨNG &amp; KHÁM LÂM SÀNG
                         </small>
                         <p class="mb-0 text-dark" style="font-size: 13.5px; line-height: 1.6; white-space: pre-line;">{{ $record->description ?? $record->symptoms ?? ($appointment->note ?: 'Không ghi nhận triệu chứng bất thường.') }}</p>
@@ -359,7 +359,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="p-3 border rounded-3 bg-white h-100">
-                        <small class="text-muted fw-bold d-block mb-1.5" style="font-size: 12px;">
+                        <small class="text-muted fw-bold d-block mb-2" style="font-size: 12px;">
                             <i class="fas fa-stethoscope text-primary me-1"></i>CHẨN ĐOÁN CỦA BÁC SĨ (ICD-10)
                         </small>
                         <strong class="text-danger d-block fs-6 mb-1">{{ $record->diagnosis ?? 'Đang cập nhật chẩn đoán' }}</strong>
@@ -370,7 +370,7 @@
                 </div>
                 <div class="col-12">
                     <div class="p-3 border rounded-3 bg-white">
-                        <small class="text-muted fw-bold d-block mb-1.5" style="font-size: 12px;">
+                        <small class="text-muted fw-bold d-block mb-2" style="font-size: 12px;">
                             <i class="fas fa-comment-medical text-success me-1"></i>KẾT LUẬN &amp; LỜI DẶN ĐIỀU TRỊ CỦA BÁC SĨ
                         </small>
                         <div class="p-3 bg-success-subtle bg-opacity-25 rounded-3 border border-success-subtle text-dark" style="font-size: 13.5px; line-height: 1.6; white-space: pre-line;">{{ $record->doctor_conclusion ?? $record->treatment ?? 'Tuân thủ đúng liều lượng đơn thuốc và tái khám theo lịch hẹn hoặc khi có dấu hiệu bất thường.' }}</div>
@@ -419,7 +419,7 @@
                                 <div class="p-3 rounded-3 bg-light border">
                                     <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-1">
                                         <div>
-                                            <strong class="text-dark"><i class="fas fa-flask text-primary me-1.5"></i>{{ $test->test_name ?? 'Xét nghiệm cận lâm sàng' }}</strong>
+                                            <strong class="text-dark"><i class="fas fa-flask text-primary me-2"></i>{{ $test->test_name ?? 'Xét nghiệm cận lâm sàng' }}</strong>
                                             @if($test->department)
                                                 <span class="badge bg-white text-secondary border ms-1">{{ $test->department->name }}</span>
                                             @endif

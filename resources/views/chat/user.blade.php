@@ -6,10 +6,10 @@
     </div>
 
     <div id="chat-box" class="chat-box hidden">
-        <div class="chat-header d-flex justify-content-between align-items-center">
+        <div class="chat-header d-flex justify-content-between align-items-center text-white">
             <div>
-                <div class="fw-medium" style="font-size: var(--step-body);">Tổng đài 125 Thái Thịnh</div>
-                <div class="ts-small" style="opacity: 0.9;">Trực tuyến · Phản hồi trực tiếp</div>
+                <div class="fw-semibold text-white" style="font-size: var(--step-body);">Tổng đài 125 Thái Thịnh</div>
+                <div class="ts-small text-white" style="color: rgba(255, 255, 255, 0.92) !important;">Trực tuyến · Phản hồi trực tiếp</div>
             </div>
             <button id="chat-close" class="btn btn-sm text-white p-0 border-0" style="font-size: 22px; line-height: 1;">&times;</button>
         </div>

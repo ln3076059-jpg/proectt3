@@ -9,7 +9,7 @@
                 class="btn btn-outline-danger btn-sm rounded-3 px-3 py-2 fw-semibold"
                 data-bs-toggle="modal"
                 data-bs-target="#confirmUserDeletion">
-            <i class="fas fa-trash-alt me-1.5"></i> Yêu cầu xóa tài khoản
+            <i class="fas fa-trash-alt me-2"></i> Yêu cầu xóa tài khoản
         </button>
     </div>
 </div>
@@ -72,7 +72,7 @@
                     </div>
                 </div>
 
-                <div class="modal-footer bg-light border-top py-2.5 px-4">
+                <div class="modal-footer bg-light border-top py-3 px-4">
                     <button type="button"
                             class="btn btn-tiki-outline btn-sm px-3"
                             data-bs-dismiss="modal">

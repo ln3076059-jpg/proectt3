@@ -235,7 +235,7 @@
             <i class="fas fa-undo me-1"></i> Đặt lại
         </button>
         <button type="submit" class="btn btn-tiki-primary px-4">
-            <i class="fas fa-save me-1.5"></i> Lưu thông tin hồ sơ
+            <i class="fas fa-save me-2"></i> Lưu thông tin hồ sơ
         </button>
     </div>
 </form>

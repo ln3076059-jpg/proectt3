@@ -117,8 +117,8 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-brand-primary w-100 rounded-pill py-2.5 fw-semibold mb-3">
-                <i class="fa-solid fa-shield-check me-1.5"></i> Xác nhận an toàn
+            <button type="submit" class="btn btn-brand-primary w-100 rounded-pill py-3 fw-semibold mb-3">
+                <i class="fa-solid fa-shield-check me-2"></i> Xác nhận an toàn
             </button>
         </form>
 

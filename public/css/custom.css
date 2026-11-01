@@ -1972,3 +1972,52 @@ a {
         grid-template-columns: 1fr;
     }
 }
+
+/* ==========================================================================
+   SAFEGUARD: ACTIVE / SELECTED TEXT CONTRAST & SPACING UTILITIES
+   Prevents dark text (.text-muted, .text-success, .ts-small) from clashing
+   with dark blue active/selected backgrounds ("khi chọn chữ đè màu").
+   ========================================================================== */
+.slot-card.selected,
+.slot-card.selected *:not(.badge):not(.slot-badge),
+.slot-btn.btn-primary,
+.slot-btn.btn-primary *,
+.quick-date-pill.is-active,
+.quick-date-pill.is-active *,
+.ts-filter-pill.is-active,
+.ts-filter-pill.is-active *,
+.ts-auth-role-tab.is-active,
+.ts-auth-role-tab.is-active *,
+.tiki-tab-link.active,
+.tiki-tab-link.active *,
+.chat-header,
+.chat-header * {
+    color: #ffffff !important;
+}
+
+.slot-card.selected .badge,
+.slot-card.selected .slot-badge {
+    background-color: rgba(255, 255, 255, 0.24) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
+}
+
+/* Fractional Spacing Utilities Fallback */
+.me-1\.5 { margin-right: 0.375rem !important; }
+.ms-1\.5 { margin-left: 0.375rem !important; }
+.mb-0\.5 { margin-bottom: 0.125rem !important; }
+.mb-1\.5 { margin-bottom: 0.375rem !important; }
+.mb-2\.5 { margin-bottom: 0.625rem !important; }
+.mt-0\.5 { margin-top: 0.125rem !important; }
+.my-1\.5 { margin-top: 0.375rem !important; margin-bottom: 0.375rem !important; }
+.gap-1\.5 { gap: 0.375rem !important; }
+.gap-2\.5 { gap: 0.625rem !important; }
+.p-2\.5 { padding: 0.625rem !important; }
+.p-3\.5 { padding: 0.875rem !important; }
+.px-2\.5 { padding-left: 0.625rem !important; padding-right: 0.625rem !important; }
+.px-3\.5 { padding-left: 0.875rem !important; padding-right: 0.875rem !important; }
+.py-0\.5 { padding-top: 0.125rem !important; padding-bottom: 0.125rem !important; }
+.py-1\.5 { padding-top: 0.375rem !important; padding-bottom: 0.375rem !important; }
+.py-2\.5 { padding-top: 0.625rem !important; padding-bottom: 0.625rem !important; }
+.pt-1\.5 { padding-top: 0.375rem !important; }
+.pt-2\.5 { padding-top: 0.625rem !important; }

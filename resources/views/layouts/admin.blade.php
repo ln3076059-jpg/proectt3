@@ -107,6 +107,14 @@
             font-weight: 600;
             padding: 0.35em 0.65em;
         }
+        .btn-primary .text-muted,
+        .btn-primary .text-secondary,
+        .btn-primary .text-dark,
+        .btn-primary .text-gray-800,
+        .list-group-item.active,
+        .list-group-item.active * {
+            color: #ffffff !important;
+        }
     </style>
     @stack('styles')
 </head>

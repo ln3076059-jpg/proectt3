@@ -557,8 +557,8 @@
                     @endif
                 </div>
 
-                {{-- Thanh Công cụ Lâm sàng Cố định Dưới đáy (Sticky Clinical Action Bar) --}}
-                <div id="stickyEmrActionBar" class="card shadow-lg border-top-primary d-print-none mb-4" style="position: sticky; bottom: 12px; z-index: 1020; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(6px); border-left: 4px solid #0284c7;">
+                {{-- Thanh Công cụ Lâm sàng Dưới đáy --}}
+                <div id="stickyEmrActionBar" class="card shadow-sm border-top-primary d-print-none mb-4" style="position: relative; background: #ffffff; border-left: 4px solid #0284c7;">
                     <div class="card-body py-2 px-3 d-flex align-items-center justify-content-between flex-wrap">
                         <div class="d-flex align-items-center my-1">
                             <span class="badge badge-light border text-gray-800 mr-2 px-2 py-1">

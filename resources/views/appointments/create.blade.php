@@ -112,33 +112,33 @@
 
                             {{-- Chọn đối tượng khám: Bản thân hoặc Người thân (Modern Segmented Cards) --}}
                             <div class="mb-4">
-                                <label class="form-label fw-bold mb-2.5 text-dark small text-uppercase" style="letter-spacing: 0.5px;">
-                                    <i class="fas fa-user-tag text-primary me-1.5"></i>Đối tượng bệnh nhân tiếp đón:
+                                <label class="form-label fw-bold mb-3 text-dark small text-uppercase" style="letter-spacing: 0.5px;">
+                                    <i class="fas fa-user-tag text-primary me-2"></i>Đối tượng bệnh nhân tiếp đón:
                                 </label>
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label class="d-flex align-items-center gap-3 p-3.5 rounded-3 border bg-white shadow-xs cursor-pointer h-100 transition-all" for="bookingForSelf" id="labelBookingSelf" style="border-color: #cbd5e1; cursor: pointer;">
+                                        <label class="d-flex align-items-center gap-3 p-4 rounded-3 border bg-white shadow-xs cursor-pointer h-100 transition-all" for="bookingForSelf" id="labelBookingSelf" style="border-color: #cbd5e1; cursor: pointer;">
                                             <input class="form-check-input mt-0 fs-5" type="radio" name="booking_for" id="bookingForSelf" value="self" checked style="cursor: pointer;">
                                             <div>
                                                 <div class="fw-bold text-dark fs-6 d-flex align-items-center gap-2">
                                                     <span>Khám cho bản thân</span>
-                                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-2.5 py-0.5 small" style="font-size: 11px;">Chủ tài khoản</span>
+                                                    <span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1 small" style="font-size: 11px;">Chủ tài khoản</span>
                                                 </div>
-                                                <small class="text-muted d-block mt-0.5">
+                                                <small class="text-muted d-block mt-1">
                                                     <strong>{{ Auth::user()->name }}</strong> • SĐT: {{ optional(Auth::user()->patient)->phone ?? Auth::user()->phone ?? 'Đã xác thực' }}
                                                 </small>
                                             </div>
                                         </label>
                                     </div>
                                     <div class="col-md-6">
-                                        <label class="d-flex align-items-center gap-3 p-3.5 rounded-3 border bg-white shadow-xs cursor-pointer h-100 transition-all" for="bookingForRelative" id="labelBookingRelative" style="border-color: #cbd5e1; cursor: pointer;">
+                                        <label class="d-flex align-items-center gap-3 p-4 rounded-3 border bg-white shadow-xs cursor-pointer h-100 transition-all" for="bookingForRelative" id="labelBookingRelative" style="border-color: #cbd5e1; cursor: pointer;">
                                             <input class="form-check-input mt-0 fs-5" type="radio" name="booking_for" id="bookingForRelative" value="relative" style="cursor: pointer;">
                                             <div>
                                                 <div class="fw-bold text-dark fs-6 d-flex align-items-center gap-2">
                                                     <span>Đặt lịch cho người thân</span>
-                                                    <span class="badge bg-info-subtle text-info rounded-pill px-2.5 py-0.5 small" style="font-size: 11px;">Hồ sơ độc lập</span>
+                                                    <span class="badge bg-info-subtle text-info rounded-pill px-3 py-1 small" style="font-size: 11px;">Hồ sơ độc lập</span>
                                                 </div>
-                                                <small class="text-muted d-block mt-0.5">
+                                                <small class="text-muted d-block mt-1">
                                                     Đăng ký cho Con nhỏ, Bố/Mẹ, Vợ/Chồng với mã bệnh án riêng biệt
                                                 </small>
                                             </div>
@@ -291,11 +291,11 @@
                             </div>
 
                             {{-- Specific Date Input & Reload Slots Toolbar --}}
-                            <div class="p-3.5 mb-4 rounded-3 border" style="background-color: #f8fafc; border-color: #e2e8f0;">
+                            <div class="p-4 mb-4 rounded-3 border" style="background-color: #f8fafc; border-color: #e2e8f0;">
                                 <div class="row g-3 align-items-center justify-content-between">
                                     <div class="col-12 col-md-7 col-lg-6">
-                                        <label for="appointment_date" class="form-label fw-bold mb-1.5 text-dark small">
-                                            <i class="far fa-calendar-alt text-primary me-1.5"></i>Hoặc chọn một ngày khám cụ thể:
+                                        <label for="appointment_date" class="form-label fw-bold mb-2 text-dark small">
+                                            <i class="far fa-calendar-alt text-primary me-2"></i>Hoặc chọn một ngày khám cụ thể:
                                         </label>
                                         <div class="input-group">
                                             <input type="date"
@@ -307,7 +307,7 @@
                                                    value="{{ old('appointment_date', $selectedDate) }}"
                                                    required
                                                    style="height: 44px; border-radius: 10px 0 0 10px; border-color: #cbd5e1; font-size: 14.5px; font-weight: 500;">
-                                            <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2 px-3.5 fw-semibold shadow-sm" id="btnReloadSlots" title="Tải lại danh sách khung giờ" style="height: 44px; border-radius: 0 10px 10px 0; white-space: nowrap;">
+                                            <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2 px-4 fw-semibold shadow-sm" id="btnReloadSlots" title="Tải lại danh sách khung giờ" style="height: 44px; border-radius: 0 10px 10px 0; white-space: nowrap;">
                                                 <i class="fas fa-sync-alt" id="reloadIcon"></i>
                                                 <span>Tải lại khung giờ</span>
                                             </button>
@@ -673,13 +673,18 @@
     box-shadow: 0 4px 14px rgba(25, 119, 204, 0.28);
 }
 .slot-card.selected .slot-time,
-.slot-card.selected .slot-subtext {
+.slot-card.selected .slot-subtext,
+.slot-card.selected .slot-subtext span,
+.slot-card.selected .slot-subtext i,
+.slot-card.selected .text-success,
+.slot-card.selected .text-muted {
     color: #ffffff !important;
 }
-.slot-card.selected .slot-badge {
-    background-color: rgba(255, 255, 255, 0.25) !important;
+.slot-card.selected .slot-badge,
+.slot-card.selected .badge {
+    background-color: rgba(255, 255, 255, 0.24) !important;
     color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.55) !important;
 }
 .slot-card.disabled {
     cursor: not-allowed;
@@ -901,7 +906,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div class="slot-card p-3 ${isAvail ? '' : 'disabled'}" data-slot-id="${slot.id}" data-time="${slot.formatted_time}">
                 <div class="d-flex justify-content-between align-items-center mb-1">
                     <span class="fw-bold ts-num slot-time" style="font-size: 14px; letter-spacing: -0.2px;">${slot.formatted_time}</span>
-                    <span class="badge ${badgeClass} rounded-pill px-2 py-0.5" style="font-size: 11px; font-weight: 600;">${badgeText}</span>
+                    <span class="badge slot-badge ${badgeClass} rounded-pill px-2 py-1" style="font-size: 11px; font-weight: 600;">${badgeText}</span>
                 </div>
                 <div class="small slot-subtext" style="font-size: 11.5px;">
                     ${isAvail ? '<span class="text-success fw-medium"><i class="fas fa-check-circle me-1" style="font-size: 10px;"></i>Có thể đăng ký</span>' : '<span class="text-muted"><i class="fas fa-ban me-1" style="font-size: 10px;"></i>Đã kín lịch</span>'}

@@ -45,7 +45,7 @@
       <!-- Quick Search Bar inside Medilab Hero -->
       <div class="row mt-3 mb-4" data-aos="fade-up" data-aos-delay="150" style="position: relative; z-index: 20;">
         <div class="col-lg-10 col-xl-8">
-          <div class="p-3.5 rounded-4 position-relative" style="background: #ffffff; border: 1px solid rgba(25, 119, 204, 0.22); box-shadow: 0 12px 36px -4px rgba(15, 23, 42, 0.09); z-index: 20;">
+          <div class="p-4 rounded-4 position-relative" style="background: #ffffff; border: 1px solid rgba(25, 119, 204, 0.22); box-shadow: 0 12px 36px -4px rgba(15, 23, 42, 0.09); z-index: 20;">
             <form action="{{ route('services.index') }}" method="GET" class="d-flex flex-column flex-sm-row gap-2" autocomplete="off">
               <div class="input-group">
                 <span class="input-group-text bg-white border-end-0 text-primary ps-3 pe-2"><i class="bi bi-search fs-6"></i></span>
@@ -53,7 +53,7 @@
                   type="text"
                   name="symptom"
                   id="heroSearchInput"
-                  class="form-control border-start-0 py-2.5"
+                  class="form-control border-start-0 py-3"
                   placeholder="Tìm gói khám, bác sĩ, chuyên khoa hoặc triệu chứng lâm sàng..."
                   aria-label="Tìm kiếm dịch vụ khám"
                   style="font-size: 15px;"
@@ -69,10 +69,10 @@
 
             <div class="d-flex flex-wrap align-items-center gap-2 mt-2 pt-1" style="font-size: 13px;">
               <span class="fw-semibold text-secondary">Tìm nhanh:</span>
-              <a href="{{ route('services.index', ['symptom' => 'Tổng quát']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-1.5 px-2.5">Khám tổng quát</a>
-              <a href="{{ route('services.index', ['symptom' => 'Siêu âm']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-1.5 px-2.5">Siêu âm thai 5D</a>
-              <a href="{{ route('services.index', ['symptom' => 'Tim mạch']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-1.5 px-2.5">Tim mạch</a>
-              <a href="{{ route('advisor.index') }}" class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle text-decoration-none py-1.5 px-2.5">
+              <a href="{{ route('services.index', ['symptom' => 'Tổng quát']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3">Khám tổng quát</a>
+              <a href="{{ route('services.index', ['symptom' => 'Siêu âm']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3">Siêu âm thai 5D</a>
+              <a href="{{ route('services.index', ['symptom' => 'Tim mạch']) }}" class="badge rounded-pill text-bg-light border text-decoration-none py-2 px-3">Tim mạch</a>
+              <a href="{{ route('advisor.index') }}" class="badge rounded-pill bg-primary-subtle text-primary border border-primary-subtle text-decoration-none py-2 px-3">
                 <i class="bi bi-clipboard2-pulse me-1"></i>Tư vấn triệu chứng
               </a>
             </div>

@@ -1191,8 +1191,10 @@ section,
 }
 
 .services .service-item:hover h3,
-.services .service-item:hover p {
-  color: var(--contrast-color);
+.services .service-item:hover p,
+.services .service-item:hover div,
+.services .service-item:hover span {
+  color: var(--contrast-color) !important;
 }
 
 /*--------------------------------------------------------------
@@ -1309,7 +1311,7 @@ section,
   }
 
   .departments .nav-link.active {
-    color: var(--accent-color);
+    color: var(--contrast-color) !important;
     background: var(--accent-color);
   }
 }
@@ -1522,9 +1524,13 @@ section,
   padding-top: 10px;
 }
 
+.faq .faq-container .faq-active h3 .num,
+.faq .faq-container .faq-active p,
+.faq .faq-container .faq-active .faq-toggle {
+  color: var(--contrast-color) !important;
+}
 .faq .faq-container .faq-active .faq-toggle {
   transform: rotate(90deg);
-  color: var(--accent-color);
 }
 
 /*--------------------------------------------------------------

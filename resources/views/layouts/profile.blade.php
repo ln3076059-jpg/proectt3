@@ -103,7 +103,7 @@
                   <span class="small d-block text-muted" style="font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.5px;">Hồ sơ bệnh nhân</span>
                   <strong class="d-block text-truncate" style="font-size: 14.5px; color: #1e293b;">{{ Auth::user()->name }}</strong>
                   @if($patient && $patient->insurance_number)
-                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-0.5" style="font-size: 10px; font-weight: 600;">
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mt-1" style="font-size: 10px; font-weight: 600;">
                       <i class="bi bi-shield-check me-1"></i>Đã có BHYT
                     </span>
                   @endif

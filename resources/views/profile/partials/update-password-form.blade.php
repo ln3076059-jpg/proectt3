@@ -87,7 +87,7 @@
 
         {{-- Password Requirements --}}
         <div class="col-12">
-            <div class="p-2.5 rounded-3 bg-light border d-flex flex-wrap align-items-center gap-3 small">
+            <div class="p-3 rounded-3 bg-light border d-flex flex-wrap align-items-center gap-3 small">
                 <span class="fw-semibold text-secondary"><i class="fas fa-shield-alt text-primary me-1"></i>Độ mạnh mật khẩu:</span>
                 <span id="length-req" class="text-muted"><i class="far fa-circle me-1"></i>8+ ký tự</span>
                 <span id="uppercase-req" class="text-muted"><i class="far fa-circle me-1"></i>Chữ in hoa</span>
@@ -103,7 +103,7 @@
             <i class="fas fa-undo me-1"></i> Đặt lại
         </button>
         <button type="submit" class="btn btn-tiki-primary px-4">
-            <i class="fas fa-key me-1.5"></i> Cập nhật mật khẩu
+            <i class="fas fa-key me-2"></i> Cập nhật mật khẩu
         </button>
     </div>
 </form>

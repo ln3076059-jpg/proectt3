@@ -86,15 +86,15 @@
         <div class="d-flex flex-column gap-2 mt-3">
             <form method="POST" action="{{ route('verification.send') }}">
                 @csrf
-                <button type="submit" class="btn btn-brand-primary w-100 rounded-pill py-2.5 fw-semibold">
-                    <i class="fa-solid fa-paper-plane me-1.5"></i> Gửi lại email xác thực
+                <button type="submit" class="btn btn-brand-primary w-100 rounded-pill py-3 fw-semibold">
+                    <i class="fa-solid fa-paper-plane me-2"></i> Gửi lại email xác thực
                 </button>
             </form>
 
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="btn btn-outline-secondary w-100 rounded-pill py-2 small">
-                    <i class="fa-solid fa-right-from-bracket me-1.5"></i> Đăng xuất tài khoản
+                    <i class="fa-solid fa-right-from-bracket me-2"></i> Đăng xuất tài khoản
                 </button>
             </form>
         </div>

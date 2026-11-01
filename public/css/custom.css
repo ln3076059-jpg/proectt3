@@ -90,8 +90,17 @@
 
 .scroll-top,
 #scroll-top {
-    bottom: 92px !important;
-    right: 24px !important;
+    bottom: 76px !important;
+    right: 12px !important;
+    width: 40px !important;
+    height: 40px !important;
+}
+
+@media (min-width: 992px) {
+    .starter-page-page .main .container-fluid {
+        padding-left: 28px !important;
+        padding-right: 64px !important;
+    }
 }
 
 *,

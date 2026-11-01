@@ -63,8 +63,8 @@
 <style>
     #chat-widget {
         position: fixed;
-        bottom: 24px;
-        right: 24px;
+        bottom: 20px;
+        right: 12px;
         z-index: 1040;
         font-family: var(--default-font, "Roboto", sans-serif);
     }
@@ -72,14 +72,14 @@
     .chat-bubble {
         background-color: var(--accent-color, #1977cc);
         color: #ffffff;
-        width: 48px;
-        height: 48px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         box-shadow: 0 4px 14px rgba(25, 119, 204, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 18px;
         cursor: pointer;
         transition: transform 0.2s ease, background-color 0.2s ease;
     }

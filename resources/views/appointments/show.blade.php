@@ -419,11 +419,11 @@
     <div class="d-flex flex-wrap gap-2 mb-3 no-print">
         <a href="{{ route('appointments.show', ['appointment' => $appointment->id, 'tab' => 'pass']) }}"
            class="btn {{ $activeApptTab !== 'progress' ? 'btn-primary shadow-sm' : 'btn-outline-primary bg-white' }} rounded-pill px-4 py-2 fw-bold small">
-            <i class="fas fa-qrcode me-1.5"></i> 1. Phiếu Tiếp Nhận Điện Tử &amp; Mã QR Kiosk
+            <i class="fas fa-qrcode me-1.5"></i> 1. Xem Phiếu Tiếp Nhận &amp; Mã QR Kiosk
         </a>
         <a href="{{ route('appointments.show', ['appointment' => $appointment->id, 'tab' => 'progress']) }}"
            class="btn {{ $activeApptTab === 'progress' ? 'btn-primary shadow-sm' : 'btn-outline-primary bg-white' }} rounded-pill px-4 py-2 fw-bold small">
-            <i class="fas fa-stream me-1.5"></i> 2. Tiến Trình 5 Chặng Lâm Sàng &amp; Viện Phí BHYT
+            <i class="fas fa-stream me-1.5"></i> 2. Theo Dõi Tiến Trình 5 Chặng &amp; Viện Phí BHYT
         </a>
     </div>
 

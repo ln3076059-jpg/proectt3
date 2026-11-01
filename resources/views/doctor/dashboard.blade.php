@@ -17,7 +17,7 @@
         @endphp
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
             @if($activeDoctorTab === 'queue')
-                <i class="fas fa-user-check text-primary mr-2"></i>Danh sách Bệnh nhân tiếp đón &amp; Hàng đợi hôm nay
+                <i class="fas fa-user-check text-primary mr-2"></i>Tiếp nhận &amp; Điều phối Hàng đợi Bệnh nhân hôm nay
             @else
                 <i class="fas fa-stethoscope text-primary mr-2"></i>Bảng điều khiển Bác sĩ: {{ $docDisplayName }}
             @endif
@@ -30,10 +30,10 @@
     </div>
     <div class="mt-2 mt-sm-0 d-flex align-items-center">
         <a href="{{ route('doctor.dashboard') }}" class="btn btn-sm {{ $activeDoctorTab !== 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm mr-2">
-            <i class="fas fa-tachometer-alt fa-sm mr-1"></i> Tổng quan ca trực
+            <i class="fas fa-tachometer-alt fa-sm mr-1"></i> Theo dõi ca trực
         </a>
         <a href="{{ route('doctor.dashboard', ['tab' => 'queue']) }}" class="btn btn-sm {{ $activeDoctorTab === 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm mr-2">
-            <i class="fas fa-clipboard-list fa-sm mr-1"></i> Hàng đợi tiếp đón ({{ $total }})
+            <i class="fas fa-clipboard-list fa-sm mr-1"></i> Tiếp nhận hàng đợi ({{ $total }})
         </a>
         <button type="button" id="toggleAutoRefreshBtn" class="btn btn-sm btn-outline-success shadow-sm mr-2" title="Tự động làm mới danh sách chờ mỗi 30 giây">
             <i class="fas fa-sync-alt fa-sm mr-1"></i> Tự động đồng bộ: <span id="autoRefreshState">Bật (30s)</span>

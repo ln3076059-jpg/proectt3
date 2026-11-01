@@ -15,7 +15,7 @@
                 @if($activeProfileTab === 'password')
                     <i class="fas fa-shield-alt text-primary"></i> Đổi Mật Khẩu &amp; Bảo Mật Tài Khoản
                 @else
-                    <i class="far fa-user text-primary"></i> Thông Tin Hồ Sơ &amp; Thẻ BHYT
+                    <i class="far fa-user text-primary"></i> Cập Nhật Thông Tin Hồ Sơ &amp; Thẻ BHYT
                 @endif
             </h4>
             <small class="text-muted">
@@ -25,7 +25,7 @@
         <div class="d-flex gap-2">
             <a href="{{ route('profile.edit', ['tab' => 'info']) }}"
                class="btn btn-sm {{ $activeProfileTab !== 'password' ? 'btn-tiki-primary' : 'btn-outline-secondary' }} rounded-pill px-3 fw-semibold">
-                <i class="far fa-id-card me-1"></i> Hồ sơ &amp; BHYT
+                <i class="far fa-id-card me-1"></i> Cập nhật hồ sơ &amp; BHYT
             </a>
             <a href="{{ route('profile.edit', ['tab' => 'password']) }}"
                class="btn btn-sm {{ $activeProfileTab === 'password' ? 'btn-tiki-primary' : 'btn-outline-secondary' }} rounded-pill px-3 fw-semibold">

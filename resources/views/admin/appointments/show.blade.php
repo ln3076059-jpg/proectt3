@@ -45,11 +45,11 @@
 <div class="d-flex flex-wrap mb-3" style="gap: 10px;">
     <a href="{{ route('admin.appointments.show', ['appointment' => $appointment->id, 'tab' => 'detail']) }}"
        class="btn btn-sm {{ $activeAdminApptTab !== 'billing' ? 'btn-primary shadow-sm font-weight-bold' : 'btn-outline-primary bg-white' }} px-3 py-2">
-        <i class="fas fa-user-md mr-1"></i> 1. Hồ sơ Người khám, Bác sĩ &amp; Thao tác tiếp đón
+        <i class="fas fa-user-md mr-1"></i> 1. Xem hồ sơ ca khám &amp; Duyệt tiếp đón
     </a>
     <a href="{{ route('admin.appointments.show', ['appointment' => $appointment->id, 'tab' => 'billing']) }}"
        class="btn btn-sm {{ $activeAdminApptTab === 'billing' ? 'btn-primary shadow-sm font-weight-bold' : 'btn-outline-primary bg-white' }} px-3 py-2">
-        <i class="fas fa-file-invoice-dollar mr-1"></i> 2. Bảng kê Viện phí Đa tầng BHYT &amp; Nhật ký Audit Trail
+        <i class="fas fa-file-invoice-dollar mr-1"></i> 2. Đối soát viện phí đa tầng BHYT &amp; Tra cứu Audit Trail
     </a>
 </div>
 

@@ -27,8 +27,8 @@
   <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
   <!-- Main Medilab CSS File -->
-  <link href="{{ asset('assets/css/main.css') }}" rel="stylesheet">
-  <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+  <link href="{{ asset('assets/css/main.css') }}?v={{ @filemtime(public_path('assets/css/main.css')) }}" rel="stylesheet">
+  <link href="{{ asset('css/custom.css') }}?v={{ @filemtime(public_path('css/custom.css')) }}" rel="stylesheet">
 
   @stack('styles')
 </head>

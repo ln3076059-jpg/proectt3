@@ -190,7 +190,7 @@
 
           {{-- 1-Click Demo Accounts Helper --}}
           <div class="ts-demo-strip">
-            <div class="d-flex align-items-center justify-content-between mb-2">
+            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-2">
               <span style="font-size: 13px; font-weight: 700; color: var(--heading-color);">
                 Tài khoản mẫu dùng thử nhanh
               </span>

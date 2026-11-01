@@ -4,21 +4,21 @@
 
 @section('content')
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
+<div class="d-sm-flex flex-wrap align-items-center justify-content-between mb-4" style="gap: 12px 16px;">
     <div>
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
             <i class="fas fa-user-md text-primary mr-2"></i>Quản lý Đội ngũ Bác sĩ
         </h1>
         <p class="text-muted small mb-0">Quản lý thông tin chuyên môn, chứng chỉ hành nghề và điều phối lịch trực của đội ngũ y bác sĩ</p>
     </div>
-    <div class="mt-2 mt-sm-0">
-        <button type="button" id="exportAdminDoctorsCsvBtn" class="btn btn-sm btn-outline-success shadow-sm mr-2">
+    <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
+        <button type="button" id="exportAdminDoctorsCsvBtn" class="btn btn-sm btn-outline-success shadow-sm m-0">
             <i class="fas fa-file-csv fa-sm mr-1"></i> Xuất CSV Bác sĩ
         </button>
-        <a href="{{ route('admin.schedules.create') }}" class="btn btn-sm btn-outline-primary shadow-sm mr-2">
+        <a href="{{ route('admin.schedules.create') }}" class="btn btn-sm btn-outline-primary shadow-sm m-0">
             <i class="fas fa-calendar-plus fa-sm mr-1"></i> Phân lịch ca trực
         </a>
-        <a href="{{ route('admin.doctors.create') }}" class="btn btn-sm btn-primary shadow-sm">
+        <a href="{{ route('admin.doctors.create') }}" class="btn btn-sm btn-primary shadow-sm m-0">
             <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm bác sĩ mới
         </a>
     </div>

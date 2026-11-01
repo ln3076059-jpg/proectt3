@@ -61,12 +61,33 @@
         .btn-group:not(.btn-group-toggle) {
             display: inline-flex !important;
             flex-wrap: wrap !important;
-            gap: 6px !important;
+            gap: 8px !important;
             box-shadow: none !important;
         }
         .btn-group:not(.btn-group-toggle) > .btn {
+            flex: 0 0 auto !important;
             border-radius: 0.35rem !important;
             margin: 0 !important;
+        }
+        #content .container-fluid > .d-sm-flex.align-items-center.justify-content-between {
+            flex-wrap: wrap !important;
+            gap: 12px 16px !important;
+        }
+        #content .container-fluid > .d-sm-flex.align-items-center.justify-content-between > div:nth-child(2) {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        #content .container-fluid > .d-sm-flex.align-items-center.justify-content-between > div:nth-child(2) > .btn,
+        #content .container-fluid > .d-sm-flex.align-items-center.justify-content-between > div:nth-child(2) > form {
+            margin: 0 !important;
+        }
+        .card-header.d-flex {
+            gap: 10px 16px;
+        }
+        .card-header > div > .btn {
+            margin: 3px 4px !important;
         }
         :not(.btn-group):not(.input-group):not(.input-group-append):not(.input-group-prepend) > .btn + .btn,
         :not(.btn-group) > .btn + form.d-inline,

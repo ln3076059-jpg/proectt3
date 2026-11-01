@@ -90,7 +90,7 @@
 
 .scroll-top,
 #scroll-top {
-    bottom: 76px !important;
+    bottom: 84px !important;
     right: 12px !important;
     width: 40px !important;
     height: 40px !important;
@@ -2041,4 +2041,13 @@ a {
 :not(.btn-group) > form.d-inline + .btn,
 :not(.btn-group) > form.d-inline + form.d-inline {
     margin-left: 6px;
+}
+.ts-demo-grid {
+    gap: 8px !important;
+}
+.ts-auth-role-tabs {
+    gap: 6px !important;
+}
+.tiki-tabs-nav {
+    gap: 8px !important;
 }

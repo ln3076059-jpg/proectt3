@@ -4,20 +4,20 @@
 
 @section('content')
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
+<div class="d-sm-flex flex-wrap align-items-center justify-content-between mb-4" style="gap: 12px 16px;">
     <div>
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
-            <i class="fas fa-chart-line text-primary mr-2"></i>Báo cáo & Thống kê Y tế Thái Thịnh (F12)
+            <i class="fas fa-chart-line text-primary mr-2"></i>Báo cáo & Thống kê Y tế Thái Thịnh
         </h1>
         <p class="text-muted small mb-0">
             Thống kê dữ liệu từ ngày <strong>{{ \Carbon\Carbon::parse($fromDate)->format('d/m/Y') }}</strong> đến ngày <strong>{{ \Carbon\Carbon::parse($toDate)->format('d/m/Y') }}</strong>
         </p>
     </div>
-    <div class="mt-2 mt-sm-0 d-flex align-items-center" style="gap: 8px;">
-        <button type="button" id="exportStatsCsvBtn" class="btn btn-sm btn-outline-success shadow-sm">
+    <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
+        <button type="button" id="exportStatsCsvBtn" class="btn btn-sm btn-outline-success shadow-sm m-0">
             <i class="fas fa-file-csv fa-sm mr-1"></i> Xuất CSV thống kê
         </button>
-        <button onclick="window.print()" class="btn btn-sm btn-primary shadow-sm">
+        <button onclick="window.print()" class="btn btn-sm btn-primary shadow-sm m-0">
             <i class="fas fa-download fa-sm text-white-50 mr-1"></i> Xuất báo cáo (In PDF)
         </button>
     </div>
@@ -25,11 +25,11 @@
 
 <!-- Date Filter Card -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
+    <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between" style="gap: 10px 16px;">
         <h6 class="m-0 font-weight-bold text-primary">
             <i class="fas fa-calendar-alt mr-1"></i> Khoảng thời gian thống kê
         </h6>
-        <div class="mt-2 mt-sm-0">
+        <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
             @php
                 $todayStr = now()->toDateString();
                 $last7Str = now()->subDays(6)->toDateString();
@@ -37,19 +37,19 @@
                 $yearStartStr = now()->startOfYear()->toDateString();
             @endphp
             <a href="{{ route('admin.statistics.index', ['from_date' => $todayStr, 'to_date' => $todayStr]) }}"
-               class="btn btn-sm {{ $fromDate === $todayStr && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} mr-1">
+               class="btn btn-sm {{ $fromDate === $todayStr && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} m-0">
                 Hôm nay
             </a>
             <a href="{{ route('admin.statistics.index', ['from_date' => $last7Str, 'to_date' => $todayStr]) }}"
-               class="btn btn-sm {{ $fromDate === $last7Str && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} mr-1">
+               class="btn btn-sm {{ $fromDate === $last7Str && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} m-0">
                 7 ngày qua
             </a>
             <a href="{{ route('admin.statistics.index', ['from_date' => $monthStartStr, 'to_date' => $todayStr]) }}"
-               class="btn btn-sm {{ $fromDate === $monthStartStr && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} mr-1">
+               class="btn btn-sm {{ $fromDate === $monthStartStr && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} m-0">
                 Tháng này
             </a>
             <a href="{{ route('admin.statistics.index', ['from_date' => $yearStartStr, 'to_date' => $todayStr]) }}"
-               class="btn btn-sm {{ $fromDate === $yearStartStr && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }}">
+               class="btn btn-sm {{ $fromDate === $yearStartStr && $toDate === $todayStr ? 'btn-primary' : 'btn-outline-secondary' }} m-0">
                 Năm nay
             </a>
         </div>

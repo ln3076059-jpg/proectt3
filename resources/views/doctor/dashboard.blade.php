@@ -28,14 +28,14 @@
             | CCHN: <span class="font-weight-bold">{{ $doctor->license_number ?? '012456/HN-CCHN' }}</span>
         </p>
     </div>
-    <div class="mt-2 mt-sm-0 d-flex align-items-center">
-        <a href="{{ route('doctor.dashboard') }}" class="btn btn-sm {{ $activeDoctorTab !== 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm mr-2">
+    <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
+        <a href="{{ route('doctor.dashboard') }}" class="btn btn-sm {{ $activeDoctorTab !== 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm m-0">
             <i class="fas fa-tachometer-alt fa-sm mr-1"></i> Theo dõi ca trực
         </a>
-        <a href="{{ route('doctor.dashboard', ['tab' => 'queue']) }}" class="btn btn-sm {{ $activeDoctorTab === 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm mr-2">
+        <a href="{{ route('doctor.dashboard', ['tab' => 'queue']) }}" class="btn btn-sm {{ $activeDoctorTab === 'queue' ? 'btn-primary' : 'btn-outline-primary' }} shadow-sm m-0">
             <i class="fas fa-clipboard-list fa-sm mr-1"></i> Tiếp nhận hàng đợi ({{ $total }})
         </a>
-        <button type="button" id="toggleAutoRefreshBtn" class="btn btn-sm btn-outline-success shadow-sm mr-2" title="Tự động làm mới danh sách chờ mỗi 30 giây">
+        <button type="button" id="toggleAutoRefreshBtn" class="btn btn-sm btn-outline-success shadow-sm m-0" title="Tự động làm mới danh sách chờ mỗi 30 giây">
             <i class="fas fa-sync-alt fa-sm mr-1"></i> Tự động đồng bộ: <span id="autoRefreshState">Bật (30s)</span>
         </button>
     </div>

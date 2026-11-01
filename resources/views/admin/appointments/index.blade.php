@@ -53,7 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 mb-2 mb-lg-0">
+            <div class="col-lg-4 mb-2 mb-lg-0">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text bg-white text-info border-info"><i class="fas fa-barcode"></i></span>
@@ -61,11 +61,11 @@
                     <input type="text" name="qr_code" id="qrCodeInput" class="form-control border-info font-weight-bold" value="{{ old('qr_code') }}" placeholder="Quét mã QR Kiosk hoặc nhập mã ca khám..." required autocomplete="off">
                 </div>
             </div>
-            <div class="col-lg-4 d-flex" style="gap: 8px;">
-                <button type="submit" class="btn btn-info font-weight-bold flex-fill shadow-sm">
+            <div class="col-lg-5 d-flex align-items-center" style="gap: 10px;">
+                <button type="submit" class="btn btn-info font-weight-bold flex-fill shadow-sm m-0" style="white-space: nowrap;">
                     <i class="fas fa-check-circle mr-1"></i> Tiếp đón ngay
                 </button>
-                <button type="button" class="btn btn-outline-primary font-weight-bold shadow-sm" data-toggle="modal" data-target="#qrScannerModal" title="Quét bằng Camera hoặc tải ảnh phiếu QR">
+                <button type="button" class="btn btn-outline-primary font-weight-bold flex-fill shadow-sm m-0" style="white-space: nowrap;" data-toggle="modal" data-target="#qrScannerModal" title="Quét bằng Camera hoặc tải ảnh phiếu QR">
                     <i class="fas fa-camera mr-1"></i> Quét ảnh / Camera
                 </button>
             </div>

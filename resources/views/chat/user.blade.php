@@ -63,7 +63,7 @@
 <style>
     #chat-widget {
         position: fixed;
-        bottom: 20px;
+        bottom: 16px;
         right: 12px;
         z-index: 1040;
         font-family: var(--default-font, "Roboto", sans-serif);

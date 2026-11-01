@@ -4,9 +4,9 @@
 
 @section('content')
 <!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
+<div class="d-sm-flex flex-wrap align-items-center justify-content-between mb-4" style="gap: 12px 16px;">
     <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-        <i class="fas fa-calendar-alt text-primary mr-2"></i>Lịch làm việc & Khung giờ khám (F04, F10)
+        <i class="fas fa-calendar-alt text-primary mr-2"></i>Lịch làm việc & Khung giờ khám
     </h1>
     <a href="{{ route('admin.schedules.create') }}" class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thiết lập ca làm việc mới

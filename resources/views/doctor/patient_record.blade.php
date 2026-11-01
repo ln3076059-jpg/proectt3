@@ -28,17 +28,17 @@
             @endif
         </p>
     </div>
-    <div class="mt-2 mt-sm-0">
-        <button type="button" onclick="window.print()" class="btn btn-sm btn-info shadow-sm mr-2" title="In bệnh án / Đơn thuốc">
+    <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
+        <button type="button" onclick="window.print()" class="btn btn-sm btn-info shadow-sm m-0" title="In bệnh án / Đơn thuốc">
             <i class="fas fa-print fa-sm text-white-50 mr-1"></i> In bệnh án / Đơn thuốc
         </button>
-        <a href="{{ route('doctor.dashboard') }}" class="btn btn-sm btn-secondary shadow-sm mr-2">
+        <a href="{{ route('doctor.dashboard') }}" class="btn btn-sm btn-secondary shadow-sm m-0">
             <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Về danh sách tiếp đón
         </a>
         @if(!$isReadOnly && $appointment->status !== 'completed')
-            <form action="{{ route('doctor.appointments.complete', $appointment) }}" method="POST" class="d-inline" onsubmit="return confirm('Xác nhận hoàn thành ca khám bệnh và trừ kho dược phẩm tương ứng?');">
+            <form action="{{ route('doctor.appointments.complete', $appointment) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Xác nhận hoàn thành ca khám bệnh và trừ kho dược phẩm tương ứng?');">
                 @csrf
-                <button type="submit" class="btn btn-sm btn-success shadow-sm">
+                <button type="submit" class="btn btn-sm btn-success shadow-sm m-0">
                     <i class="fas fa-check-double fa-sm text-white-50 mr-1"></i> Hoàn thành buổi khám
                 </button>
             </form>

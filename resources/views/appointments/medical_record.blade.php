@@ -536,7 +536,7 @@
                                                 <small class="text-secondary fst-italic d-block">Lưu ý: {{ $item->note }}</small>
                                             @endif
                                         </td>
-                                        <td class="text-end font-monospace">
+                                        <td class="text-end text-nowrap fw-semibold" style="font-variant-numeric: tabular-nums;">
                                             {{ $lineTotal > 0 ? number_format($lineTotal, 0, ',', '.') . ' đ' : 'Theo quầy dược' }}
                                         </td>
                                     </tr>
@@ -546,7 +546,7 @@
                                 <tfoot class="table-light">
                                     <tr>
                                         <td colspan="4" class="text-end fw-bold small">Tổng chi phí thuốc ước tính tại Nhà thuốc Phòng khám:</td>
-                                        <td class="text-end fw-bold text-danger font-monospace">{{ number_format($estimatedDrugTotal, 0, ',', '.') }} đ</td>
+                                        <td class="text-end fw-bold text-danger text-nowrap" style="font-variant-numeric: tabular-nums;">{{ number_format($estimatedDrugTotal, 0, ',', '.') }}&nbsp;đ</td>
                                     </tr>
                                 </tfoot>
                             @endif

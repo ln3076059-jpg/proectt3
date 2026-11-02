@@ -234,6 +234,7 @@
     font-weight: 700;
     color: #1977cc;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
 }
 
 /* QR PASS CARD */
@@ -782,10 +783,10 @@
 
                         {{-- Đơn giá khám ban đầu --}}
                         <div class="text-end flex-shrink-0">
-                            <div class="clinical-price-display">
-                                {{ number_format($appointment->total ?? $appointment->service->price ?? 300000, 0, ',', '.') }} đ
+                            <div class="clinical-price-display text-nowrap">
+                                {{ number_format($appointment->total ?? $appointment->service->price ?? 300000, 0, ',', '.') }}&nbsp;đ
                             </div>
-                            <small class="text-muted d-block">Phí khám ban đầu</small>
+                            <small class="text-muted d-block text-nowrap">Phí khám ban đầu</small>
                         </div>
                     </div>
                 </div>
@@ -840,35 +841,29 @@
                     $grandTotalMedicalFee = $consultationFee + $prescriptionFee;
                 @endphp
                 <div class="p-3 bg-light">
-                    <div class="row justify-content-between align-items-center">
-                        <div class="col-md-5 small text-muted">
+                    <div class="row justify-content-between align-items-center g-3">
+                        <div class="col-xl-5 col-12 small text-muted">
                             <i class="fas fa-info-circle me-1"></i>Chi phí bao gồm <strong>Phí khám chuyên khoa ban đầu</strong> và <strong>Đơn thuốc EMR</strong> (nếu Bác sĩ đã kê đơn).
                         </div>
-                        <div class="col-md-6 col-12 text-md-end mt-2 mt-md-0">
-                            <div class="d-flex justify-content-between justify-content-md-end gap-md-4 mb-1 small text-muted">
-                                <span>Phí khám chuyên khoa:</span>
-                                <span class="fw-semibold text-dark font-monospace">
-                                    {{ number_format($consultationFee, 0, ',', '.') }} đ
-                                </span>
+                        <div class="col-xl-7 col-12 text-xl-end">
+                            <div class="d-flex justify-content-between justify-content-xl-end align-items-center gap-3 mb-1 small text-muted">
+                                <span class="text-nowrap">Phí khám chuyên khoa:</span>
+                                <span class="fw-bold text-dark text-nowrap" style="font-variant-numeric: tabular-nums;">{{ number_format($consultationFee, 0, ',', '.') }}&nbsp;đ</span>
                             </div>
                             @if($prescriptionFee > 0)
-                                <div class="d-flex justify-content-between justify-content-md-end gap-md-4 mb-1 small text-muted">
-                                    <span>Tiền thuốc theo đơn kê EMR:</span>
-                                    <span class="fw-semibold text-dark font-monospace">
-                                        {{ number_format($prescriptionFee, 0, ',', '.') }} đ
-                                    </span>
+                                <div class="d-flex justify-content-between justify-content-xl-end align-items-center gap-3 mb-1 small text-muted">
+                                    <span class="text-nowrap">Tiền thuốc theo đơn kê EMR:</span>
+                                    <span class="fw-bold text-dark text-nowrap" style="font-variant-numeric: tabular-nums;">{{ number_format($prescriptionFee, 0, ',', '.') }}&nbsp;đ</span>
                                 </div>
                             @endif
-                            <div class="d-flex justify-content-between justify-content-md-end gap-md-4 mb-2 small text-muted">
-                                <span>Ưu đãi / Giảm trừ BHYT:</span>
-                                <span class="fw-semibold text-success font-monospace">-0 đ</span>
+                            <div class="d-flex justify-content-between justify-content-xl-end align-items-center gap-3 mb-2 small text-muted">
+                                <span class="text-nowrap">Ưu đãi / Giảm trừ BHYT:</span>
+                                <span class="fw-bold text-success text-nowrap" style="font-variant-numeric: tabular-nums;">-0&nbsp;đ</span>
                             </div>
                             <hr class="my-2 border-secondary-subtle">
-                            <div class="d-flex justify-content-between justify-content-md-end align-items-center gap-md-3">
-                                <span class="fw-bold text-dark">{{ $prescriptionFee > 0 ? 'Tổng cộng chi phí y tế:' : 'Tổng phí khám dự kiến:' }}</span>
-                                <span class="clinical-price-display" style="font-size: 22px;">
-                                    {{ number_format($grandTotalMedicalFee, 0, ',', '.') }} đ
-                                </span>
+                            <div class="d-flex justify-content-between justify-content-xl-end align-items-baseline gap-3 flex-nowrap">
+                                <span class="fw-bold text-dark text-nowrap">{{ $prescriptionFee > 0 ? 'Tổng cộng chi phí y tế:' : 'Tổng phí khám dự kiến:' }}</span>
+                                <span class="clinical-price-display text-nowrap" style="font-size: 20px;">{{ number_format($grandTotalMedicalFee, 0, ',', '.') }}&nbsp;đ</span>
                             </div>
                         </div>
                     </div>

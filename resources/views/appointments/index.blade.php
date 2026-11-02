@@ -176,9 +176,9 @@
                                 </div>
                             </div>
                             <div class="d-flex align-items-center justify-content-md-end gap-2">
-                                <small class="text-muted">Chi phí khám:</small>
-                                <span class="ts-pass-price">
-                                    {{ number_format($appointment->total ?? $appointment->total_amount ?? $appointment->service->price ?? 300000, 0, ',', '.') }} đ
+                                <small class="text-muted text-nowrap">Chi phí khám:</small>
+                                <span class="ts-pass-price text-nowrap">
+                                    {{ number_format($appointment->total ?? $appointment->total_amount ?? $appointment->service->price ?? 300000, 0, ',', '.') }}&nbsp;đ
                                 </span>
                             </div>
                         </div>

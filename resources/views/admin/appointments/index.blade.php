@@ -118,11 +118,11 @@
     </div>
 </div>
 
-<!-- Danh sách Lịch hẹn làm thành Card Cuống Phiếu Khám Đục Lỗ (Có các button y nguyên) -->
+<!-- Danh sách Lịch hẹn -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-ticket-alt mr-1"></i> Danh sách Cuống Phiếu Hẹn Khám Bệnh (Card theo ngữ cảnh)
+            <i class="fas fa-ticket-alt mr-1"></i> Danh sách Phiếu Hẹn Khám Bệnh
         </h6>
         <div class="d-flex align-items-center mt-2 mt-sm-0" style="gap: 6px;">
             <a href="{{ route('admin.appointments.index', ['date' => now()->toDateString()]) }}" class="btn btn-xs btn-outline-info py-1 px-2">

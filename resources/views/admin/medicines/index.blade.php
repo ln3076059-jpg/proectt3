@@ -139,11 +139,11 @@
     </div>
 </div>
 
-<!-- Danh mục Thuốc làm thành Card Vỉ Thuốc Dược Phẩm (Có các button y nguyên) -->
+<!-- Danh mục Thuốc -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-tablets mr-1"></i> Kệ Vỉ Thuốc &amp; Biệt dược được cấp phép (Card theo ngữ cảnh)
+            <i class="fas fa-tablets mr-1"></i> Danh mục Thuốc &amp; Biệt dược được cấp phép
         </h6>
         <span class="badge badge-primary px-3 py-2">Tổng số: {{ method_exists($medicines, 'total') ? $medicines->total() : $medicines->count() }} loại thuốc</span>
     </div>

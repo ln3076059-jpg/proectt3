@@ -71,11 +71,11 @@
     </div>
 </div>
 
-<!-- Danh sách Chuyên khoa làm thành Card Buồng Khám Lâm Sàng (Có các button y nguyên) -->
+<!-- Danh sách Chuyên khoa -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-door-open mr-1"></i> Sơ đồ Card Buồng Khám &amp; Chuyên Khoa tại 125 Thái Thịnh
+            <i class="fas fa-door-open mr-1"></i> Sơ đồ Buồng Khám &amp; Chuyên Khoa tại 125 Thái Thịnh
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($departments, 'total') ? $departments->total() : $departments->count() }} chuyên khoa

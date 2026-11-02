@@ -137,11 +137,11 @@
     </div>
 </div>
 
-<!-- Danh sách Ca khám & Sơ đồ Ghế khám dạng Card theo ngữ cảnh (Có đầy đủ các button nghiệp vụ y nguyên) -->
+<!-- Danh sách Ca khám & Sơ đồ Ghế khám -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between" style="gap: 8px;">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-chair mr-1"></i> Danh sách Ca trực &amp; Sơ đồ Ghế khám theo Ngữ cảnh
+            <i class="fas fa-chair mr-1"></i> Danh sách Ca trực &amp; Sơ đồ Ghế khám
         </h6>
         <div class="d-flex align-items-center" style="gap: 8px;">
             <span class="badge badge-success"><i class="fas fa-chair mr-1"></i>Ghế trống</span>

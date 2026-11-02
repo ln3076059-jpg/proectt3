@@ -134,11 +134,11 @@
     </div>
 </div>
 
-<!-- Danh sách Chỉ định Xét nghiệm làm thành Card Phiếu Ống Nghiệm (Có các button y nguyên) -->
+<!-- Danh sách Chỉ định Xét nghiệm -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-vial mr-1"></i> Khay Mẫu Ống Nghiệm &amp; Phiếu Chỉ Định Xét Nghiệm (Card theo ngữ cảnh)
+            <i class="fas fa-vial mr-1"></i> Khay Mẫu Ống Nghiệm &amp; Phiếu Chỉ Định Xét Nghiệm
         </h6>
         @php $testList = $labTests ?? ($tests ?? collect()); @endphp
         <span class="badge badge-primary px-3 py-2">

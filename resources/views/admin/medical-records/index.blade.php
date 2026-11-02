@@ -119,11 +119,11 @@
     </div>
 </div>
 
-<!-- Danh sách Hồ sơ Bệnh án làm thành Card Bìa Hồ Sơ EMR (Có các button y nguyên) -->
+<!-- Danh sách Hồ sơ Bệnh án -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-folder-open mr-1"></i> Danh sách Bìa Hồ Sơ Bệnh Án Điện Tử (EMR Folders)
+            <i class="fas fa-folder-open mr-1"></i> Danh sách Hồ Sơ Bệnh Án Điện Tử (EMR)
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($records, 'total') ? $records->total() : $records->count() }} bệnh án

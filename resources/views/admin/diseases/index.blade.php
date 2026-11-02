@@ -115,11 +115,11 @@
     </div>
 </div>
 
-<!-- Danh mục Bệnh Lý làm thành Card Phác Đồ Bệnh Lý ICD-10 (Có các button y nguyên) -->
+<!-- Danh mục Bệnh Lý -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-book-medical mr-1"></i> Danh mục Card Mặt Bệnh Lý &amp; Mã ICD-10 theo chuyên khoa
+            <i class="fas fa-book-medical mr-1"></i> Danh mục Mặt Bệnh Lý &amp; Mã ICD-10 theo chuyên khoa
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($diseases, 'total') ? $diseases->total() : $diseases->count() }} mặt bệnh

@@ -222,7 +222,7 @@
                     <strong class="text-success h5 mb-0" id="estCapacityPerShift">-- bệnh nhân</strong>
                 </div>
                 <div class="small font-weight-bold text-gray-700 mb-2">
-                    <i class="fas fa-chair text-primary mr-1"></i> Sơ đồ Card Ghế khám / Khung giờ dự kiến:
+                    <i class="fas fa-chair text-primary mr-1"></i> Sơ đồ Ghế khám / Khung giờ dự kiến:
                 </div>
                 <div id="estSampleSlotsPreview" class="sb-slot-grid" style="grid-template-columns: repeat(2, 1fr);"></div>
                 <hr>

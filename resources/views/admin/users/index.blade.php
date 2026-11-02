@@ -134,11 +134,11 @@
     </div>
 </div>
 
-<!-- Danh sách Tài khoản làm thành Card Thẻ Định Danh IAM (Có các button y nguyên) -->
+<!-- Danh sách Tài khoản -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-user-shield mr-1"></i> Danh sách Thẻ Định danh &amp; Phân quyền Người dùng (IAM Cards)
+            <i class="fas fa-user-shield mr-1"></i> Danh sách Tài khoản &amp; Phân quyền Người dùng
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($users, 'total') ? $users->total() : $users->count() }} tài khoản

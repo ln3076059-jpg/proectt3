@@ -117,11 +117,11 @@
     </div>
 </div>
 
-<!-- Danh mục Gói Khám làm thành Card Phiếu Dịch Vụ Y Tế (Có các button y nguyên) -->
+<!-- Danh mục Gói Khám -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-ticket-alt mr-1"></i> Danh mục Card Gói Khám &amp; Bảng Giá Dịch Vụ Y Tế tại Thái Thịnh
+            <i class="fas fa-ticket-alt mr-1"></i> Danh mục Gói Khám &amp; Bảng Giá Dịch Vụ Y Tế tại Thái Thịnh
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($services, 'total') ? $services->total() : $services->count() }} dịch vụ

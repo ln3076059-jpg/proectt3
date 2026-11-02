@@ -115,11 +115,11 @@
     </div>
 </div>
 
-<!-- Danh mục Loại Xét Nghiệm làm thành Card Kỹ Thuật CLS (Có các button y nguyên) -->
+<!-- Danh mục Loại Xét Nghiệm -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-vials mr-1"></i> Danh mục Card Loại Xét Nghiệm Cận Lâm Sàng
+            <i class="fas fa-vials mr-1"></i> Danh mục Loại Xét Nghiệm Cận Lâm Sàng
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($types, 'total') ? $types->total() : $types->count() }} danh mục

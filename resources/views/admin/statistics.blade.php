@@ -193,11 +193,11 @@
     </div>
 </div>
 
-<!-- Card chi tiết quy mô hoạt động theo từng Chuyên khoa (Làm thành Card Buồng Khoa có các button y nguyên) -->
+<!-- Chi tiết quy mô hoạt động theo từng Chuyên khoa -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-hospital mr-1"></i> Chi tiết quy mô hoạt động theo từng Chuyên khoa (Card Buồng Khoa)
+            <i class="fas fa-hospital mr-1"></i> Chi tiết quy mô hoạt động theo từng Chuyên khoa
         </h6>
     </div>
     <div class="card-body">

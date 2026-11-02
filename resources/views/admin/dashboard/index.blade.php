@@ -346,7 +346,7 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-ticket-alt mr-1"></i> Danh sách Card 10 Lịch hẹn mới nhất
+            <i class="fas fa-ticket-alt mr-1"></i> Danh sách 10 Lịch hẹn mới nhất (Card Phiếu Hẹn)
         </h6>
         <a href="{{ route('admin.appointments.index') }}" class="btn btn-sm btn-primary">
             Xem tất cả lịch hẹn <i class="fas fa-arrow-right ml-1"></i>

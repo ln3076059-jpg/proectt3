@@ -71,5 +71,26 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-hospital-alt mr-1"></i> Quy hoạch Phân khu Chuyên khoa
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3">
+                    <div class="font-weight-bold text-primary small text-uppercase mb-1">Cấu trúc Khoa phòng 125 Thái Thịnh</div>
+                    <p class="small text-gray-700 mb-0">
+                        Mỗi chuyên khoa quản lý trực tiếp danh sách <strong>Bác sĩ chuyên môn</strong>, <strong>Gói dịch vụ khám</strong> và <strong>Danh mục bệnh lý ICD-10</strong>.
+                    </p>
+                </div>
+                <div class="small text-muted">
+                    <i class="fas fa-info-circle text-primary mr-1"></i> Chuyên khoa ở trạng thái <strong>Hoạt động bình thường</strong> sẽ hiển thị ngay trên trang Đặt lịch khám trực tuyến.
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

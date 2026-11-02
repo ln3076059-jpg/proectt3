@@ -32,6 +32,69 @@
     </div>
 @endif
 
+@php
+    $sumShifts = $schedules->count();
+    $sumSlots = $schedules->sum(fn($s) => $s->timeSlots->count());
+    $sumCap = $schedules->sum(fn($s) => $s->timeSlots->sum('capacity'));
+    $sumBooked = $schedules->sum(fn($s) => $s->timeSlots->sum('booked_count'));
+@endphp
+
+<!-- 4 Thẻ KPI Nhịp điệu Ca trực & Công suất Ghế khám -->
+<div class="row mb-2">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Ca trực hiển thị</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $sumShifts }} ca làm việc</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-calendar-check fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tổng khung giờ (Slot)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $sumSlots }} khung giờ</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-clock fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tổng ghế / suất tiếp nhận</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $sumCap }} chỗ khám</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-chair fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body py-2">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Đã đặt / Còn trống</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $sumBooked }} đặt · {{ max(0, $sumCap - $sumBooked) }} trống</div>
+                    </div>
+                    <div class="col-auto"><i class="fas fa-user-check fa-2x text-gray-300"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Filter Card -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
@@ -159,51 +222,65 @@
                                 </form>
                             </td>
                         </tr>
-                        <!-- Collapsible Detailed Slots Grid Row -->
-                        <tr class="collapse" id="slots-{{ $schedule->id }}">
+                        <!-- Collapsible Detailed Slots Grid Row (Card Hình Ghế Khám / Slot Trực Quan) -->
+                        <tr class="collapse {{ $loop->first ? 'show' : '' }}" id="slots-{{ $schedule->id }}">
                             <td colspan="5" class="bg-light p-3">
-                                <h6 class="font-weight-bold text-primary mb-3">
-                                    <i class="far fa-clock mr-1"></i> Chi tiết các khung giờ của ca: {{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }} ({{ $schedule->doctor->formatted_name ?? $schedule->doctor->user->name ?? 'Bác sĩ' }})
-                                </h6>
-                                <div class="row">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap: 8px;">
+                                    <h6 class="font-weight-bold text-primary mb-0">
+                                        <i class="fas fa-chair mr-1"></i> Sơ đồ Ghế khám &amp; Khung giờ ca trực: {{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }} — {{ $schedule->doctor->formatted_name ?? $schedule->doctor->user->name ?? 'Bác sĩ' }}
+                                    </h6>
+                                    <div class="small">
+                                        <span class="badge badge-success mr-1"><i class="fas fa-chair mr-1"></i>Còn trống</span>
+                                        <span class="badge badge-primary mr-1"><i class="fas fa-user-check mr-1"></i>Đang có khách</span>
+                                        <span class="badge badge-warning text-dark mr-1"><i class="fas fa-users mr-1"></i>Đầy chỗ</span>
+                                        <span class="badge badge-danger"><i class="fas fa-lock mr-1"></i>Đã khóa</span>
+                                    </div>
+                                </div>
+                                <div class="sb-slot-grid">
                                     @forelse($schedule->timeSlots as $slot)
                                         @php
                                             $isPast = $slot->start_date_time->isPast();
                                             $isFull = $slot->booked_count >= $slot->capacity;
                                             $isLocked = $slot->status === \App\Models\TimeSlot::STATUS_LOCKED;
+                                            $slotStateClass = $isLocked ? 'is-locked' : ($isFull ? 'is-full' : ($slot->booked_count > 0 ? 'is-busy' : 'is-available'));
+                                            $pct = $slot->capacity > 0 ? min(100, round(($slot->booked_count / $slot->capacity) * 100)) : 0;
                                         @endphp
-                                        <div class="col-md-4 col-lg-3 mb-3">
-                                            <div class="card h-100 shadow-sm border {{ $isLocked ? 'border-warning' : ($isFull ? 'border-danger' : 'border-success') }}">
-                                                <div class="card-body p-2 text-center">
-                                                    <div class="font-weight-bold text-gray-800">
+                                        <div class="sb-slot-card {{ $slotStateClass }}">
+                                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                                <span class="sb-slot-seat-icon {{ $isLocked ? 'bg-danger text-white' : ($isFull ? 'bg-warning text-dark' : ($slot->booked_count > 0 ? 'bg-primary text-white' : 'bg-success text-white')) }}">
+                                                    <i class="fas {{ $isLocked ? 'fa-lock' : 'fa-chair' }}"></i>
+                                                </span>
+                                                <div class="text-right">
+                                                    <div class="font-weight-bold text-gray-800" style="font-size: 0.88rem;">
                                                         {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}
                                                     </div>
-                                                    <div class="small my-1">
-                                                        @if($isLocked)
-                                                            <span class="badge badge-warning text-dark">Đang khóa</span>
-                                                        @elseif($isPast)
-                                                            <span class="badge badge-secondary">Đã qua</span>
-                                                        @elseif($isFull)
-                                                            <span class="badge badge-danger">Hết chỗ</span>
-                                                        @else
-                                                            <span class="badge badge-success">Còn chỗ</span>
-                                                        @endif
-                                                        <span class="ml-1 font-weight-bold">{{ $slot->booked_count }}/{{ $slot->capacity }}</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-center mt-2">
-                                                        <!-- Nút Khóa / Mở -->
-                                                        <form action="{{ route('admin.schedules.slots.toggle', $slot->id) }}" method="POST" class="d-inline mr-1">
-                                                            @csrf
-                                                            @method('PATCH')
-                                                            <button type="submit" class="btn btn-sm {{ $isLocked ? 'btn-success' : 'btn-warning' }} py-0 px-2" title="{{ $isLocked ? 'Mở khóa' : 'Khóa slot' }}">
-                                                                <i class="fas {{ $isLocked ? 'fa-unlock' : 'fa-lock' }}"></i>
-                                                            </button>
-                                                        </form>
-                                                        <!-- Nút Sửa Capacity -->
-                                                        <button type="button" class="btn btn-sm btn-primary py-0 px-2" data-toggle="modal" data-target="#editCapModal-{{ $slot->id }}" title="Chỉnh hạn ngạch">
-                                                            <i class="fas fa-sliders-h"></i>
+                                                    @if($isLocked)
+                                                        <span class="badge badge-danger">Đang khóa</span>
+                                                    @elseif($isFull)
+                                                        <span class="badge badge-warning text-dark">Đầy ghế</span>
+                                                    @elseif($slot->booked_count > 0)
+                                                        <span class="badge badge-primary">Đã đặt {{ $slot->booked_count }}/{{ $slot->capacity }}</span>
+                                                    @else
+                                                        <span class="badge badge-success">Trống {{ $slot->capacity }} ghế</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            <div class="progress progress-sm mb-2">
+                                                <div class="progress-bar {{ $isLocked ? 'bg-danger' : ($isFull ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $pct }}%"></div>
+                                            </div>
+                                            <div class="d-flex align-items-center justify-content-between pt-1 border-top">
+                                                <small class="text-muted font-weight-bold">Ghế: {{ $slot->booked_count }}/{{ $slot->capacity }}</small>
+                                                <div class="d-flex align-items-center" style="gap: 4px;">
+                                                    <form action="{{ route('admin.schedules.slots.toggle', $slot->id) }}" method="POST" class="d-inline m-0">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="btn btn-xs {{ $isLocked ? 'btn-success' : 'btn-outline-warning text-dark' }} py-0 px-2 m-0" title="{{ $isLocked ? 'Mở khóa ghế/khung giờ' : 'Khóa ghế/khung giờ' }}">
+                                                            <i class="fas {{ $isLocked ? 'fa-unlock' : 'fa-lock' }}"></i>
                                                         </button>
-                                                    </div>
+                                                    </form>
+                                                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 m-0" data-toggle="modal" data-target="#editCapModal-{{ $slot->id }}" title="Chỉnh số ghế tối đa">
+                                                        <i class="fas fa-sliders-h"></i>
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -216,13 +293,13 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <div class="modal-header">
-                                                            <h6 class="modal-title font-weight-bold text-primary">Sức chứa khung giờ</h6>
+                                                            <h6 class="modal-title font-weight-bold text-primary">Sức chứa ghế khám</h6>
                                                             <button class="close" type="button" data-dismiss="modal"><span>&times;</span></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <label class="font-weight-bold text-gray-700 small">Giờ: {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}</label>
                                                             <input type="number" name="capacity" class="form-control" value="{{ $slot->capacity }}" min="1" max="100" required>
-                                                            <small class="text-muted">Số bệnh nhân tối đa trong khung giờ này</small>
+                                                            <small class="text-muted">Số ghế / bệnh nhân tối đa trong khung giờ này</small>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Đóng</button>
@@ -233,7 +310,7 @@
                                             </div>
                                         </div>
                                     @empty
-                                        <div class="col-12 text-muted text-center">Chưa có khung giờ nào được sinh ra cho ca này.</div>
+                                        <div class="text-muted text-center py-2">Chưa có khung giờ nào được sinh ra cho ca này.</div>
                                     @endforelse
                                 </div>
                             </td>

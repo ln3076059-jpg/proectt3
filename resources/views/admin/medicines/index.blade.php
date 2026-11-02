@@ -5,11 +5,15 @@
 @section('content')
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-        <i class="fas fa-pills text-primary mr-2"></i>Quản lý Danh mục Thuốc & Dược phẩm
-    </h1>
-    <a href="{{ route('admin.medicines.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm thuốc mới
+    <div>
+        <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
+            <i class="fas fa-pills text-primary mr-2"></i>Quản lý Danh mục Thuốc &amp; Dược phẩm
+        </h1>
+        <p class="text-muted small mb-0">Quản lý kho dược phẩm, hoạt chất, đơn giá bán lẻ và cảnh báo ngưỡng tồn kho an toàn</p>
+    </div>
+    <a href="{{ route('admin.medicines.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm mt-2 mt-sm-0">
+        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+        <span class="text font-weight-bold">Thêm thuốc mới</span>
     </a>
 </div>
 

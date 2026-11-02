@@ -82,5 +82,21 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-microscope mr-1"></i> Thông tin Danh mục #LAB-{{ str_pad($currentType->id, 3, '0', STR_PAD_LEFT) }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card">
+                    <div class="small mb-2"><strong>Khoa thực hiện:</strong> <span class="badge badge-info">{{ $currentType->department->name ?? 'Xét nghiệm' }}</span></div>
+                    <div class="small"><strong>Đơn giá chuẩn:</strong> <span class="text-danger font-weight-bold">{{ number_format($currentType->price ?? 150000, 0, ',', '.') }} VNĐ</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

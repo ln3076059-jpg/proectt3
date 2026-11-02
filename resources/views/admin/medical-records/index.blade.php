@@ -12,12 +12,56 @@
         <p class="text-muted small mb-0">Tra cứu toàn diện lịch sử chẩn đoán lâm sàng, đơn thuốc và kết quả xét nghiệm</p>
     </div>
     <div class="mt-2 mt-sm-0 d-flex align-items-center" style="gap: 8px;">
-        <a href="{{ route('admin.medical-records.index', ['appointment_date' => now()->toDateString()]) }}" class="btn btn-sm btn-outline-info shadow-sm">
-            <i class="fas fa-calendar-day fa-sm mr-1"></i> Ca khám hôm nay
+        <a href="{{ route('admin.medical-records.index', ['appointment_date' => now()->toDateString()]) }}" class="btn btn-info btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-calendar-day"></i></span>
+            <span class="text">Ca khám hôm nay</span>
         </a>
-        <button type="button" id="exportAdminEmrCsvBtn" class="btn btn-sm btn-outline-success shadow-sm">
-            <i class="fas fa-file-csv fa-sm mr-1"></i> Xuất CSV bệnh án
+        <button type="button" id="exportAdminEmrCsvBtn" class="btn btn-success btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-file-csv"></i></span>
+            <span class="text">Xuất CSV bệnh án</span>
         </button>
+    </div>
+</div>
+
+@php
+    $totalEmrCount = method_exists($records, 'total') ? $records->total() : $records->count();
+    $withPresCount = $records->filter(fn($r) => ($r->prescription_items_count ?? 0) > 0)->count();
+    $withLabCount = $records->filter(fn($r) => ($r->lab_tests_count ?? 0) > 0)->count();
+@endphp
+<!-- 3 Thẻ KPI Kho Lưu trữ Bệnh án Điện tử EMR -->
+<div class="row mb-2">
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng Bệnh án Điện tử (EMR)</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalEmrCount }} hồ sơ lâm sàng</div>
+                </div>
+                <i class="fas fa-file-medical-alt fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-success shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Bệnh án có Đơn thuốc ngoại trú</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $withPresCount }} đơn thuốc</div>
+                </div>
+                <i class="fas fa-pills fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-info shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Bệnh án kèm Cận lâm sàng</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $withLabCount }} hồ sơ xét nghiệm</div>
+                </div>
+                <i class="fas fa-vials fa-2x text-gray-300"></i>
+            </div>
+        </div>
     </div>
 </div>
 

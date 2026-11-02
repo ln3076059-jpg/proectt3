@@ -77,5 +77,23 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-warning">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-warning">
+                    <i class="fas fa-notes-medical mr-1"></i> Ma trận Gợi ý Triệu chứng Lâm sàng
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3" style="border-top-color: #f6c23e;">
+                    <div class="font-weight-bold text-gray-800 small text-uppercase mb-1">Phân luồng Chuyên khoa Tự động</div>
+                    <p class="small text-gray-700 mb-0">
+                        Các triệu chứng nhập tại đây được dùng làm cơ sở dữ liệu tri thức y khoa giúp gợi ý đúng chuyên khoa và bác sĩ khi bệnh nhân tra cứu triệu chứng.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

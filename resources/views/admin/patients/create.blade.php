@@ -12,11 +12,13 @@
     </a>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Thông tin hành chính & liên lạc</h6>
-    </div>
-    <div class="card-body">
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Thông tin hành chính &amp; liên lạc</h6>
+            </div>
+            <div class="card-body">
         <form action="{{ route('admin.patients.store') }}" method="POST">
             @csrf
 
@@ -98,13 +100,42 @@
             </div>
 
             <hr>
-            <div class="d-flex justify-content-end">
-                <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary mr-2">Hủy</a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save mr-1"></i> Lưu hồ sơ bệnh nhân
+            <div>
+                <button type="submit" class="btn btn-primary btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-save"></i></span>
+                    <span class="text">Lưu hồ sơ bệnh nhân</span>
                 </button>
+                <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary btn-icon-split ml-2">
+                    <span class="icon text-white-50"><i class="fas fa-times"></i></span>
+                    <span class="text">Hủy bỏ</span>
+                </a>
             </div>
         </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-success">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">
+                    <i class="fas fa-id-card-alt mr-1"></i> Thẻ Y tế &amp; Quyền lợi BHYT
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3" style="border-top-color: #1cc88a;">
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Định danh Bệnh nhân Điện tử</div>
+                    <p class="small text-gray-700 mb-0">
+                        Hồ sơ bệnh nhân sau khi khởi tạo sẽ được cấp mã định danh <code>#PAT-XXXX</code> đồng bộ với Cổng đặt khám trực tuyến và Bệnh án EMR.
+                    </p>
+                </div>
+                <ul class="list-unstyled small text-gray-700 mb-0">
+                    <li class="mb-2"><i class="fas fa-shield-alt text-success mr-2"></i>Tự động liên kết lịch sử khám và đơn thuốc theo SĐT/Email.</li>
+                    <li class="mb-2"><i class="fas fa-qrcode text-primary mr-2"></i>Hỗ trợ quét QR tiếp đón 1 chạm tại quầy Kiosk.</li>
+                    <li><i class="fas fa-file-medical text-info mr-2"></i>Lưu trữ xuyên suốt kết quả xét nghiệm cận lâm sàng.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

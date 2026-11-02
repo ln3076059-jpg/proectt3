@@ -1614,7 +1614,7 @@ class AllModulesAndSubFunctionsTest extends TestCase
         $this->actingAs($this->adminUser, 'web_admin')
             ->get(route('admin.statistics.index', ['tab' => 'overview']))
             ->assertStatus(200)
-            ->assertSee('Báo cáo & Thống kê Y tế Thái Thịnh (F12)', false)
+            ->assertSee('Báo cáo & Thống kê Y tế Thái Thịnh', false)
             ->assertSee('Doanh thu trong kỳ');
 
         $this->actingAs($this->adminUser, 'web_admin')

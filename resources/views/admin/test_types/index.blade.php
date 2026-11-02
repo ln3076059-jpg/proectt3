@@ -11,9 +11,51 @@
         </h1>
         <p class="text-muted small mb-0">Cấu hình danh mục các chỉ định xét nghiệm cận lâm sàng và khoa phòng phụ trách</p>
     </div>
-    <a href="{{ route('admin.test-types.create') }}" class="btn btn-sm btn-primary shadow-sm mt-2 mt-sm-0">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm loại xét nghiệm
+    <a href="{{ route('admin.test-types.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm mt-2 mt-sm-0">
+        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+        <span class="text font-weight-bold">Thêm loại xét nghiệm</span>
     </a>
+</div>
+
+@php
+    $totalTypeCount = method_exists($types, 'total') ? $types->total() : $types->count();
+    $avgTypePrice = $types->count() > 0 ? round($types->avg(fn($t) => (float) ($t->price ?? 150000))) : 150000;
+@endphp
+<!-- 3 Thẻ KPI Danh mục Loại xét nghiệm -->
+<div class="row mb-2">
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng danh mục Xét nghiệm</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalTypeCount }} kỹ thuật CLS</div>
+                </div>
+                <i class="fas fa-vial fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-success shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Chi phí kỹ thuật trung bình</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($avgTypePrice, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <i class="fas fa-coins fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-info shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Khoa thực hiện liên kết</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ isset($departments) ? $departments->count() : 0 }} Khoa chuyên môn</div>
+                </div>
+                <i class="fas fa-flask fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Flash Alert --}}

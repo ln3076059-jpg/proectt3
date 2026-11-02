@@ -11,12 +11,14 @@
         </h1>
         <p class="text-muted small mb-0">Thông tin khám lâm sàng, kết luận bác sĩ, đơn thuốc và kết quả cận lâm sàng</p>
     </div>
-    <div class="mt-2 mt-sm-0">
-        <button onclick="window.print()" class="btn btn-sm btn-primary shadow-sm mr-2">
-            <i class="fas fa-print fa-sm text-white-50 mr-1"></i> In Bệnh án & Đơn thuốc
+    <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
+        <button onclick="window.print()" class="btn btn-primary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-print"></i></span>
+            <span class="text">In Bệnh án & Đơn thuốc</span>
         </button>
-        <a href="{{ route('admin.medical-records.index') }}" class="btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Quay lại danh sách
+        <a href="{{ route('admin.medical-records.index') }}" class="btn btn-secondary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+            <span class="text">Quay lại danh sách</span>
         </a>
     </div>
 </div>
@@ -129,7 +131,7 @@
             </div>
         </div>
 
-        <!-- Prescriptions Table Card -->
+        <!-- Prescriptions Table Card (5 CỘT CHUẨN TABLES.HTML) -->
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h6 class="m-0 font-weight-bold text-primary">
@@ -137,29 +139,30 @@
                 </h6>
                 <span class="badge badge-primary">{{ $presItems->count() }} loại thuốc</span>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered mb-0" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-hover mb-0" width="100%" cellspacing="0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="text-center" style="width: 50px;">STT</th>
-                                <th>Tên thuốc & Hoạt chất</th>
+                                <th class="text-center" style="width: 55px;">STT</th>
+                                <th style="width: 28%;">Tên thuốc & Hoạt chất</th>
                                 <th style="width: 130px;" class="text-center">Số lượng</th>
                                 <th>Liều dùng & Hướng dẫn sử dụng</th>
+                                <th class="text-center" style="width: 110px;">Chức năng</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($presItems as $pIdx => $pres)
                                 <tr>
-                                    <td class="text-center align-middle">{{ $pIdx + 1 }}</td>
+                                    <td class="text-center align-middle font-weight-bold text-gray-600">{{ $pIdx + 1 }}</td>
                                     <td class="align-middle">
                                         <div class="font-weight-bold text-primary">{{ $pres->medicine->name ?? 'Thuốc #' . $pres->medicine_id }}</div>
                                         @if(!empty($pres->medicine->generic_name))
                                             <small class="text-muted">{{ $pres->medicine->generic_name }} {{ $pres->medicine->strength ?? '' }}</small>
                                         @endif
                                     </td>
-                                    <td class="text-center align-middle font-weight-bold">
-                                        {{ $pres->quantity }} {{ $pres->unit ?? ($pres->medicine->unit ?? 'Viên') }}
+                                    <td class="text-center align-middle font-weight-bold text-gray-800">
+                                        <span class="badge badge-light border text-primary px-2 py-1">{{ $pres->quantity }} {{ $pres->unit ?? ($pres->medicine->unit ?? 'Viên') }}</span>
                                     </td>
                                     <td class="align-middle text-gray-800">
                                         {{ $pres->usage ?: ($pres->dosage ?: 'Theo chỉ định bác sĩ') }}
@@ -167,10 +170,22 @@
                                             <div class="small text-muted font-italic">Ghi chú: {{ $pres->note }}</div>
                                         @endif
                                     </td>
+                                    <td class="text-center align-middle">
+                                        <div class="sb-action-group">
+                                            @if(!empty($pres->medicine_id))
+                                                <a href="{{ route('admin.medicines.edit', $pres->medicine_id) }}" class="btn btn-info btn-circle btn-sm" title="Xem thuốc trong kho dược">
+                                                    <i class="fas fa-capsules"></i>
+                                                </a>
+                                            @endif
+                                            <button type="button" onclick="window.print()" class="btn btn-primary btn-circle btn-sm" title="In đơn thuốc">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted py-3">Không có đơn thuốc nào được kê cho ca khám này.</td>
+                                    <td colspan="5" class="text-center text-muted py-3">Không có đơn thuốc nào được kê cho ca khám này.</td>
                                 </tr>
                             @endforelse
                         </tbody>

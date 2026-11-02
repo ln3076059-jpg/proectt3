@@ -80,5 +80,21 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-virus mr-1"></i> Hồ sơ Mặt bệnh #DIS-{{ str_pad($disease->id, 3, '0', STR_PAD_LEFT) }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-2">
+                    <div class="small mb-2"><strong>Khoa điều trị:</strong> <span class="badge badge-info">{{ $disease->department->name ?? 'Đa khoa' }}</span></div>
+                    <div class="small mb-1"><strong>Số triệu chứng gắn kết:</strong> {{ $disease->symptoms ? $disease->symptoms->count() : 0 }} triệu chứng</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

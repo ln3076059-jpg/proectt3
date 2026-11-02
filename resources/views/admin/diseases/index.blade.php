@@ -5,12 +5,57 @@
 @section('content')
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-        <i class="fas fa-virus text-primary mr-2"></i>Quản lý Danh mục Bệnh lý & Bệnh án
-    </h1>
-    <a href="{{ route('admin.diseases.create') }}" class="btn btn-sm btn-primary shadow-sm">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm bệnh mới
+    <div>
+        <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
+            <i class="fas fa-virus text-primary mr-2"></i>Quản lý Danh mục Bệnh lý &amp; Mã ICD-10
+        </h1>
+        <p class="text-muted small mb-0">Cơ sở dữ liệu các mặt bệnh lâm sàng, phân khoa điều trị và từ điển triệu chứng gợi ý</p>
+    </div>
+    <a href="{{ route('admin.diseases.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm mt-2 mt-sm-0">
+        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+        <span class="text font-weight-bold">Thêm bệnh mới</span>
     </a>
+</div>
+
+@php
+    $totalDiseaseCount = method_exists($diseases, 'total') ? $diseases->total() : $diseases->count();
+    $diseaseSymptomCount = $diseases->sum(fn($d) => $d->symptoms ? $d->symptoms->count() : 0);
+@endphp
+<!-- 3 Thẻ KPI Danh mục Bệnh lý ICD-10 -->
+<div class="row mb-2">
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng mặt bệnh lâm sàng</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDiseaseCount }} bệnh lý</div>
+                </div>
+                <i class="fas fa-book-medical fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-info shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Chuyên khoa điều trị</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ isset($departments) ? $departments->count() : 0 }} Khoa tiếp nhận</div>
+                </div>
+                <i class="fas fa-clinic-medical fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-warning shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Triệu chứng gắn kết</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $diseaseSymptomCount }} dấu hiệu lâm sàng</div>
+                </div>
+                <i class="fas fa-heartbeat fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Flash Alert --}}

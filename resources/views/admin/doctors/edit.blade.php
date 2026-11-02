@@ -14,7 +14,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-10">
+    <div class="col-lg-8">
         <!-- Form Card -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -172,6 +172,36 @@
                         <span class="text">Hủy bỏ</span>
                     </a>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Thẻ Định danh Bác sĩ & Buồng khám -->
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-user-md mr-1"></i> Thẻ Định danh Chuyên gia
+                </h6>
+            </div>
+            <div class="card-body text-center">
+                @if($doctor->avatar)
+                    <img src="{{ asset('storage/'.$doctor->avatar) }}" class="rounded-circle border shadow-sm mb-3" style="width: 90px; height: 90px; object-fit: cover;">
+                @else
+                    <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow-sm" style="width: 84px; height: 84px;">
+                        <i class="fas fa-user-md fa-2x"></i>
+                    </div>
+                @endif
+                <h6 class="font-weight-bold text-gray-800 mb-1">{{ $doctor->formatted_name ?? $doctor->user->name ?? $doctor->name }}</h6>
+                <div class="badge badge-info px-3 py-1 mb-3">{{ $doctor->department->name ?? 'Đa khoa' }}</div>
+                <div class="sb-room-card text-left mb-3">
+                    <div class="small mb-1"><i class="fas fa-id-card text-primary mr-2"></i><strong>CCHN:</strong> {{ $doctor->license_number ?: 'Đang cập nhật' }}</div>
+                    <div class="small mb-1"><i class="fas fa-door-open text-success mr-2"></i><strong>Buồng khám:</strong> {{ $doctor->room_number ?: 'P.201 - Tầng 2' }}</div>
+                    <div class="small"><i class="fas fa-calendar-check text-info mr-2"></i><strong>Ca khám phụ trách:</strong> {{ $doctor->appointments()->count() }} lượt</div>
+                </div>
+                <a href="{{ route('admin.doctors.schedule', $doctor->id) }}" class="btn btn-outline-primary btn-sm btn-block font-weight-bold">
+                    <i class="fas fa-chair mr-1"></i> Xem sơ đồ ghế khám &amp; lịch trực
+                </a>
             </div>
         </div>
     </div>

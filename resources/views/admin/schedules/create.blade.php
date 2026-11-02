@@ -222,9 +222,9 @@
                     <strong class="text-success h5 mb-0" id="estCapacityPerShift">-- bệnh nhân</strong>
                 </div>
                 <div class="small font-weight-bold text-gray-700 mb-2">
-                    <i class="far fa-clock text-primary mr-1"></i> Xem trước các mốc khung giờ sẽ sinh:
+                    <i class="fas fa-chair text-primary mr-1"></i> Sơ đồ Card Ghế khám / Khung giờ dự kiến:
                 </div>
-                <div id="estSampleSlotsPreview" class="d-flex flex-wrap" style="gap: 6px;"></div>
+                <div id="estSampleSlotsPreview" class="sb-slot-grid" style="grid-template-columns: repeat(2, 1fr);"></div>
                 <hr>
                 <div class="small text-muted">
                     <i class="fas fa-shield-alt text-info mr-1"></i> Hệ thống tự động kiểm tra chống trùng lặp ca trực và khóa an toàn các slot đã có bệnh nhân đặt.
@@ -314,14 +314,22 @@ $(document).ready(function() {
         }
 
         $('#estSlotsPerShift').text(slots.length + ' khung giờ');
-        $('#estCapacityPerShift').text((slots.length * cap) + ' bệnh nhân');
-        var badgesHtml = slots.slice(0, 12).map(function(s) {
-            return '<span class="badge badge-light border text-gray-800 px-2 py-1">' + s + '</span>';
+        $('#estCapacityPerShift').text((slots.length * cap) + ' ghế khám');
+        var cardsHtml = slots.slice(0, 8).map(function(s) {
+            return '<div class="sb-slot-card is-available p-2">' +
+                '<div class="d-flex align-items-center justify-content-between">' +
+                    '<span class="sb-slot-seat-icon bg-success text-white" style="width:26px;height:26px;font-size:0.75rem;"><i class="fas fa-chair"></i></span>' +
+                    '<div class="text-right">' +
+                        '<div class="font-weight-bold text-gray-800" style="font-size:0.78rem;">' + s + '</div>' +
+                        '<span class="badge badge-success" style="font-size:0.68rem;">' + cap + ' ghế</span>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
         }).join('');
-        if (slots.length > 12) {
-            badgesHtml += '<span class="badge badge-secondary px-2 py-1">+' + (slots.length - 12) + ' khung giờ khác</span>';
+        if (slots.length > 8) {
+            cardsHtml += '<div class="col-12 text-center small text-muted mt-1">+' + (slots.length - 8) + ' khung giờ khác</div>';
         }
-        $('#estSampleSlotsPreview').html(badgesHtml);
+        $('#estSampleSlotsPreview').html(cardsHtml);
     }
 
     $('#start_time, #end_time, select[name="slot_duration"], input[name="capacity"], #shiftPreset').on('input change', updateLiveScheduleEstimator);

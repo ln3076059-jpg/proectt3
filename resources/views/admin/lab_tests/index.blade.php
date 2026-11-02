@@ -24,6 +24,53 @@
            class="btn btn-sm shadow-sm {{ request('status') === 'completed' ? 'btn-success font-weight-bold' : 'btn-outline-success bg-white' }}">
             <i class="fas fa-check-circle mr-1"></i> Đã có kết quả
         </a>
+        <a href="{{ route('admin.test-types.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+            <span class="text font-weight-bold">Thêm danh mục XN</span>
+        </a>
+    </div>
+</div>
+
+@php
+    $labCollection = $labTests ?? ($tests ?? collect());
+    $totalLabCount = method_exists($labCollection, 'total') ? $labCollection->total() : $labCollection->count();
+    $completedLabPageCount = $labCollection->filter(fn($t) => $t->status === 'completed' || !empty($t->image))->count();
+    $pendingLabPageCount = $labCollection->count() - $completedLabPageCount;
+@endphp
+<!-- 3 Thẻ KPI Trạng thái Xét nghiệm Cận lâm sàng -->
+<div class="row mb-2">
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng chỉ định Cận lâm sàng</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalLabCount }} phiếu xét nghiệm</div>
+                </div>
+                <i class="fas fa-vials fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-warning shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Đang chờ trả kết quả (Trang hiện tại)</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $pendingLabPageCount }} mẫu đang phân tích</div>
+                </div>
+                <i class="fas fa-microscope fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-success shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đã trả kết quả &amp; Đồng bộ EMR</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $completedLabPageCount }} phiếu hoàn tất</div>
+                </div>
+                <i class="fas fa-file-medical-alt fa-2x text-gray-300"></i>
+            </div>
+        </div>
     </div>
 </div>
 

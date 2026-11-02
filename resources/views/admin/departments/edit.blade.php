@@ -77,5 +77,33 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-building mr-1"></i> Thông số Khoa: {{ $department->name }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3">
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span class="text-muted">Nhân sự Bác sĩ:</span>
+                        <strong class="text-primary">{{ $department->doctors()->count() }} bác sĩ</strong>
+                    </div>
+                    <div class="d-flex justify-content-between small mb-2">
+                        <span class="text-muted">Gói dịch vụ y tế:</span>
+                        <strong class="text-success">{{ $department->services()->count() }} dịch vụ</strong>
+                    </div>
+                    <div class="d-flex justify-content-between small">
+                        <span class="text-muted">Trạng thái:</span>
+                        <span class="badge {{ $department->is_active ? 'badge-success' : 'badge-secondary' }}">
+                            {{ $department->is_active ? 'Đang hoạt động' : 'Tạm ngưng' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

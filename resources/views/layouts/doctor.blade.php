@@ -10,11 +10,11 @@
     <title>@yield('title', 'Doctor Dashboard') - Phòng khám Đa khoa Thái Thịnh</title>
     <link rel="icon" type="image/png" href="{{ asset('image/favicon.png') }}">
 
-    <!-- Custom fonts for this template -->
+    <!-- Custom fonts for this template (SB Admin 2 Nunito + Vietnamese subset) -->
     <link href="{{ asset('sb-admin-2/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&subset=vietnamese&display=swap" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="{{ asset('sb-admin-2/css/sb-admin-2.min.css') }}" rel="stylesheet">
@@ -24,9 +24,11 @@
 
     <style>
         body {
-            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #334155;
-            background-color: #f8fafc;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-size: 0.92rem;
+            line-height: 1.5;
+            color: #5a5c69;
+            background-color: #f8f9fc;
         }
         /* Bootstrap 5 <-> Bootstrap 4 Compatibility Bridge */
         .fw-bold { font-weight: 700 !important; }

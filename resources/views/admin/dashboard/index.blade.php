@@ -245,88 +245,98 @@
     </div>
 </div>
 
-<!-- 2 Bảng Thống kê Phân khoa & Top Bác sĩ -->
+<!-- 2 Khối Card Ngữ Cảnh: Buồng Chuyên khoa & Đội ngũ Bác sĩ tiêu biểu -->
 <div class="row">
-    <!-- Bảng Khoa phòng -->
+    <!-- Card Khối Khoa phòng & Buồng khám -->
     <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
+        <div class="card shadow mb-4 h-100">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-hospital-alt mr-1"></i> Lịch hẹn phân bổ theo Chuyên khoa
+                    <i class="fas fa-hospital-alt mr-1"></i> Lưu lượng khám theo Buồng Chuyên khoa
                 </h6>
+                <a href="{{ route('admin.departments.index') }}" class="btn btn-sm btn-outline-primary py-0 px-2 font-weight-bold">Quản lý khoa</a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0" width="100%" cellspacing="0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>Chuyên khoa</th>
-                                <th class="text-center">Số bác sĩ</th>
-                                <th class="text-right">Số lịch đã tiếp nhận</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($departmentStats as $dept)
-                                <tr>
-                                    <td class="font-weight-bold text-gray-800">
-                                        <i class="fas fa-stethoscope text-primary mr-2"></i>{{ $dept->name }}
-                                    </td>
-                                    <td class="text-center">{{ $dept->doctors_count ?? 0 }}</td>
-                                    <td class="text-right font-weight-bold text-primary">
-                                        {{ $dept->appointments_count ?? 0 }} ca
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-3">Chưa có dữ liệu</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+            <div class="card-body">
+                @php
+                    $maxDeptAppt = max(1, (int) ($departmentStats->max('appointments_count') ?? 1));
+                @endphp
+                @forelse($departmentStats as $dept)
+                    @php
+                        $deptCount = (int) ($dept->appointments_count ?? 0);
+                        $deptPct = min(100, round(($deptCount / $maxDeptAppt) * 100));
+                    @endphp
+                    <div class="sb-room-card mb-2 py-2 px-3">
+                        <div class="sb-room-icon" style="width: 38px; height: 38px; font-size: 0.95rem;">
+                            <i class="fas fa-clinic-medical"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="font-weight-bold text-gray-800 small">
+                                    {{ $dept->name }}
+                                    <span class="badge badge-light border text-muted ml-1">{{ $dept->doctors_count ?? 0 }} BS</span>
+                                </span>
+                                <span class="font-weight-bold text-primary small">{{ $deptCount }} ca khám</span>
+                            </div>
+                            <div class="progress progress-sm" style="height: 6px;">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: {{ max(8, $deptPct) }}%"></div>
+                            </div>
+                        </div>
+                        <div class="ml-2">
+                            <a href="{{ route('admin.schedules.index', ['department_id' => $dept->id]) }}" class="btn btn-info btn-circle btn-sm" title="Xem ghế/ca khám của khoa">
+                                <i class="fas fa-chair"></i>
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center text-muted py-3">Chưa có dữ liệu chuyên khoa</div>
+                @endforelse
             </div>
         </div>
     </div>
 
-    <!-- Bảng Top Bác sĩ -->
+    <!-- Card Khối Bác sĩ tiêu biểu -->
     <div class="col-lg-6 mb-4">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
+        <div class="card shadow mb-4 h-100">
+            <div class="card-header py-3 d-flex align-items-center justify-content-between">
                 <h6 class="m-0 font-weight-bold text-primary">
-                    <i class="fas fa-award mr-1"></i> Top 5 Bác sĩ có nhiều lịch hẹn nhất
+                    <i class="fas fa-award mr-1"></i> Top 5 Bác sĩ phụ trách nhiều ca khám nhất
                 </h6>
+                <a href="{{ route('admin.doctors.index') }}" class="btn btn-sm btn-outline-info py-0 px-2 font-weight-bold">Đội ngũ BS</a>
             </div>
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0" width="100%" cellspacing="0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th>Bác sĩ chuyên khoa</th>
-                                <th>Khoa trực thuộc</th>
-                                <th class="text-right">Lịch phụ trách</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($topDoctors as $doc)
-                                <tr>
-                                    <td class="font-weight-bold text-gray-800">
-                                        <i class="fas fa-user-md text-info mr-2"></i>{{ $doc->formatted_name ?? $doc->user->name ?? 'N/A' }}
-                                    </td>
-                                    <td>
-                                        <span class="badge badge-info">{{ $doc->department->name ?? 'Chưa phân khoa' }}</span>
-                                    </td>
-                                    <td class="text-right font-weight-bold text-success">
-                                        {{ $doc->appointments_count ?? 0 }} lượt
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-3">Chưa có dữ liệu</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+            <div class="card-body">
+                @php
+                    $maxDocAppt = max(1, (int) ($topDoctors->max('appointments_count') ?? 1));
+                @endphp
+                @forelse($topDoctors as $doc)
+                    @php
+                        $docCount = (int) ($doc->appointments_count ?? 0);
+                        $docPct = min(100, round(($docCount / $maxDocAppt) * 100));
+                    @endphp
+                    <div class="sb-room-card mb-2 py-2 px-3" style="border-left: 3px solid #1cc88a;">
+                        <div class="sb-room-icon" style="width: 38px; height: 38px; font-size: 0.95rem; background: #eafaf4; color: #1cc88a;">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="font-weight-bold text-gray-800 small">
+                                    {{ $doc->formatted_name ?? $doc->user->name ?? 'N/A' }}
+                                    <span class="badge badge-info ml-1">{{ $doc->department->name ?? 'Chưa phân khoa' }}</span>
+                                </span>
+                                <span class="font-weight-bold text-success small">{{ $docCount }} lượt</span>
+                            </div>
+                            <div class="progress progress-sm" style="height: 6px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ max(8, $docPct) }}%"></div>
+                            </div>
+                        </div>
+                        <div class="ml-2">
+                            <a href="{{ route('admin.doctors.schedule', $doc->id) }}" class="btn btn-primary btn-circle btn-sm" title="Xem ghế/ca khám của bác sĩ">
+                                <i class="fas fa-calendar-alt"></i>
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div class="text-center text-muted py-3">Chưa có dữ liệu bác sĩ</div>
+                @endforelse
             </div>
         </div>
     </div>

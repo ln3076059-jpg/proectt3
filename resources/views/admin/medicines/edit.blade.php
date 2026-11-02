@@ -8,8 +8,9 @@
     <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
         <i class="fas fa-edit text-primary mr-2"></i>Chỉnh sửa thuốc: {{ $medicine->name }}
     </h1>
-    <a href="{{ route('admin.medicines.index') }}" class="btn btn-sm btn-secondary shadow-sm">
-        <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Quay lại danh sách
+    <a href="{{ route('admin.medicines.index') }}" class="btn btn-secondary btn-icon-split btn-sm shadow-sm">
+        <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+        <span class="text">Quay lại danh sách</span>
     </a>
 </div>
 

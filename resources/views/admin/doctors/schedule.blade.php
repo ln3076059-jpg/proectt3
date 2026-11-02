@@ -139,22 +139,51 @@
                     </div>
                 </div>
 
-                {{-- Danh sách Slot chi tiết trong ngày --}}
-                <h6 class="font-weight-bold text-gray-800 mb-2">
-                    <i class="fas fa-th-large text-primary mr-1"></i> Danh sách khung giờ (Time Slots) ngày {{ \Carbon\Carbon::parse($today)->format('d/m/Y') }}:
-                </h6>
+                {{-- Sơ đồ Ghế khám / Slot chi tiết trong ngày dạng Card hình ghế --}}
+                <div class="d-flex flex-wrap align-items-center justify-content-between mb-2" style="gap: 8px;">
+                    <h6 class="font-weight-bold text-gray-800 mb-0">
+                        <i class="fas fa-chair text-primary mr-1"></i> Sơ đồ Ghế khám &amp; Khung giờ (Time Slots) ngày {{ \Carbon\Carbon::parse($today)->format('d/m/Y') }}:
+                    </h6>
+                    <div class="small">
+                        <span class="badge badge-success mr-1"><i class="fas fa-chair mr-1"></i>Còn trống</span>
+                        <span class="badge badge-primary mr-1"><i class="fas fa-user-check mr-1"></i>Đã có BN đặt</span>
+                        <span class="badge badge-danger"><i class="fas fa-lock mr-1"></i>Đã khóa</span>
+                    </div>
+                </div>
                 @if(isset($timeSlots) && $timeSlots->isNotEmpty())
-                    <div class="d-flex flex-wrap mb-4">
+                    <div class="sb-slot-grid mb-4">
                         @foreach($timeSlots as $slot)
-                            <div class="border rounded px-3 py-2 mr-2 mb-2 {{ $slot->is_available ? 'bg-light border-primary' : 'bg-gray-200 text-muted' }}" style="min-width: 130px;">
-                                <div class="font-weight-bold small {{ $slot->is_available ? 'text-primary' : 'text-secondary' }}">
-                                    <i class="far fa-clock mr-1"></i>{{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}
+                            @php
+                                $bCount = $slot->booked_count ?? 0;
+                                $cap = max(1, $slot->capacity ?? 5);
+                                $isLocked = !$slot->is_available;
+                                $isFull = $bCount >= $cap;
+                                $slotCls = $isLocked ? 'is-locked' : ($isFull ? 'is-full' : ($bCount > 0 ? 'is-busy' : 'is-available'));
+                            @endphp
+                            <div class="sb-slot-card {{ $slotCls }}">
+                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                    <span class="sb-slot-seat-icon {{ $isLocked ? 'bg-danger text-white' : ($isFull ? 'bg-warning text-dark' : ($bCount > 0 ? 'bg-primary text-white' : 'bg-success text-white')) }}">
+                                        <i class="fas {{ $isLocked ? 'fa-lock' : 'fa-chair' }}"></i>
+                                    </span>
+                                    <div class="text-right">
+                                        <div class="font-weight-bold text-gray-800" style="font-size: 0.88rem;">
+                                            {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}
+                                        </div>
+                                        @if($isLocked)
+                                            <span class="badge badge-danger">Đã khóa</span>
+                                        @elseif($isFull)
+                                            <span class="badge badge-warning text-dark">Đầy ghế</span>
+                                        @else
+                                            <span class="badge badge-success">Còn {{ max(0, $cap - $bCount) }} ghế</span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="text-xs mt-1">
-                                    Tối đa: <strong>{{ $slot->capacity }} BN</strong>
-                                    @if(!$slot->is_available)
-                                        <span class="badge badge-secondary ml-1">Đã khóa</span>
-                                    @endif
+                                <div class="progress progress-sm mb-1">
+                                    <div class="progress-bar {{ $isLocked ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ min(100, round(($bCount / $cap) * 100)) }}%"></div>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted mt-1">
+                                    <span>Đã đặt: <strong>{{ $bCount }}/{{ $cap }}</strong></span>
+                                    <span><i class="fas fa-procedures text-primary"></i> P.{{ $doctor->room_number ?? '201' }}</span>
                                 </div>
                             </div>
                         @endforeach
@@ -167,46 +196,58 @@
                     </div>
                 @endif
 
-                {{-- Danh sách lịch hẹn của bác sĩ trong ngày --}}
+                {{-- Danh sách lịch hẹn của bác sĩ trong ngày (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) --}}
                 <h6 class="font-weight-bold text-gray-800 mb-2">
-                    <i class="fas fa-users text-primary mr-1"></i> Bệnh nhân đặt khám trong ngày ({{ isset($appointments) ? $appointments->count() : 0 }} ca):
+                    <i class="fas fa-users text-primary mr-1"></i> Danh sách Bệnh nhân đặt khám trong ngày ({{ isset($appointments) ? $appointments->count() : 0 }} ca):
                 </h6>
                 <div class="table-responsive">
-                    <table class="table table-sm table-bordered mb-0">
+                    <table class="table table-bordered mb-0" width="100%" cellspacing="0">
                         <thead class="bg-light">
                             <tr>
-                                <th>Giờ / Ca khám</th>
-                                <th>Bệnh nhân</th>
-                                <th>Gói dịch vụ</th>
-                                <th class="text-center">Trạng thái</th>
+                                <th class="text-center" style="width: 55px;">STT</th>
+                                <th style="width: 140px;">Giờ / Ca khám</th>
+                                <th>Bệnh nhân &amp; Liên hệ</th>
+                                <th>Gói dịch vụ &amp; Trạng thái</th>
+                                <th class="text-center" style="width: 130px;">Chức năng</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($appointments ?? [] as $appt)
                                 <tr>
+                                    <td class="text-center align-middle font-weight-bold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="font-weight-bold text-primary align-middle">
-                                        {{ $appt->appointment_time ? substr($appt->appointment_time, 0, 5) : ($appt->medical_examination ?? 'Cả ngày') }}
+                                        <i class="far fa-clock mr-1"></i>{{ $appt->appointment_time ? substr($appt->appointment_time, 0, 5) : ($appt->medical_examination ?? 'Cả ngày') }}
                                     </td>
                                     <td class="align-middle">
-                                        <div class="font-weight-bold">{{ $appt->patient->name ?? 'Bệnh nhân' }}</div>
-                                        <small class="text-muted">{{ $appt->patient->phone ?? '' }}</small>
+                                        <div class="font-weight-bold text-gray-800">{{ $appt->patient->name ?? 'Bệnh nhân' }}</div>
+                                        <small class="text-muted"><i class="fas fa-phone-alt mr-1"></i>{{ $appt->patient->phone ?? '---' }}</small>
                                     </td>
-                                    <td class="align-middle small">{{ $appt->service->name ?? 'Khám chuyên khoa' }}</td>
-                                    <td class="text-center align-middle">
+                                    <td class="align-middle">
+                                        <div class="small font-weight-bold text-gray-800 mb-1">{{ $appt->service->name ?? 'Khám chuyên khoa' }}</div>
                                         @if($appt->status === 'completed')
                                             <span class="badge badge-success">Đã khám</span>
                                         @elseif($appt->status === 'checked_in')
-                                            <span class="badge badge-info">Đã check-in</span>
+                                            <span class="badge badge-info">Đã check-in QR</span>
                                         @elseif($appt->status === 'confirmed')
                                             <span class="badge badge-primary">Đã xác nhận</span>
                                         @else
-                                            <span class="badge badge-warning">Chờ duyệt</span>
+                                            <span class="badge badge-warning text-dark">Chờ duyệt</span>
+                                        @endif
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <a href="{{ route('admin.appointments.show', $appt->id) }}" class="btn btn-info btn-circle btn-sm" title="Xem chi tiết ca khám">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if($appt->medicalRecord)
+                                            <a href="{{ route('admin.medical-records.show', $appt->medicalRecord->id) }}" class="btn btn-primary btn-circle btn-sm" title="Xem bệnh án EMR">
+                                                <i class="fas fa-file-medical-alt"></i>
+                                            </a>
                                         @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted py-3 small">Chưa có lịch hẹn nào trong ngày {{ \Carbon\Carbon::parse($today)->format('d/m/Y') }}.</td>
+                                    <td colspan="5" class="text-center text-muted py-3 small">Chưa có lịch hẹn nào trong ngày {{ \Carbon\Carbon::parse($today)->format('d/m/Y') }}.</td>
                                 </tr>
                             @endforelse
                         </tbody>

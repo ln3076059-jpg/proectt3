@@ -12,11 +12,13 @@
     </a>
 </div>
 
-<div class="card shadow mb-4">
-    <div class="card-header py-3">
-        <h6 class="m-0 font-weight-bold text-primary">Thông tin hành chính & liên lạc</h6>
-    </div>
-    <div class="card-body">
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Thông tin hành chính &amp; liên lạc</h6>
+            </div>
+            <div class="card-body">
         <form action="{{ route('admin.patients.update', $patient->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -94,13 +96,39 @@
             </div>
 
             <hr>
-            <div class="d-flex justify-content-end">
-                <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary mr-2">Hủy</a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save mr-1"></i> Lưu thay đổi
+            <div>
+                <button type="submit" class="btn btn-primary btn-icon-split">
+                    <span class="icon text-white-50"><i class="fas fa-save"></i></span>
+                    <span class="text">Lưu thay đổi</span>
                 </button>
+                <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary btn-icon-split ml-2">
+                    <span class="icon text-white-50"><i class="fas fa-times"></i></span>
+                    <span class="text">Hủy bỏ</span>
+                </a>
             </div>
         </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">
+                    <i class="fas fa-user-injured mr-1"></i> Tóm tắt Hồ sơ #PAT-{{ str_pad($patient->id, 4, '0', STR_PAD_LEFT) }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3">
+                    <div class="small mb-1"><strong>Họ tên:</strong> {{ $patient->name }}</div>
+                    <div class="small mb-1"><strong>Thẻ BHYT:</strong> <span class="badge badge-success">{{ $patient->insurance_number ?: 'Chưa cập nhật' }}</span></div>
+                    <div class="small"><strong>Tổng lượt khám:</strong> {{ $patient->appointments()->count() }} ca</div>
+                </div>
+                <a href="{{ route('admin.patients.show', $patient->id) }}" class="btn btn-outline-primary btn-sm btn-block font-weight-bold">
+                    <i class="fas fa-history mr-1"></i> Xem toàn bộ lịch sử khám bệnh
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 @endsection

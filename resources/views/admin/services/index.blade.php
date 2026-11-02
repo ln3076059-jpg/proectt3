@@ -11,9 +11,53 @@
         </h1>
         <p class="text-muted small mb-0">Quản lý danh mục gói khám, bảng giá niêm yết và từ khóa triệu chứng gợi ý</p>
     </div>
-    <a href="{{ route('admin.services.create') }}" class="btn btn-sm btn-primary shadow-sm mt-2 mt-sm-0">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm dịch vụ mới
+    <a href="{{ route('admin.services.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm mt-2 mt-sm-0">
+        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+        <span class="text font-weight-bold">Thêm dịch vụ mới</span>
     </a>
+</div>
+
+@php
+    $totalSrvCount = method_exists($services, 'total') ? $services->total() : $services->count();
+    $avgSrvPrice = $services->count() > 0 ? round($services->avg('price')) : 0;
+    $minSrvPrice = $services->count() > 0 ? $services->min('price') : 0;
+    $maxSrvPrice = $services->count() > 0 ? $services->max('price') : 0;
+@endphp
+<!-- 3 Thẻ KPI Bảng giá & Danh mục Gói khám -->
+<div class="row mb-2">
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng danh mục gói khám</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalSrvCount }} dịch vụ y tế</div>
+                </div>
+                <i class="fas fa-notes-medical fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-success shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Đơn giá niêm yết trung bình</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($avgSrvPrice, 0, ',', '.') }} VNĐ</div>
+                </div>
+                <i class="fas fa-tags fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card border-left-info shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Biên độ giá gói khám</div>
+                    <div class="h6 mb-0 font-weight-bold text-gray-800">{{ number_format($minSrvPrice, 0, ',', '.') }}đ &ndash; {{ number_format($maxSrvPrice, 0, ',', '.') }}đ</div>
+                </div>
+                <i class="fas fa-file-invoice-dollar fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Flash Alert --}}

@@ -96,5 +96,22 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-stethoscope mr-1"></i> Tóm tắt Gói khám #SRV-{{ str_pad($service->id, 3, '0', STR_PAD_LEFT) }}
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3">
+                    <div class="small mb-2"><strong>Khoa phụ trách:</strong> <span class="badge badge-info">{{ $service->department->name ?? 'Đa khoa' }}</span></div>
+                    <div class="small mb-2"><strong>Giá niêm yết:</strong> <span class="text-danger font-weight-bold">{{ number_format($service->price, 0, ',', '.') }} VNĐ</span></div>
+                    <div class="small"><strong>Số lượt đăng ký:</strong> {{ $service->appointments()->count() }} ca khám</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

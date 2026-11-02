@@ -10,23 +10,22 @@
     <title>@yield('title', 'Admin Dashboard') - Phòng khám Đa khoa Thái Thịnh</title>
     <link rel="icon" type="image/png" href="{{ asset('image/favicon.png') }}">
 
-    <!-- Custom fonts for this template -->
+    <!-- Custom fonts for this template (SB Admin 2 Nunito) -->
     <link href="{{ asset('sb-admin-2/vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&subset=vietnamese" rel="stylesheet">
 
-    <!-- Custom styles for this template -->
+    <!-- Custom styles for this template (SB Admin 2) -->
     <link href="{{ asset('sb-admin-2/css/sb-admin-2.min.css') }}" rel="stylesheet">
 
-    <!-- Custom styles for this page -->
+    <!-- Custom styles for this page (DataTables Bootstrap 4) -->
     <link href="{{ asset('sb-admin-2/vendor/datatables/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
 
     <style>
         body {
-            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            color: #334155;
-            background-color: #f8fafc;
+            font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            color: #5a5c69;
+            background-color: #f8f9fc;
+            font-size: 0.92rem;
         }
         /* Bootstrap 5 <-> Bootstrap 4 Compatibility Bridge */
         .fw-bold { font-weight: 700 !important; }
@@ -45,11 +44,112 @@
         .gap-2 { gap: 0.6rem !important; }
         .gap-3 { gap: 1rem !important; }
         .gap-4 { gap: 1.5rem !important; }
+
+        /* Authentic SB Admin 2 Card & Table Format (tables.html) */
+        .card {
+            border: 1px solid #e3e6f0;
+            border-radius: 0.35rem;
+        }
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+            border-top-left-radius: 0.35rem !important;
+            border-top-right-radius: 0.35rem !important;
+        }
+        .card-header h6 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #4e73df;
+        }
+        /* Ensure tables inside cards always have comfortable SB Admin 2 tables.html padding & fit page */
+        .card > .card-body.p-0 {
+            padding: 1.25rem !important;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table {
+            width: 100% !important;
+            margin-bottom: 0;
+            color: #5a5c69;
+        }
+        .table-bordered {
+            border: 1px solid #e3e6f0;
+        }
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #e3e6f0;
+        }
+        .table thead th,
+        .table tfoot th {
+            vertical-align: middle !important;
+            background-color: #f8f9fc;
+            color: #4e73df;
+            font-weight: 800;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            border-bottom-width: 2px;
+            padding: 0.75rem 0.7rem;
+        }
+        .table td {
+            vertical-align: middle !important;
+            padding: 0.72rem 0.7rem;
+            font-size: 0.89rem;
+            line-height: 1.45;
+        }
         .table td:last-child:not([colspan]) {
             white-space: nowrap;
         }
+        .table-hover tbody tr:hover {
+            background-color: rgba(78, 115, 223, 0.04);
+        }
+
+        /* Authentic SB Admin 2 Form Controls, Labels & Input Groups */
+        .form-group label,
+        form label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #4e73df;
+            margin-bottom: 0.4rem;
+        }
+        .form-group .custom-control-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: none;
+            color: #5a5c69;
+        }
+        .form-control {
+            font-size: 0.9rem;
+            color: #5a5c69;
+            border: 1px solid #d1d3e2;
+            border-radius: 0.35rem;
+            height: calc(1.5em + 0.85rem + 2px);
+            padding: 0.425rem 0.75rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        textarea.form-control {
+            height: auto;
+        }
+        .form-control:focus {
+            color: #5a5c69;
+            background-color: #fff;
+            border-color: #bac8f3;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+        .input-group-text {
+            background-color: #f8f9fc;
+            border-color: #d1d3e2;
+            color: #4e73df;
+            font-weight: 700;
+        }
+
+        /* Button Spacing & SB Admin 2 Circle / Split Buttons */
         .table td .btn:not(.btn-block) {
-            margin: 4px 5px !important;
+            margin: 3px 4px !important;
             vertical-align: middle;
         }
         .table td form.d-inline,
@@ -101,6 +201,116 @@
             margin-top: 3px;
             margin-bottom: 3px;
         }
+        .btn-circle.btn-sm {
+            width: 2rem;
+            height: 2rem;
+            padding: 0;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .btn-circle.btn-sm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Contextual Visual Cards: Clinic Chair / Slot Seat Grid (.sb-slot-card) */
+        .sb-slot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            gap: 12px;
+        }
+        .sb-slot-card {
+            position: relative;
+            border: 2px solid #d1d3e2;
+            border-radius: 0.5rem;
+            background: #ffffff;
+            padding: 12px 12px 10px 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(58, 59, 69, 0.06);
+        }
+        .sb-slot-card::before {
+            content: "";
+            position: absolute;
+            top: -5px;
+            left: 22%;
+            right: 22%;
+            height: 5px;
+            border-radius: 4px 4px 0 0;
+            background: #d1d3e2;
+        }
+        .sb-slot-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 14px rgba(58, 59, 69, 0.12);
+        }
+        .sb-slot-card.is-available {
+            border-color: #1cc88a;
+            background: linear-gradient(180deg, #f6fffb 0%, #ffffff 100%);
+        }
+        .sb-slot-card.is-available::before {
+            background: #1cc88a;
+        }
+        .sb-slot-card.is-busy {
+            border-color: #4e73df;
+            background: linear-gradient(180deg, #f4f7ff 0%, #ffffff 100%);
+        }
+        .sb-slot-card.is-busy::before {
+            background: #4e73df;
+        }
+        .sb-slot-card.is-full {
+            border-color: #f6c23e;
+            background: linear-gradient(180deg, #fffdf4 0%, #ffffff 100%);
+        }
+        .sb-slot-card.is-full::before {
+            background: #f6c23e;
+        }
+        .sb-slot-card.is-locked {
+            border-color: #e74a3b;
+            background: #f8f9fc;
+            opacity: 0.85;
+        }
+        .sb-slot-card.is-locked::before {
+            background: #e74a3b;
+        }
+        .sb-slot-seat-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 0.4rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+
+        /* Contextual Clinic Room / Department Architecture Card (.sb-room-card) */
+        .sb-room-card {
+            border: 1px solid #e3e6f0;
+            border-top: 4px solid #4e73df;
+            border-radius: 0.4rem;
+            background: #fff;
+            padding: 12px 15px;
+            box-shadow: 0 2px 8px rgba(58, 59, 69, 0.06);
+        }
+        .sb-room-card:has(> .sb-room-icon) {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .sb-room-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 0.4rem;
+            background: #eef2ff;
+            color: #4e73df;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            flex-shrink: 0;
+        }
+
         .global-toast-notification {
             position: fixed;
             top: 75px;
@@ -108,60 +318,16 @@
             z-index: 1090;
             min-width: 300px;
             max-width: 440px;
-            border-radius: 0.65rem;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.16);
+            border-radius: 0.35rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
         .sidebar-brand-icon i {
             font-size: 1.5rem;
         }
-        .card {
-            border: 1px solid #e2e8f0;
-            border-radius: 0.65rem;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
-        }
-        .card-header {
-            background-color: #ffffff;
-            border-bottom: 1px solid #f1f5f9;
-            border-top-left-radius: 0.65rem !important;
-            border-top-right-radius: 0.65rem !important;
-        }
-        .table thead th {
-            vertical-align: middle;
-            background-color: #f8fafc;
-            color: #0284c7;
-            font-weight: 700;
-            font-size: 0.82rem;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        .table td {
-            vertical-align: middle;
-        }
-        .table-hover tbody tr:hover {
-            background-color: #f0f9ff;
-        }
-        .btn-circle.btn-sm {
-            width: 2rem;
-            height: 2rem;
-            padding: 0;
-            font-size: .8rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.15s ease;
-        }
-        .btn-circle.btn-sm:hover {
-            transform: translateY(-1px);
-        }
-        .card-header h6 {
-            font-size: 0.98rem;
-            letter-spacing: .01em;
-        }
         .badge-status {
-            font-size: 0.82rem;
-            font-weight: 600;
+            font-size: 0.8rem;
+            font-weight: 700;
             padding: 0.35em 0.65em;
         }
         .btn-primary .text-muted,
@@ -494,6 +660,15 @@
 
     <script>
         $(document).ready(function () {
+            // Đồng bộ tfoot theo chuẩn SB Admin 2 tables.html cho mọi bảng dữ liệu .table-bordered
+            $('.table-bordered').each(function () {
+                var $tbl = $(this);
+                if ($tbl.find('thead').length && !$tbl.find('tfoot').length && $tbl.find('tbody tr td:not([colspan])').length > 0) {
+                    var $tfoot = $('<tfoot></tfoot>').html($tbl.find('thead').html());
+                    $tbl.find('thead').after($tfoot);
+                }
+            });
+
             // Khởi tạo DataTables chuẩn tiếng Việt cho các bảng .dataTable (bỏ qua bảng đã phân trang server-side .no-datatable)
             $('.dataTable:not(.no-datatable), #dataTable:not(.no-datatable)').each(function () {
                 if (!$.fn.DataTable.isDataTable(this)) {

@@ -11,19 +11,77 @@
         </h1>
         <p class="text-muted small mb-0">Quản lý tài khoản đăng nhập, phân quyền vai trò (Admin, Bác sĩ, Bệnh nhân) và đồng bộ hồ sơ</p>
     </div>
-    <div class="btn-group btn-group-sm mt-2 mt-sm-0 shadow-sm">
-        <a href="{{ route('admin.users.index', array_filter(['search' => request('search')])) }}" class="btn {{ request('role') === null ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
-            Tất cả ({{ $counts['all'] }})
+    <div class="d-flex flex-wrap align-items-center mt-2 mt-sm-0" style="gap: 8px;">
+        <div class="btn-group btn-group-sm shadow-sm">
+            <a href="{{ route('admin.users.index', array_filter(['search' => request('search')])) }}" class="btn {{ request('role') === null ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
+                Tất cả ({{ $counts['all'] }})
+            </a>
+            <a href="{{ route('admin.users.index', array_filter(['role' => 'admin', 'search' => request('search')])) }}" class="btn {{ request('role') === 'admin' ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
+                Quản trị ({{ $counts['admin'] }})
+            </a>
+            <a href="{{ route('admin.users.index', array_filter(['role' => 'doctor', 'search' => request('search')])) }}" class="btn {{ request('role') === 'doctor' ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
+                Bác sĩ ({{ $counts['doctor'] }})
+            </a>
+            <a href="{{ route('admin.users.index', array_filter(['role' => 'patient', 'search' => request('search')])) }}" class="btn {{ request('role') === 'patient' ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
+                Bệnh nhân ({{ $counts['patient'] }})
+            </a>
+        </div>
+        <a href="{{ route('admin.doctors.create') }}" class="btn btn-info btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-user-md"></i></span>
+            <span class="text">Cấp TK Bác sĩ</span>
         </a>
-        <a href="{{ route('admin.users.index', array_filter(['role' => 'admin', 'search' => request('search')])) }}" class="btn {{ request('role') === 'admin' ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
-            Quản trị ({{ $counts['admin'] }})
+        <a href="{{ route('admin.patients.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-user-plus"></i></span>
+            <span class="text">Cấp TK Bệnh nhân</span>
         </a>
-        <a href="{{ route('admin.users.index', array_filter(['role' => 'doctor', 'search' => request('search')])) }}" class="btn {{ request('role') === 'doctor' ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
-            Bác sĩ ({{ $counts['doctor'] }})
-        </a>
-        <a href="{{ route('admin.users.index', array_filter(['role' => 'patient', 'search' => request('search')])) }}" class="btn {{ request('role') === 'patient' ? 'btn-primary font-weight-bold' : 'btn-outline-primary bg-white' }}">
-            Bệnh nhân ({{ $counts['patient'] }})
-        </a>
+    </div>
+</div>
+
+<!-- 4 Thẻ KPI Phân quyền IAM -->
+<div class="row mb-2">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng tài khoản định danh</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $counts['all'] ?? 0 }} người dùng</div>
+                </div>
+                <i class="fas fa-users-cog fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-danger shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">Ban Quản trị (Admin)</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $counts['admin'] ?? 0 }} quản trị viên</div>
+                </div>
+                <i class="fas fa-user-shield fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tài khoản Bác sĩ (Doctor)</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $counts['doctor'] ?? 0 }} bác sĩ</div>
+                </div>
+                <i class="fas fa-user-md fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Tài khoản Bệnh nhân</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $counts['patient'] ?? 0 }} bệnh nhân</div>
+                </div>
+                <i class="fas fa-user-injured fa-2x text-gray-300"></i>
+            </div>
+        </div>
     </div>
 </div>
 

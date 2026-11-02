@@ -7,12 +7,13 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <div>
         <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
-            <i class="fas fa-hospital-alt text-primary mr-2"></i>Quản lý Khoa phòng
+            <i class="fas fa-hospital-alt text-primary mr-2"></i>Quản lý Khoa phòng &amp; Buồng khám
         </h1>
-        <p class="text-muted small mb-0">Quản lý danh sách các chuyên khoa, quy mô nhân sự bác sĩ và gói dịch vụ trực thuộc</p>
+        <p class="text-muted small mb-0">Quản lý danh sách các chuyên khoa, sơ đồ buồng khám, quy mô nhân sự bác sĩ và gói dịch vụ trực thuộc</p>
     </div>
-    <a href="{{ route('admin.departments.create') }}" class="btn btn-sm btn-primary shadow-sm mt-2 mt-sm-0">
-        <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm khoa mới
+    <a href="{{ route('admin.departments.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm mt-2 mt-sm-0">
+        <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+        <span class="text font-weight-bold">Thêm khoa mới</span>
     </a>
 </div>
 
@@ -34,6 +35,48 @@
         </button>
     </div>
 @endif
+
+<!-- Sơ đồ Trực quan Buồng khám Chuyên khoa (Contextual Room Cards) -->
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-door-open mr-1"></i> Sơ đồ Trực quan Buồng khám &amp; Phân bổ Nhân sự theo Khoa
+        </h6>
+        <span class="small text-muted">
+            <i class="fas fa-check-circle text-success mr-1"></i>Đang hoạt động: <strong>{{ $departments->where('is_active', true)->count() }}</strong> buồng khoa
+        </span>
+    </div>
+    <div class="card-body pb-2">
+        <div class="row">
+            @foreach($departments->take(6) as $roomDept)
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-room-card h-100">
+                        <div class="sb-room-icon" style="{{ ($roomDept->is_active ?? true) ? '' : 'background:#eaecf4;color:#858796;' }}">
+                            <i class="fas fa-clinic-medical"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="font-weight-bold text-gray-800 small">{{ $roomDept->name }}</span>
+                                <span class="badge {{ ($roomDept->is_active ?? true) ? 'badge-success' : 'badge-secondary' }}" style="font-size: 10px;">
+                                    P.{{ 100 + $roomDept->id }}
+                                </span>
+                            </div>
+                            <div class="small text-muted mt-1">
+                                <span class="mr-2"><i class="fas fa-user-md text-primary mr-1"></i><strong>{{ $roomDept->doctors_count ?? 0 }}</strong> Bác sĩ</span>
+                                <span><i class="fas fa-stethoscope text-info mr-1"></i><strong>{{ $roomDept->services_count ?? 0 }}</strong> Gói khám</span>
+                            </div>
+                        </div>
+                        <div class="ml-2">
+                            <a href="{{ route('admin.schedules.index', ['department_id' => $roomDept->id]) }}" class="btn btn-outline-primary btn-circle btn-sm" title="Xem ghế khám & lịch trực khoa này">
+                                <i class="fas fa-chair"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
 
 <!-- Search & Filter Card -->
 <div class="card shadow mb-4">

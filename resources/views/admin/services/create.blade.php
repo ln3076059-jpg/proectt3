@@ -89,5 +89,26 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-success">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-success">
+                    <i class="fas fa-tags mr-1"></i> Chuẩn Niêm yết Bảng giá Y tế
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3" style="border-top-color: #1cc88a;">
+                    <div class="font-weight-bold text-success small text-uppercase mb-1">Gói khám Chuyên khoa</div>
+                    <p class="small text-gray-700 mb-0">
+                        Đơn giá dịch vụ được công khai minh bạch trên Cổng Đặt lịch khám và tự động tính vào Phiếu tiếp đón / Hóa đơn VNPay.
+                    </p>
+                </div>
+                <div class="small text-muted">
+                    <i class="fas fa-check-circle text-success mr-1"></i> Hỗ trợ áp dụng khấu trừ đồng chi trả BHYT tại bước đối soát viện phí.
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

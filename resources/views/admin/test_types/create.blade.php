@@ -78,5 +78,23 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-info">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-info">
+                    <i class="fas fa-vials mr-1"></i> Tiêu chuẩn Cận lâm sàng
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-2" style="border-top-color: #36b9cc;">
+                    <div class="font-weight-bold text-info small text-uppercase mb-1">Chỉ định Từ Buồng khám Bác sĩ</div>
+                    <p class="small text-gray-700 mb-0">
+                        Loại xét nghiệm sau khi tạo sẽ xuất hiện ngay trong danh mục chỉ định cận lâm sàng trên màn hình Bệnh án điện tử EMR của Bác sĩ.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection

@@ -11,15 +11,18 @@
         </h1>
         <p class="text-muted small mb-0">Mã hồ sơ: #PAT-{{ str_pad($patient->id, 4, '0', STR_PAD_LEFT) }} | Thông tin hành chính, thẻ BHYT và lịch sử khám bệnh</p>
     </div>
-    <div class="mt-2 mt-sm-0">
-        <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-primary shadow-sm mr-2">
-            <i class="fas fa-print fa-sm mr-1"></i> In hồ sơ hành chính
+    <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
+        <button type="button" onclick="window.print()" class="btn btn-info btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-print"></i></span>
+            <span class="text">In hồ sơ hành chính</span>
         </button>
-        <a href="{{ route('admin.patients.edit', $patient->id) }}" class="btn btn-sm btn-warning shadow-sm mr-2">
-            <i class="fas fa-edit fa-sm mr-1"></i> Chỉnh sửa hồ sơ
+        <a href="{{ route('admin.patients.edit', $patient->id) }}" class="btn btn-warning btn-icon-split btn-sm shadow-sm m-0 text-dark">
+            <span class="icon text-dark"><i class="fas fa-edit"></i></span>
+            <span class="text font-weight-bold">Chỉnh sửa hồ sơ</span>
         </a>
-        <a href="{{ route('admin.patients.index') }}" class="btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Quay lại danh sách
+        <a href="{{ route('admin.patients.index') }}" class="btn btn-secondary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+            <span class="text">Quay lại danh sách</span>
         </a>
     </div>
 </div>
@@ -107,16 +110,16 @@
                     <i class="fas fa-file-medical-alt mr-1"></i> Xem tất cả bệnh án EMR
                 </a>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover mb-0" width="100%" cellspacing="0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="text-center" style="width: 50px;">STT</th>
-                                <th>Mã lịch & Ngày khám</th>
+                                <th class="text-center" style="width: 55px;">STT</th>
+                                <th style="width: 170px;">Mã lịch & Ngày khám</th>
                                 <th>Bác sĩ & Dịch vụ</th>
-                                <th class="text-center">Trạng thái khám</th>
-                                <th class="text-center" style="width: 130px;">Chức năng</th>
+                                <th class="text-center" style="width: 150px;">Trạng thái khám</th>
+                                <th class="text-center" style="width: 135px;">Chức năng</th>
                             </tr>
                         </thead>
                         <tbody>

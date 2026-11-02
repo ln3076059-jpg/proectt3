@@ -12,15 +12,71 @@
         <p class="text-muted small mb-0">Quản lý thông tin chuyên môn, chứng chỉ hành nghề và điều phối lịch trực của đội ngũ y bác sĩ</p>
     </div>
     <div class="mt-2 mt-sm-0 d-flex flex-wrap align-items-center" style="gap: 8px;">
-        <button type="button" id="exportAdminDoctorsCsvBtn" class="btn btn-sm btn-outline-success shadow-sm m-0">
-            <i class="fas fa-file-csv fa-sm mr-1"></i> Xuất CSV Bác sĩ
+        <button type="button" id="exportAdminDoctorsCsvBtn" class="btn btn-success btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-file-csv"></i></span>
+            <span class="text">Xuất CSV Bác sĩ</span>
         </button>
-        <a href="{{ route('admin.schedules.create') }}" class="btn btn-sm btn-outline-primary shadow-sm m-0">
-            <i class="fas fa-calendar-plus fa-sm mr-1"></i> Phân lịch ca trực
+        <a href="{{ route('admin.schedules.create') }}" class="btn btn-info btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-calendar-plus"></i></span>
+            <span class="text">Phân lịch ca trực</span>
         </a>
-        <a href="{{ route('admin.doctors.create') }}" class="btn btn-sm btn-primary shadow-sm m-0">
-            <i class="fas fa-plus fa-sm text-white-50 mr-1"></i> Thêm bác sĩ mới
+        <a href="{{ route('admin.doctors.create') }}" class="btn btn-primary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-plus"></i></span>
+            <span class="text font-weight-bold">Thêm bác sĩ mới</span>
         </a>
+    </div>
+</div>
+
+@php
+    $totalDocCount = method_exists($doctors, 'total') ? $doctors->total() : $doctors->count();
+    $activeDocOnPage = $doctors->where('is_active', true)->count();
+    $totalApptsOnPage = $doctors->sum('appointments_count');
+@endphp
+<!-- 4 Thẻ KPI Đội ngũ Y Bác sĩ -->
+<div class="row mb-2">
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-primary shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tổng đội ngũ Bác sĩ</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalDocCount }} Chuyên gia</div>
+                </div>
+                <i class="fas fa-user-md fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-success shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Trạng thái trực khám</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $activeDocOnPage }} BS đang mở lịch</div>
+                </div>
+                <i class="fas fa-stethoscope fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-info shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Chuyên khoa phụ trách</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ isset($departments) ? $departments->count() : 0 }} Khoa lâm sàng</div>
+                </div>
+                <i class="fas fa-hospital-alt fa-2x text-gray-300"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-md-6 mb-3">
+        <div class="card border-left-warning shadow-sm h-100 py-2">
+            <div class="card-body py-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Ca hẹn phụ trách</div>
+                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $totalApptsOnPage }} lượt khám</div>
+                </div>
+                <i class="fas fa-calendar-check fa-2x text-gray-300"></i>
+            </div>
+        </div>
     </div>
 </div>
 

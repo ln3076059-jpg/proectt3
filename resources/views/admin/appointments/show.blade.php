@@ -5,15 +5,20 @@
 @section('content')
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800 font-weight-bold">
-        <i class="fas fa-calendar-check text-primary mr-2"></i>Chi tiết Lịch hẹn #{{ $appointment->appointment_code ?? str_pad($appointment->id, 6, '0', STR_PAD_LEFT) }}
-    </h1>
+    <div>
+        <h1 class="h3 mb-1 text-gray-800 font-weight-bold">
+            <i class="fas fa-calendar-check text-primary mr-2"></i>Chi tiết Lịch hẹn #{{ $appointment->appointment_code ?? str_pad($appointment->id, 6, '0', STR_PAD_LEFT) }}
+        </h1>
+        <p class="text-muted small mb-0">Quản trị ca khám, quét QR tiếp đón, đối soát viện phí đa tầng BHYT & lịch sử Audit Trail</p>
+    </div>
     <div class="mt-2 mt-sm-0 d-flex align-items-center" style="gap: 8px;">
-        <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-primary shadow-sm">
-            <i class="fas fa-print fa-sm mr-1"></i> In Phiếu Tiếp Đón &amp; Biên Lai
+        <button type="button" onclick="window.print()" class="btn btn-primary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-print"></i></span>
+            <span class="text">In Phiếu Tiếp Đón &amp; Biên Lai</span>
         </button>
-        <a href="{{ route('admin.appointments.index') }}" class="btn btn-sm btn-secondary shadow-sm">
-            <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Quay lại danh sách
+        <a href="{{ route('admin.appointments.index') }}" class="btn btn-secondary btn-icon-split btn-sm shadow-sm m-0">
+            <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+            <span class="text">Quay lại danh sách</span>
         </a>
     </div>
 </div>
@@ -399,39 +404,50 @@
             </div>
         </div>
 
-        <!-- Audit Trail Card -->
+        <!-- Audit Trail Card (5 CỘT CHUẨN TABLES.HTML) -->
         <div class="card shadow mb-4 {{ $activeAdminApptTab === 'billing' ? '' : 'd-none' }}">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-history mr-1"></i> Lịch sử thay đổi trạng thái (Audit Trail)
                 </h6>
             </div>
-            <div class="card-body p-0">
+            <div class="card-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered mb-0" width="100%" cellspacing="0">
+                    <table class="table table-bordered table-hover mb-0" width="100%" cellspacing="0">
                         <thead class="bg-light">
                             <tr>
-                                <th>Thời gian</th>
-                                <th>Chuyển trạng thái</th>
-                                <th>Người thực hiện</th>
-                                <th>Ghi chú</th>
+                                <th class="text-center" style="width: 50px;">STT</th>
+                                <th style="width: 135px;">Thời gian</th>
+                                <th style="width: 180px;">Chuyển trạng thái</th>
+                                <th>Người thực hiện &amp; Ghi chú</th>
+                                <th class="text-center" style="width: 95px;">Chức năng</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($appointment->statusHistories as $history)
+                            @forelse($appointment->statusHistories as $hIdx => $history)
                                 <tr>
-                                    <td class="small">{{ \Carbon\Carbon::parse($history->created_at)->format('d/m/Y H:i') }}</td>
-                                    <td>
+                                    <td class="text-center align-middle font-weight-bold text-gray-600">{{ $hIdx + 1 }}</td>
+                                    <td class="small align-middle font-weight-bold text-gray-800">{{ \Carbon\Carbon::parse($history->created_at)->format('d/m/Y H:i') }}</td>
+                                    <td class="align-middle">
                                         <span class="badge badge-light border">{{ $history->from_status ?? 'Mới' }}</span>
                                         <i class="fas fa-arrow-right text-muted mx-1"></i>
                                         <span class="badge badge-primary">{{ $history->to_status }}</span>
                                     </td>
-                                    <td class="small">{{ $history->changedByUser->name ?? 'Hệ thống' }}</td>
-                                    <td class="small text-muted">{{ $history->note ?? '-' }}</td>
+                                    <td class="small align-middle">
+                                        <div class="font-weight-bold text-gray-800"><i class="fas fa-user-check text-primary mr-1"></i>{{ $history->changedByUser->name ?? 'Hệ thống' }}</div>
+                                        <div class="text-muted">{{ $history->note ?? '-' }}</div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <div class="sb-action-group">
+                                            <button type="button" onclick="window.print()" class="btn btn-info btn-circle btn-sm" title="In sao kê đối soát">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted small py-3">Chưa có lịch sử thay đổi trạng thái.</td>
+                                    <td colspan="5" class="text-center text-muted small py-3">Chưa có lịch sử thay đổi trạng thái.</td>
                                 </tr>
                             @endforelse
                         </tbody>

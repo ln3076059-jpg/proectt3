@@ -11,8 +11,9 @@
         </h1>
         <p class="text-muted small mb-0">Cập nhật thông tin định danh, phân quyền truy cập và đồng bộ hồ sơ chuyên môn</p>
     </div>
-    <a href="{{ route('admin.users.index') }}" class="btn btn-sm btn-secondary shadow-sm mt-2 mt-sm-0">
-        <i class="fas fa-arrow-left fa-sm text-white-50 mr-1"></i> Quay lại danh sách
+    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary btn-icon-split btn-sm shadow-sm mt-2 mt-sm-0">
+        <span class="icon text-white-50"><i class="fas fa-arrow-left"></i></span>
+        <span class="text">Quay lại danh sách</span>
     </a>
 </div>
 

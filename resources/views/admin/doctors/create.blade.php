@@ -14,7 +14,7 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-10">
+    <div class="col-lg-8">
         <!-- Form Card -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
@@ -150,6 +150,33 @@
                         <span class="text">Hủy bỏ</span>
                     </a>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cột phải: Thẻ Quy chuẩn CCHN & Buồng khám Chuyên khoa -->
+    <div class="col-lg-4">
+        <div class="card shadow mb-4 border-left-primary">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">
+                    <i class="fas fa-id-badge mr-1"></i> Tiêu chuẩn Hồ sơ Y Bác sĩ
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="sb-room-card mb-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <span class="badge badge-primary px-2 py-1"><i class="fas fa-procedures mr-1"></i>Buồng khám tiêu chuẩn</span>
+                        <span class="text-xs font-weight-bold text-success"><i class="fas fa-check-circle mr-1"></i>Đồng bộ Kiosk</span>
+                    </div>
+                    <p class="small text-gray-700 mb-0">
+                        Mỗi bác sĩ được gắn với <strong>Chuyên khoa</strong>, <strong>Số CCHN Bộ Y Tế</strong> và <strong>Buồng khám cố định</strong> để hiển thị trên bảng gọi số tự động.
+                    </p>
+                </div>
+                <ul class="list-unstyled small text-gray-700 mb-0">
+                    <li class="mb-2"><i class="fas fa-check text-success mr-2"></i>Tự động cấp tài khoản Cổng Bác sĩ (`Role: Doctor`).</li>
+                    <li class="mb-2"><i class="fas fa-check text-success mr-2"></i>Cho phép cấu hình ca trực &amp; sơ đồ ghế khám ngay sau khi tạo.</li>
+                    <li><i class="fas fa-check text-success mr-2"></i>Hỗ trợ ký nhận kết luận Bệnh án điện tử EMR.</li>
+                </ul>
             </div>
         </div>
     </div>

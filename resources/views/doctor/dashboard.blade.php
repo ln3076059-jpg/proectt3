@@ -77,7 +77,7 @@
             <div class="card-body">
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1 text-nowrap">
                             Đã tiếp nhận (Check-in)
                         </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $checkedIn }} bệnh nhân</div>
@@ -139,24 +139,24 @@
         $nextCode = $nextCheckedInAppt->appointment_code ?: ('TT-' . str_pad($nextCheckedInAppt->id, 5, '0', STR_PAD_LEFT));
     @endphp
     <div class="card border-left-info shadow mb-4" style="background: linear-gradient(90deg, #F0F9FF 0%, #FFFFFF 100%);">
-        <div class="card-body py-3 d-flex align-items-center justify-content-between flex-wrap">
-            <div class="d-flex align-items-center mb-2 mb-md-0">
-                <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 46px; height: 46px;">
+        <div class="card-body py-3 px-4 d-flex align-items-center justify-content-between flex-wrap" style="gap: 14px 20px;">
+            <div class="d-flex align-items-center" style="flex: 1 1 320px; min-width: 0;">
+                <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center mr-3 shadow-sm flex-shrink-0" style="width: 46px; height: 46px;">
                     <i class="fas fa-bell fa-lg"></i>
                 </div>
-                <div>
+                <div style="min-width: 0;">
                     <div class="text-xs font-weight-bold text-info text-uppercase">
                         Hàng đợi ưu tiên — Bệnh nhân đã Check-in QR đang chờ trước buồng khám ({{ $checkedIn }} người)
                     </div>
-                    <div class="h6 mb-0 font-weight-bold text-gray-900 mt-1">
-                        Ca kế tiếp: <span class="text-primary">{{ $nextPatientName }}</span>
-                        <span class="badge badge-info ml-1">#{{ $nextCode }}</span>
-                        <small class="text-muted ml-2">• Dịch vụ: {{ $nextCheckedInAppt->service->name ?? 'Khám chuyên khoa' }}</small>
+                    <div class="h6 mb-0 font-weight-bold text-gray-900 mt-1 d-flex flex-wrap align-items-center" style="gap: 6px;">
+                        <span>Ca kế tiếp: <span class="text-primary">{{ $nextPatientName }}</span></span>
+                        <span class="badge badge-info">#{{ $nextCode }}</span>
+                        <small class="text-muted">• Dịch vụ: {{ $nextCheckedInAppt->service->name ?? 'Khám chuyên khoa' }}</small>
                     </div>
                 </div>
             </div>
-            <div>
-                <a href="{{ route('doctor.patient.record', $nextCheckedInAppt) }}" class="btn btn-info font-weight-bold shadow-sm">
+            <div class="flex-shrink-0">
+                <a href="{{ route('doctor.patient.record', $nextCheckedInAppt) }}" class="btn btn-info font-weight-bold shadow-sm text-nowrap px-3 py-2">
                     <i class="fas fa-stethoscope mr-1"></i> Gọi vào khám &amp; Mở EMR ngay
                 </a>
             </div>
@@ -229,28 +229,28 @@
 <div class="row {{ $activeDoctorTab === 'queue' ? 'd-none' : '' }}">
     <div class="col-lg-6 mb-4">
         <div class="card shadow h-100">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center" style="gap: 10px;">
                 <h6 class="m-0 font-weight-bold text-primary">
                     <i class="fas fa-clinic-medical mr-1"></i> Thông tin Ca trực &amp; Buồng khám Chuyên khoa
                 </h6>
-                <span class="badge badge-success px-2 py-1">Đang trực khám</span>
+                <span class="badge badge-success px-2 py-1 flex-shrink-0 text-nowrap">Đang trực khám</span>
             </div>
             <div class="card-body">
-                <div class="d-flex justify-content-between py-2 border-bottom small">
-                    <span class="text-muted">Bác sĩ phụ trách:</span>
-                    <strong class="text-dark">{{ $docDisplayName }} ({{ $doctor->specialization ?? 'Chuyên khoa' }})</strong>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom small" style="gap: 12px;">
+                    <span class="text-muted text-nowrap">Bác sĩ phụ trách:</span>
+                    <strong class="text-dark text-right">{{ $docDisplayName }} ({{ $doctor->specialization ?? 'Chuyên khoa' }})</strong>
                 </div>
-                <div class="d-flex justify-content-between py-2 border-bottom small">
-                    <span class="text-muted">Vị trí buồng khám:</span>
-                    <strong class="text-primary">{{ $doctor->room_number ?? 'P.201 - Tầng 2' }} ({{ $doctor->department->name ?? 'Khoa Khám bệnh' }})</strong>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom small" style="gap: 12px;">
+                    <span class="text-muted text-nowrap">Vị trí buồng khám:</span>
+                    <strong class="text-primary text-right">{{ $doctor->room_number ?? 'P.201 - Tầng 2' }} ({{ $doctor->department->name ?? 'Khoa Khám bệnh' }})</strong>
                 </div>
-                <div class="d-flex justify-content-between py-2 border-bottom small">
-                    <span class="text-muted">Khung giờ làm việc:</span>
-                    <strong class="text-dark">Ca sáng (07:30 - 11:30) &amp; Ca chiều (13:30 - 17:00)</strong>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom small" style="gap: 12px;">
+                    <span class="text-muted text-nowrap">Khung giờ làm việc:</span>
+                    <strong class="text-dark text-right">Ca sáng (07:30 - 11:30) &amp; Ca chiều (13:30 - 17:00)</strong>
                 </div>
-                <div class="d-flex justify-content-between pt-2 small">
-                    <span class="text-muted">Tiến độ hoàn thành trong ngày:</span>
-                    <strong class="text-success">{{ $completed }}/{{ max(1, $total) }} ca đã kết luận EMR</strong>
+                <div class="d-flex justify-content-between align-items-center pt-2 small" style="gap: 12px;">
+                    <span class="text-muted text-nowrap">Tiến độ hoàn thành trong ngày:</span>
+                    <strong class="text-success text-right">{{ $completed }}/{{ max(1, $total) }} ca đã kết luận EMR</strong>
                 </div>
             </div>
         </div>
@@ -382,31 +382,33 @@
                             </td>
 
                             <!-- Cột 5: Chức năng -->
-                            <td class="text-center align-middle">
-                                @if($appointment->status === 'confirmed')
-                                    <!-- Nút Check-in QR Tiếp nhận -->
-                                    <form action="{{ route('doctor.appointments.checkin', $appointment) }}" method="POST" class="d-inline mr-1" onsubmit="return confirm('Xác nhận tiếp nhận bệnh nhân này vào phòng chờ khám?');">
-                                        @csrf
-                                        <button type="submit" class="btn btn-info btn-sm px-2 shadow-sm" title="Tiếp nhận bệnh nhân (Check-in QR)">
-                                            <i class="fas fa-qrcode mr-1"></i> Check-in
-                                        </button>
-                                    </form>
-                                @endif
+                            <td class="text-center align-middle" style="white-space: nowrap;">
+                                <div class="d-inline-flex flex-nowrap align-items-center justify-content-center" style="gap: 8px;">
+                                    @if($appointment->status === 'confirmed')
+                                        <!-- Nút Check-in QR Tiếp nhận -->
+                                        <form action="{{ route('doctor.appointments.checkin', $appointment) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Xác nhận tiếp nhận bệnh nhân này vào phòng chờ khám?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-info btn-sm px-2 shadow-sm m-0" title="Tiếp nhận bệnh nhân (Check-in QR)">
+                                                <i class="fas fa-qrcode mr-1"></i> Check-in
+                                            </button>
+                                        </form>
+                                    @endif
 
-                                <!-- Nút Khám bệnh / Ghi EMR -->
-                                <a href="{{ route('doctor.patient.record', $appointment) }}" class="btn btn-primary btn-sm px-2 shadow-sm mr-1" title="Khám bệnh & Bệnh án điện tử EMR">
-                                    <i class="fas fa-notes-medical mr-1"></i> {{ $appointment->status === 'completed' ? 'Xem EMR' : 'Khám' }}
-                                </a>
+                                    <!-- Nút Khám bệnh / Ghi EMR -->
+                                    <a href="{{ route('doctor.patient.record', $appointment) }}" class="btn btn-primary btn-sm px-2 shadow-sm m-0" title="Khám bệnh & Bệnh án điện tử EMR">
+                                        <i class="fas fa-notes-medical mr-1"></i> {{ $appointment->status === 'completed' ? 'Xem EMR' : 'Khám' }}
+                                    </a>
 
-                                @if($appointment->status === 'checked_in')
-                                    <!-- Nút Hoàn thành nhanh -->
-                                    <form action="{{ route('doctor.appointments.complete', $appointment) }}" method="POST" class="d-inline" onsubmit="return confirm('Đánh dấu hoàn thành ca khám này?');">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success btn-circle btn-sm" title="Hoàn thành nhanh ca khám">
-                                            <i class="fas fa-check-double"></i>
-                                        </button>
-                                    </form>
-                                @endif
+                                    @if($appointment->status === 'checked_in')
+                                        <!-- Nút Hoàn thành nhanh -->
+                                        <form action="{{ route('doctor.appointments.complete', $appointment) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Đánh dấu hoàn thành ca khám này?');">
+                                            @csrf
+                                            <button type="submit" class="btn btn-success btn-circle btn-sm m-0" title="Hoàn thành nhanh ca khám">
+                                                <i class="fas fa-check-double"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty

@@ -163,14 +163,16 @@
                             </td>
 
                             <!-- Cột 5: Chức năng -->
-                            <td class="text-center align-middle">
+                            <td class="text-center align-middle" style="white-space: nowrap;">
                                 @if($appointment)
-                                    <a href="{{ route('doctor.patient.record', $appointment) }}" class="btn btn-info btn-circle btn-sm mr-1" title="Xem chi tiết bệnh án & đơn thuốc">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    <a href="{{ route('doctor.patient.record', $appointment) }}" class="btn btn-primary btn-circle btn-sm" title="Khám & Chỉnh sửa bệnh án">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
+                                    <div class="d-inline-flex flex-nowrap align-items-center justify-content-center" style="gap: 8px;">
+                                        <a href="{{ route('doctor.patient.record', $appointment) }}" class="btn btn-info btn-circle btn-sm m-0" title="Xem chi tiết bệnh án & đơn thuốc">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('doctor.patient.record', $appointment) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Khám & Chỉnh sửa bệnh án">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
                                 @else
                                     <span class="text-muted">—</span>
                                 @endif

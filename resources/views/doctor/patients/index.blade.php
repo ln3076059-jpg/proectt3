@@ -131,13 +131,15 @@
                             </td>
 
                             <!-- Cột 5: Chức năng -->
-                            <td class="text-center align-middle">
-                                <a href="{{ route('doctor.patients.show', $patient) }}" class="btn btn-info btn-circle btn-sm mr-1" title="Xem hồ sơ & bệnh án chi tiết">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{{ route('doctor.dashboard', ['patient_name' => $patient->name]) }}" class="btn btn-primary btn-circle btn-sm" title="Tra cứu lịch hẹn của bệnh nhân">
-                                    <i class="fas fa-calendar-check"></i>
-                                </a>
+                            <td class="text-center align-middle" style="white-space: nowrap;">
+                                <div class="d-inline-flex flex-nowrap align-items-center justify-content-center" style="gap: 8px;">
+                                    <a href="{{ route('doctor.patients.show', $patient) }}" class="btn btn-info btn-circle btn-sm m-0" title="Xem hồ sơ & bệnh án chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('doctor.dashboard', ['patient_name' => $patient->name]) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Tra cứu lịch hẹn của bệnh nhân">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </a>
+                                </div>
                             </td>
                         </tr>
                     @empty

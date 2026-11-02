@@ -115,18 +115,70 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh mục Loại Xét Nghiệm làm thành Card Kỹ Thuật CLS (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-vials mr-1"></i> Danh mục các loại xét nghiệm cận lâm sàng
+            <i class="fas fa-vials mr-1"></i> Danh mục Card Loại Xét Nghiệm Cận Lâm Sàng
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($types, 'total') ? $types->total() : $types->count() }} danh mục
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($types as $type)
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-lab-slip-card lab-done h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-dark">#XN-{{ str_pad($type->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                <span class="font-weight-bold text-success">
+                                    {{ number_format((float) ($type->price ?? 150000), 0, ',', '.') }} đ
+                                </span>
+                            </div>
+
+                            <div class="font-weight-bold text-primary mb-1" style="font-size: 0.95rem;">
+                                <i class="fas fa-vial text-info mr-1"></i>{{ $type->name }}
+                            </div>
+
+                            <div class="mb-2">
+                                <span class="badge badge-info px-2 py-1">
+                                    <i class="fas fa-hospital-alt mr-1"></i>{{ $type->department->name ?? 'Xét nghiệm cận lâm sàng' }}
+                                </span>
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                {{ \Illuminate\Support\Str::limit($type->description ?? 'Không có mô tả chi tiết', 110) }}
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.test-types.edit', $type->id) }}" class="btn btn-info btn-circle btn-sm m-0" title="Sửa loại xét nghiệm">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.test-types.destroy', $type->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa loại xét nghiệm này?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa loại xét nghiệm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy loại xét nghiệm nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

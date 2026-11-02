@@ -134,10 +134,11 @@
     </div>
 </div>
 
+<!-- Danh sách Chỉ định Xét nghiệm làm thành Card Phiếu Ống Nghiệm (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh sách các chỉ định xét nghiệm từ bác sĩ
+            <i class="fas fa-vial mr-1"></i> Khay Mẫu Ống Nghiệm &amp; Phiếu Chỉ Định Xét Nghiệm (Card theo ngữ cảnh)
         </h6>
         @php $testList = $labTests ?? ($tests ?? collect()); @endphp
         <span class="badge badge-primary px-3 py-2">
@@ -145,7 +146,99 @@
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($testList as $test)
+                @php
+                    $isDone = ($test->status === 'completed' || !empty($test->image));
+                    $docName = optional($test->doctor)->name ?? 'Bác sĩ chuyên khoa';
+                    if (!\Illuminate\Support\Str::startsWith($docName, 'BS.')) {
+                        $docName = 'BS. ' . $docName;
+                    }
+                @endphp
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-lab-slip-card {{ $isDone ? 'lab-done' : '' }} h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-dark">#LAB-{{ str_pad($test->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                @if($isDone)
+                                    <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i>Đã có kết quả</span>
+                                @else
+                                    <span class="badge badge-warning text-dark px-2 py-1"><i class="fas fa-hourglass-half mr-1"></i>Chờ kết quả</span>
+                                @endif
+                            </div>
+
+                            <div class="font-weight-bold text-primary mb-1" style="font-size: 0.95rem;">
+                                <i class="fas fa-microscope mr-1 text-info"></i>{{ $test->test_name ?? optional($test->test_type)->name ?? 'Xét nghiệm cận lâm sàng' }}
+                            </div>
+                            <small class="text-muted d-block mb-2">
+                                <i class="fas fa-hospital mr-1"></i>{{ $test->department->name ?? optional(optional($test->test_type)->department)->name ?? 'Khoa Xét nghiệm' }}
+                                &middot;
+                                <i class="far fa-calendar-alt ml-1 mr-1"></i>{{ \Carbon\Carbon::parse($test->created_at)->format('d/m/Y H:i') }}
+                            </small>
+
+                            <div class="small border-top pt-2 mb-2">
+                                <div class="font-weight-bold text-gray-800">
+                                    <i class="fas fa-user-injured mr-1 text-warning"></i>BN: {{ optional(optional($test->record)->patient)->name ?? 'Bệnh nhân' }}
+                                </div>
+                                <div class="text-muted mt-1">
+                                    Chỉ định bởi: <strong>{{ $docName }}</strong>
+                                </div>
+                                @if($test->note)
+                                    <div class="text-gray-600 font-italic mt-1">Ghi chú: {{ \Illuminate\Support\Str::limit($test->note, 80) }}</div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <div>
+                                @if($test->medical_record_id)
+                                    <a href="{{ route('admin.medical-records.show', $test->medical_record_id) }}" class="small text-info font-weight-bold">
+                                        <i class="fas fa-file-medical-alt mr-1"></i>EMR #{{ str_pad($test->medical_record_id, 4, '0', STR_PAD_LEFT) }}
+                                    </a>
+                                @else
+                                    <span class="small text-muted">Chức năng:</span>
+                                @endif
+                            </div>
+                            <div class="d-inline-flex flex-nowrap align-items-center" style="gap: 6px;">
+                                <button type="button"
+                                        class="btn btn-primary btn-sm px-2 shadow-sm js-open-lab-upload m-0"
+                                        data-action="{{ route('admin.lab_tests.saveUpload', $test->id) }}"
+                                        data-test="{{ $test->test_name ?? optional($test->test_type)->name ?? 'Xét nghiệm' }}"
+                                        data-patient="{{ optional(optional($test->record)->patient)->name ?? 'Bệnh nhân' }}"
+                                        data-note="{{ $test->note ?? '' }}"
+                                        title="Tải lên kết quả nhanh">
+                                    <i class="fas fa-upload mr-1"></i> {{ $isDone ? 'Sửa KQ' : 'Trả KQ' }}
+                                </button>
+                                @if(!empty($test->image))
+                                    <button type="button"
+                                            class="btn btn-info btn-circle btn-sm js-open-lab-preview m-0"
+                                            data-img="{{ asset('storage/' . $test->image) }}"
+                                            data-test="{{ $test->test_name ?? 'Xét nghiệm' }}"
+                                            data-patient="{{ optional(optional($test->record)->patient)->name ?? 'Bệnh nhân' }}"
+                                            title="Xem ảnh kết quả">
+                                        <i class="fas fa-image"></i>
+                                    </button>
+                                @endif
+                                <form action="{{ route('admin.lab_tests.destroy', $test->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bản ghi xét nghiệm này?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa kết quả">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy chỉ định xét nghiệm nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

@@ -145,18 +145,97 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh sách Bác sĩ làm thành Card Thẻ Định Danh Y Bác sĩ (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh sách bác sĩ chuyên khoa phụ trách khám chữa bệnh
+            <i class="fas fa-id-badge mr-1"></i> Danh sách Thẻ Định danh Bác sĩ chuyên khoa phụ trách khám chữa bệnh
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($doctors, 'total') ? $doctors->total() : $doctors->count() }} bác sĩ
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($doctors as $doctor)
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-doctor-badge-card h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2 mt-1">
+                                <span class="badge badge-dark">#{{ method_exists($doctors, 'firstItem') ? $doctors->firstItem() + $loop->index : $loop->iteration }}</span>
+                                @if($doctor->is_active ?? true)
+                                    <span class="badge badge-success"><i class="fas fa-check-circle mr-1"></i>Đang trực</span>
+                                @else
+                                    <span class="badge badge-secondary">Tạm ngưng</span>
+                                @endif
+                            </div>
+
+                            <div class="d-flex align-items-center mb-2">
+                                @if($doctor->avatar)
+                                    <img src="{{ asset('storage/'.$doctor->avatar) }}" class="rounded-circle mr-3 border" style="width: 48px; height: 48px; object-fit: cover; flex-shrink: 0;">
+                                @else
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 48px; height: 48px; flex-shrink: 0;">
+                                        <i class="fas fa-user-md fa-lg"></i>
+                                    </div>
+                                @endif
+                                <div class="overflow-hidden">
+                                    <div class="font-weight-bold text-primary text-truncate" style="font-size: 0.95rem;">
+                                        {{ $doctor->user->name ?? 'BS. '.$doctor->name }}
+                                    </div>
+                                    <div class="small text-gray-600 text-truncate">{{ $doctor->specialization ?? 'Bác sĩ chuyên khoa' }}</div>
+                                    <span class="badge badge-info mt-1">
+                                        <i class="fas fa-hospital-alt mr-1"></i>{{ $doctor->department->name ?? 'Đa khoa' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span><i class="fas fa-id-badge text-info mr-1"></i>CCHN: <strong>{{ $doctor->license_number ?: 'Đang cập nhật' }}</strong></span>
+                                    <span class="font-weight-bold text-dark"><i class="fas fa-door-open text-primary mr-1"></i>{{ $doctor->room_number ?: ('P.' . (100 + $doctor->id)) }}</span>
+                                </div>
+                                <div class="text-truncate"><i class="fas fa-envelope mr-1 text-primary"></i>{{ $doctor->user->email ?? $doctor->email }}</div>
+                                <div class="d-flex justify-content-between align-items-center mt-1">
+                                    <span><i class="fas fa-phone mr-1 text-success"></i>{{ $doctor->user->phone ?? $doctor->phone ?? 'Chưa cập nhật' }}</span>
+                                    <span class="badge badge-light border text-primary">
+                                        <i class="fas fa-calendar-check mr-1"></i>{{ $doctor->appointments_count ?? 0 }} ca hẹn
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.doctors.schedule', $doctor) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Xem lịch làm việc & bệnh nhân trong ngày">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </a>
+                                <a href="{{ route('admin.schedules.create', ['doctor_id' => $doctor->id]) }}" class="btn btn-success btn-circle btn-sm m-0" title="Tạo ca trực mới cho bác sĩ">
+                                    <i class="fas fa-calendar-plus"></i>
+                                </a>
+                                <a href="{{ route('admin.doctors.edit', $doctor) }}" class="btn btn-info btn-circle btn-sm m-0" title="Chỉnh sửa hồ sơ">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.doctors.destroy', $doctor) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bác sĩ này?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa bác sĩ">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy bác sĩ nào phù hợp với bộ lọc.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

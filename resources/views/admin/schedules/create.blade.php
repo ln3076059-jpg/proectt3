@@ -315,6 +315,16 @@ $(document).ready(function() {
 
         $('#estSlotsPerShift').text(slots.length + ' khung giờ');
         $('#estCapacityPerShift').text((slots.length * cap) + ' ghế khám');
+        var miniSeatsHtml = '<div class="sb-mini-seats mt-1 mb-0">';
+        var maxSeats = Math.min(Math.max(1, cap), 6);
+        for (var si = 0; si < maxSeats; si++) {
+            miniSeatsHtml += '<span class="sb-mini-seat seat-free" style="width:18px;height:18px;font-size:0.62rem;"><i class="fas fa-chair"></i></span>';
+        }
+        if (cap > 6) {
+            miniSeatsHtml += '<span class="badge badge-light border text-muted" style="font-size:0.6rem;">+' + (cap - 6) + '</span>';
+        }
+        miniSeatsHtml += '</div>';
+
         var cardsHtml = slots.slice(0, 8).map(function(s) {
             return '<div class="sb-slot-card is-available p-2">' +
                 '<div class="d-flex align-items-center justify-content-between">' +
@@ -324,6 +334,7 @@ $(document).ready(function() {
                         '<span class="badge badge-success" style="font-size:0.68rem;">' + cap + ' ghế</span>' +
                     '</div>' +
                 '</div>' +
+                miniSeatsHtml +
             '</div>';
         }).join('');
         if (slots.length > 8) {

@@ -193,16 +193,48 @@
     </div>
 </div>
 
-<!-- Bảng chi tiết 5 cột thống kê chuyên khoa -->
+<!-- Card chi tiết quy mô hoạt động theo từng Chuyên khoa (Làm thành Card Buồng Khoa có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-hospital mr-1"></i> Chi tiết quy mô hoạt động theo từng Chuyên khoa
+            <i class="fas fa-hospital mr-1"></i> Chi tiết quy mô hoạt động theo từng Chuyên khoa (Card Buồng Khoa)
         </h6>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover" width="100%" cellspacing="0">
+        <div class="row">
+            @foreach($deptStats as $dept)
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-room-card h-100 p-3 d-flex flex-column justify-content-between" style="border-left: 5px solid #4e73df;">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-dark">#KHOA-{{ str_pad($dept->id, 3, '0', STR_PAD_LEFT) }} &middot; P.{{ 100 + $dept->id }}</span>
+                                <span class="badge badge-info px-2 py-1">{{ $dept->doctors_count }} Bác sĩ</span>
+                            </div>
+                            <div class="font-weight-bold text-primary mb-2" style="font-size: 0.96rem;">
+                                <i class="fas fa-clinic-medical mr-2 text-info"></i>{{ $dept->name }}
+                            </div>
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                Số ca khám trong kỳ: <strong class="text-primary">{{ $dept->appointments_count ?? 0 }} ca hẹn</strong>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.departments.edit', $dept) }}" class="btn btn-sm btn-info btn-circle m-0" title="Chi tiết khoa">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.schedules.index', ['department_id' => $dept->id]) }}" class="btn btn-sm btn-primary btn-circle m-0" title="Xem lịch ca">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="table-responsive d-none">
+            <table class="table table-bordered table-hover no-datatable" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>
                         <th class="text-center" style="width: 60px;">STT</th>

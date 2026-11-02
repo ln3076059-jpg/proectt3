@@ -134,18 +134,85 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh sách Tài khoản làm thành Card Thẻ Định Danh IAM (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh sách tài khoản người dùng trong hệ thống
+            <i class="fas fa-user-shield mr-1"></i> Danh sách Thẻ Định danh &amp; Phân quyền Người dùng (IAM Cards)
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($users, 'total') ? $users->total() : $users->count() }} tài khoản
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($users as $i => $user)
+                @php $roleName = strtolower(optional($user->role)->name ?? ''); @endphp
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-doctor-badge-card h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2 mt-1">
+                                <span class="badge badge-dark">#USR-{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                @if($roleName === 'admin')
+                                    <span class="badge badge-danger px-2 py-1"><i class="fas fa-user-shield mr-1"></i>Quản trị viên</span>
+                                @elseif($roleName === 'doctor')
+                                    <span class="badge badge-info px-2 py-1"><i class="fas fa-user-md mr-1"></i>Bác sĩ</span>
+                                @else
+                                    <span class="badge badge-success px-2 py-1"><i class="fas fa-user mr-1"></i>Bệnh nhân</span>
+                                @endif
+                            </div>
+
+                            <div class="font-weight-bold text-gray-800 mb-1" style="font-size: 0.96rem;">
+                                <i class="fas fa-user-circle text-primary mr-1"></i>{{ $user->name }}
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                <div class="text-truncate"><i class="fas fa-envelope mr-1 text-primary"></i>{{ $user->email }}</div>
+                                <div class="mt-1"><i class="fas fa-phone mr-1 text-success"></i>{{ $user->phone ?: 'Chưa cập nhật SĐT' }}</div>
+                                @if($roleName === 'doctor' && $user->doctor)
+                                    <div class="mt-1">
+                                        <a href="{{ route('admin.doctors.edit', $user->doctor) }}" class="text-info font-weight-bold">
+                                            <i class="fas fa-hospital-alt mr-1"></i>{{ $user->doctor->department->name ?? 'Hồ sơ BS' }} &rarr;
+                                        </a>
+                                    </div>
+                                @elseif($user->patient)
+                                    <div class="mt-1">
+                                        <a href="{{ route('admin.patients.show', $user->patient->id) }}" class="text-success font-weight-bold">
+                                            <i class="fas fa-id-card mr-1"></i>Hồ sơ #PAT-{{ str_pad($user->patient->id, 4, '0', STR_PAD_LEFT) }} &rarr;
+                                        </a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-info btn-circle btn-sm m-0" title="Chỉnh sửa tài khoản & phân quyền">
+                                    <i class="fas fa-user-edit"></i>
+                                </a>
+                                @if($user->id !== (auth('web_admin')->id() ?? auth()->id()))
+                                    <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa tài khoản">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy tài khoản người dùng nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

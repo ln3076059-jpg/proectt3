@@ -117,18 +117,84 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh mục Gói Khám làm thành Card Phiếu Dịch Vụ Y Tế (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh mục bảng giá dịch vụ y tế tại Thái Thịnh
+            <i class="fas fa-ticket-alt mr-1"></i> Danh mục Card Gói Khám &amp; Bảng Giá Dịch Vụ Y Tế tại Thái Thịnh
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($services, 'total') ? $services->total() : $services->count() }} dịch vụ
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($services as $service)
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-ticket-card ticket-confirmed h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-info px-2 py-1">
+                                    <i class="fas fa-hospital-alt mr-1"></i>{{ $service->department->name ?? 'Đa khoa' }}
+                                </span>
+                                <span class="font-weight-bold text-success" style="font-size: 0.96rem;">
+                                    {{ number_format($service->price, 0, ',', '.') }} VNĐ
+                                </span>
+                            </div>
+
+                            <div class="d-flex align-items-center mb-2">
+                                @if($service->image)
+                                    <img src="{{ asset('storage/'.$service->image) }}" class="rounded mr-3 border" style="width: 42px; height: 42px; object-fit: cover; flex-shrink: 0;">
+                                @else
+                                    <div class="bg-info text-white rounded d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 42px; height: 42px; flex-shrink: 0;">
+                                        <i class="fas fa-notes-medical"></i>
+                                    </div>
+                                @endif
+                                <div>
+                                    <div class="font-weight-bold text-primary" style="font-size: 0.94rem;">{{ $service->name }}</div>
+                                    <small class="text-muted">Mã gói: #SRV-{{ str_pad($service->id, 3, '0', STR_PAD_LEFT) }}</small>
+                                </div>
+                            </div>
+
+                            <div class="small text-gray-600 mb-2">
+                                {{ \Illuminate\Support\Str::limit($service->description ?? 'Gói khám lâm sàng tiêu chuẩn', 95) }}
+                            </div>
+
+                            @if($service->symptoms && $service->symptoms->isNotEmpty())
+                                <div class="mb-2">
+                                    @foreach($service->symptoms->take(4) as $sym)
+                                        <span class="badge badge-light border text-secondary mr-1 mb-1">{{ $sym->symptom_name }}</span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2" style="border-top: 1px dashed #cbd5e1;">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-info btn-circle btn-sm m-0" title="Sửa dịch vụ">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.services.destroy', $service) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa dịch vụ này không?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa dịch vụ">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy dịch vụ nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

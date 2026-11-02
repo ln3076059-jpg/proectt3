@@ -111,18 +111,92 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh sách Hồ sơ Bệnh nhân làm thành Card Thẻ BHYT (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-users mr-1"></i> Danh sách bệnh nhân đăng ký khám tại cơ sở 125 Thái Thịnh
+            <i class="fas fa-id-card-alt mr-1"></i> Danh sách Thẻ Định danh &amp; BHYT Bệnh nhân tại cơ sở 125 Thái Thịnh
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($patients, 'total') ? $patients->total() : $patients->count() }} hồ sơ
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($patients as $patient)
+                @php
+                    $genderLabel = match($patient->gender) {
+                        'male', 'Nam' => 'Nam',
+                        'female', 'Nữ' => 'Nữ',
+                        default => 'Khác',
+                    };
+                    $genderBadge = $genderLabel === 'Nam' ? 'badge-primary' : ($genderLabel === 'Nữ' ? 'badge-info' : 'badge-secondary');
+                @endphp
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-bhyt-card h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div class="d-flex align-items-center" style="gap: 8px;">
+                                    <span class="sb-bhyt-chip" title="Chip định danh BHYT"></span>
+                                    <span class="badge badge-light border text-muted">#PAT-{{ str_pad($patient->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                </div>
+                                @if($patient->insurance_number)
+                                    <span class="badge badge-success"><i class="fas fa-id-card mr-1"></i>BHYT: {{ $patient->insurance_number }}</span>
+                                @else
+                                    <span class="badge badge-secondary">Khám Dịch vụ</span>
+                                @endif
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <div class="font-weight-bold text-primary text-truncate" style="font-size: 0.96rem;">
+                                    <i class="fas fa-user mr-1 text-info"></i>{{ $patient->name }}
+                                </div>
+                                <span class="badge {{ $genderBadge }} px-2 py-1">{{ $genderLabel }}</span>
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span><i class="far fa-calendar mr-1 text-primary"></i>NS: <strong>{{ $patient->birthdate ? \Carbon\Carbon::parse($patient->birthdate)->format('d/m/Y') : 'Chưa cập nhật' }}</strong></span>
+                                    <span><i class="fas fa-phone mr-1 text-success"></i><strong>{{ $patient->phone ?: ($patient->user->phone ?? 'Chưa cập nhật') }}</strong></span>
+                                </div>
+                                <div class="text-truncate text-gray-600">
+                                    <i class="fas fa-map-marker-alt text-danger mr-1"></i>{{ $patient->address ?: 'Chưa cập nhật địa chỉ' }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.patients.show', $patient->id) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Xem bệnh án & chi tiết">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.patients.edit', $patient->id) }}" class="btn btn-warning btn-circle btn-sm m-0" title="Chỉnh sửa hồ sơ">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ route('admin.appointments.index', ['search' => $patient->name]) }}" class="btn btn-info btn-circle btn-sm m-0" title="Lịch hẹn của bệnh nhân">
+                                    <i class="fas fa-calendar-check"></i>
+                                </a>
+                                <form action="{{ route('admin.patients.destroy', $patient->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hồ sơ bệnh nhân này?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa hồ sơ">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy hồ sơ bệnh nhân nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

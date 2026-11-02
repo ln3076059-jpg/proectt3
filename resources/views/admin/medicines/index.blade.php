@@ -139,18 +139,98 @@
     </div>
 </div>
 
-<!-- DataTales (ĐÚNG 5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh mục Thuốc làm thành Card Vỉ Thuốc Dược Phẩm (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-table mr-1"></i> Danh mục thuốc & biệt dược được cấp phép
+            <i class="fas fa-tablets mr-1"></i> Kệ Vỉ Thuốc &amp; Biệt dược được cấp phép (Card theo ngữ cảnh)
         </h6>
-        <span class="badge badge-primary px-3 py-2">Tổng số: {{ $medicines->total() ?? $medicines->count() }} loại thuốc</span>
+        <span class="badge badge-primary px-3 py-2">Tổng số: {{ method_exists($medicines, 'total') ? $medicines->total() : $medicines->count() }} loại thuốc</span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered dataTable" width="100%" cellspacing="0">
+        <div class="row">
+            @forelse($medicines as $medicine)
+                @php
+                    $mStock = (int)($medicine->stock ?? 0);
+                    $mMin = (int)($medicine->min_stock ?? 10);
+                    $mCls = $mStock <= 0 ? 'out-stock' : ($mStock <= $mMin ? 'low-stock' : '');
+                    $mPct = min(100, max(5, round(($mStock / 300) * 100)));
+                @endphp
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-blister-card {{ $mCls }} h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-dark">#{{ method_exists($medicines, 'firstItem') ? $medicines->firstItem() + $loop->index : $loop->iteration }} &middot; {{ $medicine->category ?? 'Đa khoa' }}</span>
+                                <span class="font-weight-bold text-success">
+                                    {{ number_format($medicine->price ?? 0, 0, ',', '.') }} VNĐ <small class="text-muted">/ {{ $medicine->unit ?? 'Viên' }}</small>
+                                </span>
+                            </div>
+
+                            <div class="font-weight-bold text-primary mb-1" style="font-size: 0.96rem;">
+                                <i class="fas fa-pills mr-1 text-info"></i>{{ $medicine->name }}
+                            </div>
+                            <div class="small text-gray-600 mb-2">
+                                Biệt dược: <strong class="text-gray-800">{{ $medicine->brand_name ?? '—' }}</strong>
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                <div>Hoạt chất: <strong>{{ $medicine->generic_name ?? 'Chưa cập nhật' }}</strong></div>
+                                <div class="text-muted">
+                                    Hàm lượng: {{ $medicine->strength ?? 'Chuẩn' }}
+                                    @if($medicine->dosage_form)
+                                        &middot; Dạng: {{ $medicine->dosage_form }}
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="progress progress-sm mb-2">
+                                <div class="progress-bar {{ $mStock <= 0 ? 'bg-danger' : ($mStock <= $mMin ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $mPct }}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <div>
+                                @if($mStock <= $mMin)
+                                    <span class="badge badge-danger">
+                                        <i class="fas fa-exclamation-triangle mr-1"></i>Sắp hết ({{ $mStock }} {{ $medicine->unit ?? 'viên' }})
+                                    </span>
+                                @else
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check mr-1"></i>Còn {{ $mStock }} {{ $medicine->unit ?? 'viên' }}
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.medicines.edit', $medicine) }}" class="btn btn-info btn-circle btn-sm m-0" title="Sửa thông tin thuốc">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.medicines.destroy', $medicine) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa thuốc này khỏi kho?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa thuốc">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy thuốc nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        @if(method_exists($medicines, 'links'))
+            <div class="mt-3 d-flex justify-content-end">
+                {{ $medicines->withQueryString()->links('pagination::bootstrap-4') }}
+            </div>
+        @endif
+
+        <div class="table-responsive d-none">
+            <table class="table table-bordered dataTable no-datatable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 60px;">STT</th>

@@ -86,17 +86,17 @@
             background-color: #f8f9fc;
             color: #4e73df;
             font-weight: 800;
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             text-transform: uppercase;
-            letter-spacing: 0.03em;
+            letter-spacing: 0.025em;
             border-bottom-width: 2px;
-            padding: 0.75rem 0.7rem;
+            padding: 0.58rem 0.6rem;
         }
         .table td {
             vertical-align: middle !important;
-            padding: 0.72rem 0.7rem;
-            font-size: 0.89rem;
-            line-height: 1.45;
+            padding: 0.52rem 0.6rem;
+            font-size: 0.86rem;
+            line-height: 1.4;
         }
         .table td:last-child:not([colspan]) {
             white-space: nowrap;
@@ -216,72 +216,234 @@
             box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
         }
 
-        /* Contextual Visual Cards: Clinic Chair / Slot Seat Grid (.sb-slot-card) */
+        /* Contextual Visual Cards: True Chair-Shaped Card (.sb-slot-card) */
         .sb-slot-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fill, minmax(172px, 1fr));
+            gap: 22px 16px;
+            padding: 12px 4px 10px 4px;
         }
         .sb-slot-card {
             position: relative;
-            border: 2px solid #d1d3e2;
-            border-radius: 0.5rem;
+            border-top: 3px solid #1cc88a;
+            border-bottom: 5px solid #1cc88a;
+            border-left: 7px solid #1cc88a;
+            border-right: 7px solid #1cc88a;
+            border-radius: 14px 14px 10px 10px;
             background: #ffffff;
-            padding: 12px 12px 10px 12px;
+            padding: 10px 10px 8px 10px;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(58, 59, 69, 0.06);
+            box-shadow: 0 4px 10px rgba(58, 59, 69, 0.08);
         }
+        /* Lưng tựa ghế bo tròn phía trên (Chair Backrest) */
         .sb-slot-card::before {
             content: "";
             position: absolute;
-            top: -5px;
-            left: 22%;
-            right: 22%;
-            height: 5px;
-            border-radius: 4px 4px 0 0;
-            background: #d1d3e2;
+            top: -13px;
+            left: 10px;
+            right: 10px;
+            height: 11px;
+            border-radius: 12px 12px 0 0;
+            background: #1cc88a;
+            box-shadow: inset 0 2px 0 rgba(255,255,255,0.35);
+        }
+        /* Hai chân ghế phía dưới (Chair Legs) */
+        .sb-slot-card::after {
+            content: "";
+            position: absolute;
+            bottom: -11px;
+            left: 14px;
+            right: 14px;
+            height: 7px;
+            background: linear-gradient(90deg, #5a5c69 0 12px, transparent 12px calc(100% - 12px), #5a5c69 calc(100% - 12px) 100%);
+            border-radius: 0 0 3px 3px;
         }
         .sb-slot-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 14px rgba(58, 59, 69, 0.12);
+            transform: translateY(-3px);
+            box-shadow: 0 7px 16px rgba(58, 59, 69, 0.15);
         }
         .sb-slot-card.is-available {
             border-color: #1cc88a;
-            background: linear-gradient(180deg, #f6fffb 0%, #ffffff 100%);
+            background: linear-gradient(180deg, #f2fff9 0%, #ffffff 100%);
         }
         .sb-slot-card.is-available::before {
-            background: #1cc88a;
+            background: linear-gradient(90deg, #17a673, #1cc88a, #17a673);
         }
         .sb-slot-card.is-busy {
             border-color: #4e73df;
-            background: linear-gradient(180deg, #f4f7ff 0%, #ffffff 100%);
+            background: linear-gradient(180deg, #f0f4ff 0%, #ffffff 100%);
         }
         .sb-slot-card.is-busy::before {
-            background: #4e73df;
+            background: linear-gradient(90deg, #2e59d9, #4e73df, #2e59d9);
         }
         .sb-slot-card.is-full {
             border-color: #f6c23e;
-            background: linear-gradient(180deg, #fffdf4 0%, #ffffff 100%);
+            background: linear-gradient(180deg, #fffcf0 0%, #ffffff 100%);
         }
         .sb-slot-card.is-full::before {
-            background: #f6c23e;
+            background: linear-gradient(90deg, #dda20a, #f6c23e, #dda20a);
         }
         .sb-slot-card.is-locked {
             border-color: #e74a3b;
             background: #f8f9fc;
-            opacity: 0.85;
+            opacity: 0.88;
         }
         .sb-slot-card.is-locked::before {
-            background: #e74a3b;
+            background: linear-gradient(90deg, #be2617, #e74a3b, #be2617);
         }
         .sb-slot-seat-icon {
-            width: 34px;
-            height: 34px;
+            width: 30px;
+            height: 30px;
             border-radius: 0.4rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
+        }
+        /* Dãy ghế con bên trong đệm ghế (Mini-seats inside slot cushion) */
+        .sb-mini-seats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 5px 6px;
+            margin: 6px 0;
+            background: rgba(248, 249, 252, 0.9);
+            border: 1px dashed #d1d3e2;
+            border-radius: 6px;
+            justify-content: center;
+        }
+        .sb-mini-seat {
+            width: 22px;
+            height: 22px;
+            border-radius: 4px 4px 2px 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            border: 1px solid transparent;
+        }
+        .sb-mini-seat.seat-free {
+            background: #e6f9f0;
+            color: #1cc88a;
+            border-color: #b7ebd3;
+        }
+        .sb-mini-seat.seat-taken {
+            background: #4e73df;
+            color: #ffffff;
+            border-color: #2e59d9;
+        }
+        .sb-mini-seat.seat-locked {
+            background: #fce8e6;
+            color: #e74a3b;
+            border-color: #f5c2c0;
+        }
+
+        /* Contextual Domain Cards across Admin Modules */
+        /* 1. Thẻ đeo Bác sĩ (Doctor ID Badge Card) */
+        .sb-doctor-badge-card {
+            position: relative;
+            border: 1px solid #d1d3e2;
+            border-top: 5px solid #4e73df;
+            border-radius: 0.5rem;
+            background: #ffffff;
+            padding: 14px 14px 12px 14px;
+            box-shadow: 0 2px 8px rgba(58, 59, 69, 0.07);
+            margin-top: 8px;
+        }
+        .sb-doctor-badge-card::before {
+            content: "";
+            position: absolute;
+            top: -10px;
+            left: calc(50% - 16px);
+            width: 32px;
+            height: 8px;
+            border-radius: 4px;
+            background: #858796;
+            border: 2px solid #fff;
+        }
+        /* 2. Vé thứ tự tiếp đón đục lỗ (Perforated Queue Ticket Card) */
+        .sb-ticket-card {
+            position: relative;
+            border: 1px solid #bac8f3;
+            border-left: 5px solid #36b9cc;
+            border-radius: 0.45rem;
+            background: linear-gradient(90deg, #f8fdff 0%, #ffffff 100%);
+            padding: 12px 16px;
+            box-shadow: 0 2px 6px rgba(58, 59, 69, 0.06);
+        }
+        .sb-ticket-card::after {
+            content: "";
+            position: absolute;
+            top: calc(50% - 8px);
+            right: -8px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #f8f9fc;
+            border-left: 1px solid #bac8f3;
+        }
+        /* 3. Thẻ Bảo hiểm Y tế Bệnh nhân (BHYT Smart Card) */
+        .sb-bhyt-card {
+            border: 1px solid #b7ebd3;
+            border-radius: 0.55rem;
+            background: linear-gradient(135deg, #f4fff9 0%, #ffffff 65%, #eef6ff 100%);
+            padding: 12px 14px;
+            box-shadow: 0 2px 8px rgba(28, 200, 138, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        .sb-bhyt-chip {
+            width: 28px;
+            height: 20px;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+            border: 1px solid #b8860b;
+            display: inline-block;
+        }
+        /* 4. Vỉ thuốc / Hộp Dược phẩm (Medicine Blister Pack Card) */
+        .sb-blister-card {
+            border: 1px solid #d1d3e2;
+            border-radius: 0.5rem;
+            background: radial-gradient(#e3e6f0 1.5px, transparent 1.5px), #ffffff;
+            background-size: 12px 12px;
+            padding: 12px 14px;
+            box-shadow: inset 0 0 0 4px #f8f9fc, 0 2px 6px rgba(58, 59, 69, 0.06);
+        }
+        /* 5. Bìa Hồ sơ Bệnh án Điện tử (EMR Folder Card) */
+        .sb-folder-card {
+            position: relative;
+            border: 1px solid #d1d3e2;
+            border-top: 3px solid #4e73df;
+            border-radius: 0 0.45rem 0.45rem 0.45rem;
+            background: #fffdf9;
+            padding: 12px 14px;
+            margin-top: 10px;
+            box-shadow: 0 2px 6px rgba(58, 59, 69, 0.06);
+        }
+        .sb-folder-card::before {
+            content: "HỒ SƠ EMR";
+            position: absolute;
+            top: -17px;
+            left: -1px;
+            background: #4e73df;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 5px 5px 0 0;
+            letter-spacing: 0.04em;
+        }
+        .sb-folder-card[data-tab-label]::before {
+            content: attr(data-tab-label);
+        }
+        /* 6. Ống nghiệm & Phiếu Cận lâm sàng (Lab Specimen Tube Card) */
+        .sb-lab-slip-card {
+            border: 1px solid #d1d3e2;
+            border-top: 6px solid #36b9cc;
+            border-radius: 0.35rem 0.35rem 0.75rem 0.75rem;
+            background: #ffffff;
+            padding: 12px 14px;
+            box-shadow: 0 2px 7px rgba(54, 185, 204, 0.08);
         }
 
         /* Contextual Clinic Room / Department Architecture Card (.sb-room-card) */
@@ -669,8 +831,9 @@
                 }
             });
 
-            // Khởi tạo DataTables chuẩn tiếng Việt cho các bảng .dataTable (bỏ qua bảng đã phân trang server-side .no-datatable)
+            // Khởi tạo DataTables chuẩn tiếng Việt cho các bảng .dataTable (bỏ qua bảng đã phân trang server-side .no-datatable hoặc bảng ẩn .d-none)
             $('.dataTable:not(.no-datatable), #dataTable:not(.no-datatable)').each(function () {
+                if ($(this).closest('.d-none').length) return;
                 if (!$.fn.DataTable.isDataTable(this)) {
                     $(this).DataTable({
                         "language": {
@@ -687,7 +850,7 @@
                             },
                             "emptyTable": "Không có dữ liệu trong bảng"
                         },
-                        "pageLength": 10
+                        "pageLength": 5
                     });
                 }
             });

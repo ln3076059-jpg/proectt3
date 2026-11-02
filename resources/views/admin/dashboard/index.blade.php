@@ -342,19 +342,120 @@
     </div>
 </div>
 
-<!-- Recent Appointments Table Card (ĐÚNG 5 CỘT CHUẨN SB ADMIN 2) -->
+<!-- Recent Appointments Card Grid (Làm thành Card Phiếu Hẹn có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-calendar-check mr-1"></i> Danh sách 10 Lịch hẹn mới nhất
+            <i class="fas fa-ticket-alt mr-1"></i> Danh sách Card 10 Lịch hẹn mới nhất
         </h6>
         <a href="{{ route('admin.appointments.index') }}" class="btn btn-sm btn-primary">
             Xem tất cả lịch hẹn <i class="fas fa-arrow-right ml-1"></i>
         </a>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered" width="100%" cellspacing="0">
+        <div class="row">
+            @forelse($recentAppointments as $app)
+                @php
+                    $tStatusCls = match($app->status) {
+                        'pending' => 'ticket-pending',
+                        'confirmed' => 'ticket-confirmed',
+                        'checked_in' => 'ticket-checked-in',
+                        default => '',
+                    };
+                @endphp
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-ticket-card {{ $tStatusCls }} h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="font-weight-bold text-primary">#{{ $app->appointment_code ?? $app->id }}</span>
+                                <span class="small text-gray-600">
+                                    <i class="far fa-calendar-alt mr-1 text-primary"></i>{{ \Carbon\Carbon::parse($app->appointment_date)->format('d/m/Y') }}
+                                    &middot; {{ $app->timeSlot ? $app->timeSlot->formatted_time : $app->medical_examination }}
+                                </span>
+                            </div>
+
+                            <div class="font-weight-bold text-gray-800">{{ $app->patient_display_name }}</div>
+                            <div class="small text-gray-600 mb-2">
+                                <i class="fas fa-phone mr-1 text-success"></i>{{ $app->patient->phone ?? 'N/A' }}
+                                @if($app->booking_for === 'relative')
+                                    <span class="badge badge-warning text-dark ml-1"><i class="fas fa-child mr-1"></i>Người thân</span>
+                                @endif
+                            </div>
+
+                            <div class="small border-top pt-2 mb-2">
+                                <div class="font-weight-bold text-gray-800">{{ $app->doctor->formatted_name ?? $app->doctor->user->name ?? 'N/A' }} <span class="text-muted">({{ $app->doctor->department->name ?? '' }})</span></div>
+                                <div class="text-info">{{ $app->service->name ?? 'Khám chuyên khoa' }}</div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <div>
+                                    @if($app->status === 'pending')
+                                        <span class="badge badge-warning text-dark">Chờ xác nhận</span>
+                                    @elseif($app->status === 'confirmed')
+                                        <span class="badge badge-primary">Đã xác nhận</span>
+                                    @elseif($app->status === 'checked_in')
+                                        <span class="badge badge-info">Đã tiếp nhận (QR)</span>
+                                    @elseif($app->status === 'completed')
+                                        <span class="badge badge-success">Đã hoàn thành</span>
+                                    @elseif($app->status === 'cancelled')
+                                        <span class="badge badge-danger">Đã hủy</span>
+                                    @else
+                                        <span class="badge badge-secondary">{{ $app->status }}</span>
+                                    @endif
+                                </div>
+                                <span class="small font-weight-bold text-success">
+                                    {{ number_format($app->total ?? ($app->service->price ?? 0), 0, ',', '.') }} đ
+                                    @if(in_array($app->payment_status, ['paid', 'success']))
+                                        <span class="badge badge-success ml-1">Đã thu</span>
+                                    @elseif($app->status !== 'cancelled')
+                                        <span class="badge badge-light border text-muted ml-1">Chưa thu</span>
+                                    @endif
+                                </span>
+                            </div>
+
+                            <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                            <div class="d-flex align-items-center justify-content-between pt-2" style="border-top: 1px dashed #cbd5e1;">
+                                <span class="small text-muted font-weight-bold">Chức năng:</span>
+                                <div class="d-flex align-items-center" style="gap: 6px;">
+                                    <a href="{{ route('admin.appointments.show', $app->id) }}" class="btn btn-info btn-circle btn-sm m-0" title="Xem chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+
+                                    @if($app->status === 'pending')
+                                        <form action="{{ route('admin.appointments.status', $app->id) }}" method="POST" class="d-inline m-0">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="confirmed">
+                                            <button type="submit" class="btn btn-primary btn-circle btn-sm m-0" title="Duyệt lịch nhanh">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                    @elseif($app->status === 'confirmed')
+                                        <form action="{{ route('admin.appointments.status', $app->id) }}" method="POST" class="d-inline m-0">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="status" value="checked_in">
+                                            <button type="submit" class="btn btn-primary btn-circle btn-sm m-0" title="Check-in QR tiếp đón">
+                                                <i class="fas fa-qrcode"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Chưa có lịch hẹn nào.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
+            <table class="table table-bordered no-datatable" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>
                         <th style="width: 140px;">Mã & Giờ khám</th>

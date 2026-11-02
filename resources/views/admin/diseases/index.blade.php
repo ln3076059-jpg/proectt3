@@ -115,17 +115,74 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh mục Bệnh Lý làm thành Card Phác Đồ Bệnh Lý ICD-10 (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">Danh mục các mặt bệnh lý theo chuyên khoa</h6>
+        <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-book-medical mr-1"></i> Danh mục Card Mặt Bệnh Lý &amp; Mã ICD-10 theo chuyên khoa
+        </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($diseases, 'total') ? $diseases->total() : $diseases->count() }} mặt bệnh
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered dataTable" width="100%" cellspacing="0">
+        <div class="row pt-2">
+            @forelse($diseases as $disease)
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="sb-folder-card h-100 p-3 d-flex flex-column justify-content-between" data-tab-label="PHÁC ĐỒ ICD-10">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-dark">#ICD-{{ str_pad($disease->id, 4, '0', STR_PAD_LEFT) }}</span>
+                                <span class="badge badge-info px-2 py-1">
+                                    <i class="fas fa-hospital-alt mr-1"></i>{{ $disease->department->name ?? 'Đa khoa' }}
+                                </span>
+                            </div>
+
+                            <div class="font-weight-bold text-primary mb-2" style="font-size: 0.96rem;">
+                                <i class="fas fa-file-medical-alt text-danger mr-1"></i>{{ $disease->name }}
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                @if($disease->symptoms && $disease->symptoms->isNotEmpty())
+                                    <div class="mb-1 text-muted font-weight-bold">Triệu chứng lâm sàng điển hình:</div>
+                                    @foreach($disease->symptoms as $sym)
+                                        <span class="badge badge-light border text-gray-800 mr-1 mb-1">{{ $sym->symptom_name }}</span>
+                                    @endforeach
+                                @elseif(!empty($disease->description))
+                                    {{ \Illuminate\Support\Str::limit($disease->description, 100) }}
+                                @else
+                                    <span class="text-muted">Chưa cập nhật triệu chứng</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.diseases.edit', $disease) }}" class="btn btn-info btn-circle btn-sm m-0" title="Sửa mặt bệnh">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.diseases.destroy', $disease) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bệnh lý này?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa bệnh">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Chưa có bệnh nào trong danh mục.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
+            <table class="table table-bordered dataTable no-datatable" width="100%" cellspacing="0">
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 50px;">STT</th>

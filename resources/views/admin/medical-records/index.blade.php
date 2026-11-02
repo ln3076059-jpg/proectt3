@@ -119,18 +119,77 @@
     </div>
 </div>
 
-<!-- DataTales (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh sách Hồ sơ Bệnh án làm thành Card Bìa Hồ Sơ EMR (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh sách hồ sơ bệnh án bệnh nhân tại Thái Thịnh
+            <i class="fas fa-folder-open mr-1"></i> Danh sách Bìa Hồ Sơ Bệnh Án Điện Tử (EMR Folders)
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($records, 'total') ? $records->total() : $records->count() }} bệnh án
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row pt-2">
+            @forelse($records as $i => $record)
+                <div class="col-xl-4 col-md-6 mb-4">
+                    <div class="sb-folder-card h-100 p-3 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="font-weight-bold text-primary">#EMR-{{ str_pad($record->id, 5, '0', STR_PAD_LEFT) }}</span>
+                                <small class="text-gray-600 font-weight-bold">
+                                    <i class="far fa-calendar-alt mr-1 text-primary"></i>{{ \Carbon\Carbon::parse($record->created_at ?? optional($record->appointment)->appointment_date)->format('d/m/Y H:i') }}
+                                </small>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="font-weight-bold text-gray-800" style="font-size: 0.95rem;">
+                                    <i class="fas fa-user-injured mr-1 text-warning"></i>{{ $record->patient->name ?? (optional(optional($record->appointment)->patient)->name ?? 'N/A') }}
+                                </div>
+                                <small class="text-muted"><i class="fas fa-phone mr-1 text-success"></i>{{ $record->patient->phone ?? (optional(optional($record->appointment)->patient)->phone ?? 'N/A') }}</small>
+                            </div>
+
+                            <div class="small border-top pt-2 mb-2">
+                                <div class="font-weight-bold text-gray-800">
+                                    <i class="fas fa-user-md mr-1 text-primary"></i>{{ optional(optional($record->appointment)->doctor)->formatted_name ?? optional(optional(optional($record->appointment)->doctor)->user)->name ?? 'N/A' }}
+                                </div>
+                                <div class="text-danger font-weight-bold mt-1">
+                                    Chẩn đoán: {{ \Illuminate\Support\Str::limit($record->diagnosis ?: 'Đang theo dõi lâm sàng', 85) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <div>
+                                <span class="badge badge-light border text-success mr-1">
+                                    <i class="fas fa-pills mr-1"></i>{{ $record->prescription_items_count ?? 0 }} thuốc
+                                </span>
+                                <span class="badge badge-light border text-info">
+                                    <i class="fas fa-vial mr-1"></i>{{ $record->lab_tests_count ?? 0 }} XN
+                                </span>
+                            </div>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.medical-records.show', $record->id) }}" class="btn btn-info btn-circle btn-sm m-0" title="Xem chi tiết bệnh án & đơn thuốc">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if($record->appointment_id)
+                                    <a href="{{ route('admin.appointments.show', $record->appointment_id) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Xem phiếu lịch hẹn">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy hồ sơ bệnh án nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

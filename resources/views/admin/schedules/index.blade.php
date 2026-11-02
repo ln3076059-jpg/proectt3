@@ -137,192 +137,186 @@
     </div>
 </div>
 
-<!-- Schedules Data Table (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh sách Ca khám & Sơ đồ Ghế khám dạng Card theo ngữ cảnh (Có đầy đủ các button nghiệp vụ y nguyên) -->
 <div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+    <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between" style="gap: 8px;">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh sách ca khám bệnh đã thiết lập
+            <i class="fas fa-chair mr-1"></i> Danh sách Ca trực &amp; Sơ đồ Ghế khám theo Ngữ cảnh
         </h6>
+        <div class="d-flex align-items-center" style="gap: 8px;">
+            <span class="badge badge-success"><i class="fas fa-chair mr-1"></i>Ghế trống</span>
+            <span class="badge badge-primary"><i class="fas fa-user-check mr-1"></i>Đang có khách</span>
+            <span class="badge badge-warning text-dark"><i class="fas fa-users mr-1"></i>Đầy ghế</span>
+            <span class="badge badge-danger"><i class="fas fa-lock mr-1"></i>Đã khóa</span>
+        </div>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
-            <table class="table table-bordered dataTable" width="100%" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="text-center" style="width: 50px;">STT</th>
-                        <th>Bác sĩ & Chuyên khoa</th>
-                        <th>Ngày làm việc & Ca khám</th>
-                        <th style="width: 200px;">Khung giờ & Sức chứa</th>
-                        <th class="text-center" style="width: 150px;">Chức năng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($schedules as $schedule)
-                        @php
-                            $totalSlots = $schedule->timeSlots->count();
-                            $totalCapacity = $schedule->timeSlots->sum('capacity');
-                            $totalBooked = $schedule->timeSlots->sum('booked_count');
-                        @endphp
-                        <tr>
-                            <!-- Cột 1: STT -->
-                            <td class="text-center font-weight-bold text-gray-600">
-                                {{ $loop->iteration }}
-                            </td>
+        @forelse($schedules as $schedule)
+            @php
+                $totalSlots = $schedule->timeSlots->count();
+                $totalCapacity = $schedule->timeSlots->sum('capacity');
+                $totalBooked = $schedule->timeSlots->sum('booked_count');
+                $shiftPct = $totalCapacity > 0 ? min(100, round(($totalBooked / $totalCapacity) * 100)) : 0;
+            @endphp
+            <div class="card mb-3 border-left-{{ $schedule->status === 'on_leave' ? 'warning' : 'primary' }} shadow-sm">
+                <!-- Header Card Ca trực (Đầy đủ thông tin & các button y nguyên) -->
+                <div class="card-header bg-white py-2 px-3 d-flex flex-wrap align-items-center justify-content-between" style="gap: 10px;">
+                    <div class="d-flex align-items-center" style="gap: 10px;">
+                        <span class="badge badge-dark font-weight-bold">#{{ $loop->iteration }}</span>
+                        <div>
+                            <div class="font-weight-bold text-primary" style="font-size: 0.95rem;">
+                                <i class="fas fa-user-md mr-1"></i>{{ $schedule->doctor->formatted_name ?? ($schedule->doctor->user->name ?? 'N/A') }}
+                                <span class="badge badge-info ml-1">{{ $schedule->doctor->department->name ?? 'Đa khoa' }}</span>
+                                <span class="badge badge-light border text-dark ml-1"><i class="fas fa-door-open text-primary mr-1"></i>{{ $schedule->doctor->room_number ?? 'P.201' }}</span>
+                            </div>
+                            <div class="small text-gray-700 mt-1">
+                                <i class="far fa-calendar-alt text-primary mr-1"></i><strong>{{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }}</strong>
+                                <span class="mx-1">&middot;</span>
+                                <i class="far fa-clock text-info mr-1"></i><strong>{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}</strong>
+                                @if($schedule->status === 'on_leave')
+                                    <span class="badge badge-warning text-dark ml-2"><i class="fas fa-user-clock mr-1"></i>Nghỉ phép</span>
+                                @else
+                                    <span class="badge badge-success ml-2">Đang trực</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
 
-                            <!-- Cột 2: Bác sĩ -->
-                            <td>
-                                <div class="font-weight-bold text-primary">
-                                    {{ $schedule->doctor->formatted_name ?? ($schedule->doctor->user->name ?? 'N/A') }}
-                                </div>
-                                <span class="badge badge-info">{{ $schedule->doctor->department->name ?? 'Đa khoa' }}</span>
-                            </td>
+                    <div class="d-flex align-items-center" style="gap: 14px;">
+                        <div class="text-right">
+                            <div class="small font-weight-bold text-gray-800">
+                                {{ $totalSlots }} khung giờ &middot; Đã đặt <span class="text-danger">{{ $totalBooked }}</span>/{{ $totalCapacity }} ghế
+                            </div>
+                            <div class="progress progress-sm mt-1" style="width: 140px; margin-left: auto;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $shiftPct }}%"></div>
+                            </div>
+                        </div>
 
-                            <!-- Cột 3: Ngày & Ca -->
-                            <td>
-                                <div class="font-weight-bold text-gray-800">
-                                    <i class="far fa-calendar-alt text-primary mr-1"></i>{{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }}
-                                    @if($schedule->status === 'on_leave')
-                                        <span class="badge badge-warning text-dark ml-1"><i class="fas fa-user-clock mr-1"></i>Nghỉ phép</span>
-                                    @else
-                                        <span class="badge badge-success ml-1">Đang trực</span>
-                                    @endif
-                                </div>
-                                <div class="small text-muted">
-                                    <i class="far fa-clock mr-1"></i>{{ substr($schedule->start_time, 0, 5) }} - {{ substr($schedule->end_time, 0, 5) }}
-                                </div>
-                            </td>
-
-                            <!-- Cột 4: Slots & Tải -->
-                            <td>
-                                <div><span class="font-weight-bold">{{ $totalSlots }}</span> khung giờ khám</div>
-                                <div class="small text-gray-700">Đã đặt: <strong class="text-danger">{{ $totalBooked }}</strong> / {{ $totalCapacity }} chỗ</div>
-                                <div class="progress progress-sm mt-1">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $totalCapacity > 0 ? min(100, ($totalBooked / $totalCapacity) * 100) : 0 }}%"></div>
-                                </div>
-                            </td>
-
-                            <!-- Cột 5: Chức năng -->
-                            <td class="text-center">
-                                <button type="button" class="btn btn-info btn-circle btn-sm mr-1" data-toggle="collapse" data-target="#slots-{{ $schedule->id }}" title="Xem chi tiết các slot">
-                                    <i class="fas fa-th-large"></i>
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center" style="gap: 6px;">
+                            <button type="button" class="btn btn-info btn-circle btn-sm m-0" data-toggle="collapse" data-target="#slots-{{ $schedule->id }}" title="Ẩn / Hiện sơ đồ ghế khám">
+                                <i class="fas fa-chair"></i>
+                            </button>
+                            <form action="{{ route('admin.schedules.leave', $schedule->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('{{ $schedule->status === 'on_leave' ? 'Mở lại ca trực này và mở khóa các khung giờ trống?' : 'Báo nghỉ đột xuất cho ca trực này? Hệ thống sẽ khóa các khung giờ trống và tự động điều chuyển lịch hẹn sang bác sĩ cùng chuyên khoa (nếu có).' }}');">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit" class="btn {{ $schedule->status === 'on_leave' ? 'btn-success' : 'btn-warning text-dark' }} btn-circle btn-sm m-0" title="{{ $schedule->status === 'on_leave' ? 'Kích hoạt lại ca trực' : 'Báo nghỉ đột xuất & Điều chuyển ca' }}">
+                                    <i class="fas {{ $schedule->status === 'on_leave' ? 'fa-play' : 'fa-user-slash' }}"></i>
                                 </button>
-                                <form action="{{ route('admin.schedules.leave', $schedule->id) }}" method="POST" class="d-inline mr-1" onsubmit="return confirm('{{ $schedule->status === 'on_leave' ? 'Mở lại ca trực này và mở khóa các khung giờ trống?' : 'Báo nghỉ đột xuất cho ca trực này? Hệ thống sẽ khóa các khung giờ trống và tự động điều chuyển lịch hẹn sang bác sĩ cùng chuyên khoa (nếu có).' }}');">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="btn {{ $schedule->status === 'on_leave' ? 'btn-success' : 'btn-warning text-dark' }} btn-circle btn-sm" title="{{ $schedule->status === 'on_leave' ? 'Kích hoạt lại ca trực' : 'Báo nghỉ đột xuất & Điều chuyển ca' }}">
-                                        <i class="fas {{ $schedule->status === 'on_leave' ? 'fa-play' : 'fa-user-slash' }}"></i>
-                                    </button>
-                                </form>
-                                <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ca làm việc này? Các khung giờ chưa có lịch hẹn sẽ bị xóa.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-circle btn-sm" title="Xóa ca">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                        <!-- Collapsible Detailed Slots Grid Row (Card Hình Ghế Khám / Slot Trực Quan) -->
-                        <tr class="collapse {{ $loop->first ? 'show' : '' }}" id="slots-{{ $schedule->id }}">
-                            <td colspan="5" class="bg-light p-3">
-                                <div class="d-flex flex-wrap align-items-center justify-content-between mb-3" style="gap: 8px;">
-                                    <h6 class="font-weight-bold text-primary mb-0">
-                                        <i class="fas fa-chair mr-1"></i> Sơ đồ Ghế khám &amp; Khung giờ ca trực: {{ \Carbon\Carbon::parse($schedule->date)->format('d/m/Y') }} — {{ $schedule->doctor->formatted_name ?? $schedule->doctor->user->name ?? 'Bác sĩ' }}
-                                    </h6>
-                                    <div class="small">
-                                        <span class="badge badge-success mr-1"><i class="fas fa-chair mr-1"></i>Còn trống</span>
-                                        <span class="badge badge-primary mr-1"><i class="fas fa-user-check mr-1"></i>Đang có khách</span>
-                                        <span class="badge badge-warning text-dark mr-1"><i class="fas fa-users mr-1"></i>Đầy chỗ</span>
-                                        <span class="badge badge-danger"><i class="fas fa-lock mr-1"></i>Đã khóa</span>
+                            </form>
+                            <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa ca làm việc này? Các khung giờ chưa có lịch hẹn sẽ bị xóa.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa ca">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Body Card: Sơ đồ Ghế khám dạng Card Hình Ghế (Hiển thị trực tiếp) -->
+                <div class="collapse show" id="slots-{{ $schedule->id }}">
+                    <div class="card-body bg-light py-3 px-3">
+                        <div class="sb-slot-grid">
+                            @forelse($schedule->timeSlots as $slot)
+                                @php
+                                    $isPast = $slot->start_date_time->isPast();
+                                    $isFull = $slot->booked_count >= $slot->capacity;
+                                    $isLocked = $slot->status === \App\Models\TimeSlot::STATUS_LOCKED;
+                                    $slotStateClass = $isLocked ? 'is-locked' : ($isFull ? 'is-full' : ($slot->booked_count > 0 ? 'is-busy' : 'is-available'));
+                                    $pct = $slot->capacity > 0 ? min(100, round(($slot->booked_count / $slot->capacity) * 100)) : 0;
+                                @endphp
+                                <div class="sb-slot-card {{ $slotStateClass }}">
+                                    <div class="d-flex align-items-center justify-content-between mb-2">
+                                        <span class="sb-slot-seat-icon {{ $isLocked ? 'bg-danger text-white' : ($isFull ? 'bg-warning text-dark' : ($slot->booked_count > 0 ? 'bg-primary text-white' : 'bg-success text-white')) }}">
+                                            <i class="fas {{ $isLocked ? 'fa-lock' : 'fa-chair' }}"></i>
+                                        </span>
+                                        <div class="text-right">
+                                            <div class="font-weight-bold text-gray-800" style="font-size: 0.88rem;">
+                                                {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}
+                                            </div>
+                                            @if($isLocked)
+                                                <span class="badge badge-danger">Đang khóa</span>
+                                            @elseif($isFull)
+                                                <span class="badge badge-warning text-dark">Đầy ghế</span>
+                                            @elseif($slot->booked_count > 0)
+                                                <span class="badge badge-primary">Đã đặt {{ $slot->booked_count }}/{{ $slot->capacity }}</span>
+                                            @else
+                                                <span class="badge badge-success">Trống {{ $slot->capacity }} ghế</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="sb-mini-seats mb-2" title="Sơ đồ ghế trong khung giờ ({{ $slot->booked_count }}/{{ $slot->capacity }} ghế đã đặt)">
+                                        @php
+                                            $maxIcons = min(max(1, (int)$slot->capacity), 8);
+                                        @endphp
+                                        @for($si = 1; $si <= $maxIcons; $si++)
+                                            @php
+                                                $seatClass = $isLocked ? 'seat-locked' : ($si <= $slot->booked_count ? 'seat-taken' : 'seat-free');
+                                            @endphp
+                                            <span class="sb-mini-seat {{ $seatClass }}">
+                                                <i class="fas {{ $isLocked ? 'fa-lock' : 'fa-chair' }}"></i>
+                                            </span>
+                                        @endfor
+                                        @if($slot->capacity > 8)
+                                            <span class="badge badge-light border text-muted" style="font-size: 0.65rem;">+{{ $slot->capacity - 8 }}</span>
+                                        @endif
+                                    </div>
+                                    <div class="progress progress-sm mb-2">
+                                        <div class="progress-bar {{ $isLocked ? 'bg-danger' : ($isFull ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $pct }}%"></div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-between pt-1 border-top">
+                                        <small class="text-muted font-weight-bold">Ghế: {{ $slot->booked_count }}/{{ $slot->capacity }}</small>
+                                        <div class="d-flex align-items-center" style="gap: 4px;">
+                                            <form action="{{ route('admin.schedules.slots.toggle', $slot->id) }}" method="POST" class="d-inline m-0">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="btn btn-xs {{ $isLocked ? 'btn-success' : 'btn-outline-warning text-dark' }} py-0 px-2 m-0" title="{{ $isLocked ? 'Mở khóa ghế/khung giờ' : 'Khóa ghế/khung giờ' }}">
+                                                    <i class="fas {{ $isLocked ? 'fa-unlock' : 'fa-lock' }}"></i>
+                                                </button>
+                                            </form>
+                                            <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 m-0" data-toggle="modal" data-target="#editCapModal-{{ $slot->id }}" title="Chỉnh số ghế tối đa">
+                                                <i class="fas fa-sliders-h"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="sb-slot-grid">
-                                    @forelse($schedule->timeSlots as $slot)
-                                        @php
-                                            $isPast = $slot->start_date_time->isPast();
-                                            $isFull = $slot->booked_count >= $slot->capacity;
-                                            $isLocked = $slot->status === \App\Models\TimeSlot::STATUS_LOCKED;
-                                            $slotStateClass = $isLocked ? 'is-locked' : ($isFull ? 'is-full' : ($slot->booked_count > 0 ? 'is-busy' : 'is-available'));
-                                            $pct = $slot->capacity > 0 ? min(100, round(($slot->booked_count / $slot->capacity) * 100)) : 0;
-                                        @endphp
-                                        <div class="sb-slot-card {{ $slotStateClass }}">
-                                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                                <span class="sb-slot-seat-icon {{ $isLocked ? 'bg-danger text-white' : ($isFull ? 'bg-warning text-dark' : ($slot->booked_count > 0 ? 'bg-primary text-white' : 'bg-success text-white')) }}">
-                                                    <i class="fas {{ $isLocked ? 'fa-lock' : 'fa-chair' }}"></i>
-                                                </span>
-                                                <div class="text-right">
-                                                    <div class="font-weight-bold text-gray-800" style="font-size: 0.88rem;">
-                                                        {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}
-                                                    </div>
-                                                    @if($isLocked)
-                                                        <span class="badge badge-danger">Đang khóa</span>
-                                                    @elseif($isFull)
-                                                        <span class="badge badge-warning text-dark">Đầy ghế</span>
-                                                    @elseif($slot->booked_count > 0)
-                                                        <span class="badge badge-primary">Đã đặt {{ $slot->booked_count }}/{{ $slot->capacity }}</span>
-                                                    @else
-                                                        <span class="badge badge-success">Trống {{ $slot->capacity }} ghế</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <div class="progress progress-sm mb-2">
-                                                <div class="progress-bar {{ $isLocked ? 'bg-danger' : ($isFull ? 'bg-warning' : 'bg-success') }}" role="progressbar" style="width: {{ $pct }}%"></div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between pt-1 border-top">
-                                                <small class="text-muted font-weight-bold">Ghế: {{ $slot->booked_count }}/{{ $slot->capacity }}</small>
-                                                <div class="d-flex align-items-center" style="gap: 4px;">
-                                                    <form action="{{ route('admin.schedules.slots.toggle', $slot->id) }}" method="POST" class="d-inline m-0">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <button type="submit" class="btn btn-xs {{ $isLocked ? 'btn-success' : 'btn-outline-warning text-dark' }} py-0 px-2 m-0" title="{{ $isLocked ? 'Mở khóa ghế/khung giờ' : 'Khóa ghế/khung giờ' }}">
-                                                            <i class="fas {{ $isLocked ? 'fa-unlock' : 'fa-lock' }}"></i>
-                                                        </button>
-                                                    </form>
-                                                    <button type="button" class="btn btn-xs btn-outline-primary py-0 px-2 m-0" data-toggle="modal" data-target="#editCapModal-{{ $slot->id }}" title="Chỉnh số ghế tối đa">
-                                                        <i class="fas fa-sliders-h"></i>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
 
-                                        <!-- Modal Capacity -->
-                                        <div class="modal fade" id="editCapModal-{{ $slot->id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                                            <div class="modal-dialog modal-sm" role="document">
-                                                <div class="modal-content">
-                                                    <form action="{{ route('admin.schedules.slots.capacity', $slot->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <div class="modal-header">
-                                                            <h6 class="modal-title font-weight-bold text-primary">Sức chứa ghế khám</h6>
-                                                            <button class="close" type="button" data-dismiss="modal"><span>&times;</span></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <label class="font-weight-bold text-gray-700 small">Giờ: {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}</label>
-                                                            <input type="number" name="capacity" class="form-control" value="{{ $slot->capacity }}" min="1" max="100" required>
-                                                            <small class="text-muted">Số ghế / bệnh nhân tối đa trong khung giờ này</small>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Đóng</button>
-                                                            <button type="submit" class="btn btn-primary btn-sm">Lưu</button>
-                                                        </div>
-                                                    </form>
+                                <!-- Modal Capacity -->
+                                <div class="modal fade" id="editCapModal-{{ $slot->id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                                    <div class="modal-dialog modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <form action="{{ route('admin.schedules.slots.capacity', $slot->id) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <div class="modal-header">
+                                                    <h6 class="modal-title font-weight-bold text-primary">Sức chứa ghế khám</h6>
+                                                    <button class="close" type="button" data-dismiss="modal"><span>&times;</span></button>
                                                 </div>
-                                            </div>
+                                                <div class="modal-body">
+                                                    <label class="font-weight-bold text-gray-700 small">Giờ: {{ substr($slot->start_time, 0, 5) }} - {{ substr($slot->end_time, 0, 5) }}</label>
+                                                    <input type="number" name="capacity" class="form-control" value="{{ $slot->capacity }}" min="1" max="100" required>
+                                                    <small class="text-muted">Số ghế / bệnh nhân tối đa trong khung giờ này</small>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Đóng</button>
+                                                    <button type="submit" class="btn btn-primary btn-sm">Lưu</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                    @empty
-                                        <div class="text-muted text-center py-2">Chưa có khung giờ nào được sinh ra cho ca này.</div>
-                                    @endforelse
+                                    </div>
                                 </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-4">Chưa có ca làm việc nào phù hợp với điều kiện tìm kiếm.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+                            @empty
+                                <div class="text-muted text-center py-2">Chưa có khung giờ nào được sinh ra cho ca này.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @empty
+            <div class="text-center text-muted py-4">Chưa có ca làm việc nào phù hợp với điều kiện tìm kiếm.</div>
+        @endforelse
 
         @if(method_exists($schedules, 'links'))
             <div class="mt-3">

@@ -156,7 +156,7 @@
                             @php
                                 $bCount = $slot->booked_count ?? 0;
                                 $cap = max(1, $slot->capacity ?? 5);
-                                $isLocked = !$slot->is_available;
+                                $isLocked = ($slot->status ?? '') === \App\Models\TimeSlot::STATUS_LOCKED;
                                 $isFull = $bCount >= $cap;
                                 $slotCls = $isLocked ? 'is-locked' : ($isFull ? 'is-full' : ($bCount > 0 ? 'is-busy' : 'is-available'));
                             @endphp
@@ -178,12 +178,34 @@
                                         @endif
                                     </div>
                                 </div>
+                                <div class="sb-mini-seats mb-2" title="Sơ đồ ghế trong khung giờ ({{ $bCount }}/{{ $cap }} ghế đã đặt)">
+                                    @php
+                                        $maxIcons = min(max(1, (int)$cap), 8);
+                                    @endphp
+                                    @for($si = 1; $si <= $maxIcons; $si++)
+                                        @php
+                                            $seatClass = $isLocked ? 'seat-locked' : ($si <= $bCount ? 'seat-taken' : 'seat-free');
+                                        @endphp
+                                        <span class="sb-mini-seat {{ $seatClass }}">
+                                            <i class="fas {{ $isLocked ? 'fa-lock' : 'fa-chair' }}"></i>
+                                        </span>
+                                    @endfor
+                                    @if($cap > 8)
+                                        <span class="badge badge-light border text-muted" style="font-size: 0.65rem;">+{{ $cap - 8 }}</span>
+                                    @endif
+                                </div>
                                 <div class="progress progress-sm mb-1">
                                     <div class="progress-bar {{ $isLocked ? 'bg-danger' : 'bg-success' }}" role="progressbar" style="width: {{ min(100, round(($bCount / $cap) * 100)) }}%"></div>
                                 </div>
-                                <div class="d-flex justify-content-between small text-muted mt-1">
-                                    <span>Đã đặt: <strong>{{ $bCount }}/{{ $cap }}</strong></span>
-                                    <span><i class="fas fa-procedures text-primary"></i> P.{{ $doctor->room_number ?? '201' }}</span>
+                                <div class="d-flex align-items-center justify-content-between small text-muted mt-1 pt-1 border-top">
+                                    <span>Ghế: <strong>{{ $bCount }}/{{ $cap }}</strong> &middot; {{ $doctor->room_number ?? 'P.201' }}</span>
+                                    <form action="{{ route('admin.schedules.slots.toggle', $slot->id) }}" method="POST" class="d-inline m-0">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-xs {{ $isLocked ? 'btn-success' : 'btn-outline-warning text-dark' }} py-0 px-2 m-0" title="{{ $isLocked ? 'Mở khóa ghế' : 'Khóa ghế' }}">
+                                            <i class="fas {{ $isLocked ? 'fa-unlock' : 'fa-lock' }}"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         @endforeach
@@ -196,34 +218,29 @@
                     </div>
                 @endif
 
-                {{-- Danh sách lịch hẹn của bác sĩ trong ngày (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) --}}
-                <h6 class="font-weight-bold text-gray-800 mb-2">
-                    <i class="fas fa-users text-primary mr-1"></i> Danh sách Bệnh nhân đặt khám trong ngày ({{ isset($appointments) ? $appointments->count() : 0 }} ca):
+                {{-- Danh sách lịch hẹn của bác sĩ trong ngày làm thành Card Phiếu Khám (Giữ nguyên các button) --}}
+                <h6 class="font-weight-bold text-gray-800 mb-3">
+                    <i class="fas fa-ticket-alt text-primary mr-1"></i> Danh sách Bệnh nhân đặt khám trong ngày ({{ isset($appointments) ? $appointments->count() : 0 }} ca):
                 </h6>
-                <div class="table-responsive">
-                    <table class="table table-bordered mb-0" width="100%" cellspacing="0">
-                        <thead class="bg-light">
-                            <tr>
-                                <th class="text-center" style="width: 55px;">STT</th>
-                                <th style="width: 140px;">Giờ / Ca khám</th>
-                                <th>Bệnh nhân &amp; Liên hệ</th>
-                                <th>Gói dịch vụ &amp; Trạng thái</th>
-                                <th class="text-center" style="width: 130px;">Chức năng</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($appointments ?? [] as $appt)
-                                <tr>
-                                    <td class="text-center align-middle font-weight-bold text-gray-600">{{ $loop->iteration }}</td>
-                                    <td class="font-weight-bold text-primary align-middle">
+                <div class="row">
+                    @forelse($appointments ?? [] as $appt)
+                        <div class="col-md-6 mb-3">
+                            <div class="sb-ticket-card {{ $appt->status === 'pending' ? 'ticket-pending' : ($appt->status === 'checked_in' ? 'ticket-checked-in' : 'ticket-confirmed') }} h-100 p-3">
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <span class="badge badge-dark font-weight-bold">#{{ $loop->iteration }} &middot; Mã #{{ str_pad($appt->id, 5, '0', STR_PAD_LEFT) }}</span>
+                                    <span class="small font-weight-bold text-primary">
                                         <i class="far fa-clock mr-1"></i>{{ $appt->appointment_time ? substr($appt->appointment_time, 0, 5) : ($appt->medical_examination ?? 'Cả ngày') }}
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="font-weight-bold text-gray-800">{{ $appt->patient->name ?? 'Bệnh nhân' }}</div>
-                                        <small class="text-muted"><i class="fas fa-phone-alt mr-1"></i>{{ $appt->patient->phone ?? '---' }}</small>
-                                    </td>
-                                    <td class="align-middle">
-                                        <div class="small font-weight-bold text-gray-800 mb-1">{{ $appt->service->name ?? 'Khám chuyên khoa' }}</div>
+                                    </span>
+                                </div>
+                                <div class="font-weight-bold text-gray-800" style="font-size: 0.92rem;">
+                                    {{ $appt->patient->name ?? 'Bệnh nhân' }}
+                                    <small class="text-muted ml-1"><i class="fas fa-phone-alt text-success mr-1"></i>{{ $appt->patient->phone ?? '---' }}</small>
+                                </div>
+                                <div class="small text-info font-weight-bold mb-2">
+                                    {{ $appt->service->name ?? 'Khám chuyên khoa' }}
+                                </div>
+                                <div class="d-flex align-items-center justify-content-between pt-2" style="border-top: 1px dashed #cbd5e1;">
+                                    <div>
                                         @if($appt->status === 'completed')
                                             <span class="badge badge-success">Đã khám</span>
                                         @elseif($appt->status === 'checked_in')
@@ -233,25 +250,27 @@
                                         @else
                                             <span class="badge badge-warning text-dark">Chờ duyệt</span>
                                         @endif
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <a href="{{ route('admin.appointments.show', $appt->id) }}" class="btn btn-info btn-circle btn-sm" title="Xem chi tiết ca khám">
+                                    </div>
+                                    <div class="d-flex align-items-center" style="gap: 6px;">
+                                        <a href="{{ route('admin.appointments.show', $appt->id) }}" class="btn btn-info btn-circle btn-sm m-0" title="Xem chi tiết ca khám">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         @if($appt->medicalRecord)
-                                            <a href="{{ route('admin.medical-records.show', $appt->medicalRecord->id) }}" class="btn btn-primary btn-circle btn-sm" title="Xem bệnh án EMR">
+                                            <a href="{{ route('admin.medical-records.show', $appt->medicalRecord->id) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Xem bệnh án EMR">
                                                 <i class="fas fa-file-medical-alt"></i>
                                             </a>
                                         @endif
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-3 small">Chưa có lịch hẹn nào trong ngày {{ \Carbon\Carbon::parse($today)->format('d/m/Y') }}.</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-12">
+                            <div class="text-center text-muted py-3 small border rounded bg-light">
+                                Chưa có lịch hẹn nào trong ngày {{ \Carbon\Carbon::parse($today)->format('d/m/Y') }}.
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>

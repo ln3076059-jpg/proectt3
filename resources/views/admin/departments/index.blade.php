@@ -36,48 +36,6 @@
     </div>
 @endif
 
-<!-- Sơ đồ Trực quan Buồng khám Chuyên khoa (Contextual Room Cards) -->
-<div class="card shadow mb-4">
-    <div class="card-header py-3 d-flex flex-wrap align-items-center justify-content-between">
-        <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-door-open mr-1"></i> Sơ đồ Trực quan Buồng khám &amp; Phân bổ Nhân sự theo Khoa
-        </h6>
-        <span class="small text-muted">
-            <i class="fas fa-check-circle text-success mr-1"></i>Đang hoạt động: <strong>{{ $departments->where('is_active', true)->count() }}</strong> buồng khoa
-        </span>
-    </div>
-    <div class="card-body pb-2">
-        <div class="row">
-            @foreach($departments->take(6) as $roomDept)
-                <div class="col-xl-4 col-md-6 mb-3">
-                    <div class="sb-room-card h-100">
-                        <div class="sb-room-icon" style="{{ ($roomDept->is_active ?? true) ? '' : 'background:#eaecf4;color:#858796;' }}">
-                            <i class="fas fa-clinic-medical"></i>
-                        </div>
-                        <div class="flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="font-weight-bold text-gray-800 small">{{ $roomDept->name }}</span>
-                                <span class="badge {{ ($roomDept->is_active ?? true) ? 'badge-success' : 'badge-secondary' }}" style="font-size: 10px;">
-                                    P.{{ 100 + $roomDept->id }}
-                                </span>
-                            </div>
-                            <div class="small text-muted mt-1">
-                                <span class="mr-2"><i class="fas fa-user-md text-primary mr-1"></i><strong>{{ $roomDept->doctors_count ?? 0 }}</strong> Bác sĩ</span>
-                                <span><i class="fas fa-stethoscope text-info mr-1"></i><strong>{{ $roomDept->services_count ?? 0 }}</strong> Gói khám</span>
-                            </div>
-                        </div>
-                        <div class="ml-2">
-                            <a href="{{ route('admin.schedules.index', ['department_id' => $roomDept->id]) }}" class="btn btn-outline-primary btn-circle btn-sm" title="Xem ghế khám & lịch trực khoa này">
-                                <i class="fas fa-chair"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</div>
-
 <!-- Search & Filter Card -->
 <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -113,18 +71,86 @@
     </div>
 </div>
 
-<!-- DataTales Example (5 CỘT BAO GỒM 1 CỘT CHỨC NĂNG) -->
+<!-- Danh sách Chuyên khoa làm thành Card Buồng Khám Lâm Sàng (Có các button y nguyên) -->
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
         <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-list mr-1"></i> Danh sách các chuyên khoa tại 125 Thái Thịnh
+            <i class="fas fa-door-open mr-1"></i> Sơ đồ Card Buồng Khám &amp; Chuyên Khoa tại 125 Thái Thịnh
         </h6>
         <span class="badge badge-primary px-3 py-2">
             Tổng số: {{ method_exists($departments, 'total') ? $departments->total() : $departments->count() }} chuyên khoa
         </span>
     </div>
     <div class="card-body">
-        <div class="table-responsive">
+        <div class="row">
+            @forelse($departments as $department)
+                <div class="col-xl-4 col-md-6 mb-3">
+                    <div class="sb-room-card h-100 p-3 d-flex flex-column justify-content-between" style="border-left: 5px solid {{ ($department->is_active ?? true) ? '#4e73df' : '#858796' }};">
+                        <div>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="badge badge-dark">#KHOA-{{ str_pad($department->id, 3, '0', STR_PAD_LEFT) }} &middot; P.{{ 100 + $department->id }}</span>
+                                @if($department->is_active ?? true)
+                                    <span class="badge badge-success px-2 py-1"><i class="fas fa-check-circle mr-1"></i>Đang mở</span>
+                                @else
+                                    <span class="badge badge-secondary px-2 py-1"><i class="fas fa-lock mr-1"></i>Tạm khóa</span>
+                                @endif
+                            </div>
+
+                            <div class="d-flex align-items-center mb-2">
+                                @if($department->image)
+                                    <img src="{{ asset('storage/'.$department->image) }}" alt="{{ $department->name }}" class="rounded mr-3 border" style="width: 44px; height: 44px; object-fit: cover; flex-shrink: 0;">
+                                @else
+                                    <div class="sb-room-icon mr-3">
+                                        <i class="fas fa-clinic-medical"></i>
+                                    </div>
+                                @endif
+                                <div>
+                                    <div class="font-weight-bold text-primary" style="font-size: 0.96rem;">{{ $department->name }}</div>
+                                    <div class="small text-muted mt-1">
+                                        <a href="{{ route('admin.doctors.index', ['department_id' => $department->id]) }}" class="text-primary font-weight-bold mr-2">
+                                            <i class="fas fa-user-md mr-1"></i>{{ $department->doctors_count ?? 0 }} Bác sĩ
+                                        </a>
+                                        <a href="{{ route('admin.services.index', ['department_id' => $department->id]) }}" class="text-info font-weight-bold">
+                                            <i class="fas fa-stethoscope mr-1"></i>{{ $department->services_count ?? 0 }} Dịch vụ
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="small text-gray-700 border-top pt-2 mb-2">
+                                {{ \Illuminate\Support\Str::limit($department->description ?? 'Đang cập nhật thông tin giới thiệu chuyên khoa.', 110) }}
+                            </div>
+                        </div>
+
+                        <!-- CÁC BUTTON CHỨC NĂNG Y NGUYÊN -->
+                        <div class="d-flex align-items-center justify-content-between pt-2 border-top">
+                            <span class="small text-muted font-weight-bold">Chức năng:</span>
+                            <div class="d-flex align-items-center" style="gap: 6px;">
+                                <a href="{{ route('admin.doctors.index', ['department_id' => $department->id]) }}" class="btn btn-primary btn-circle btn-sm m-0" title="Xem bác sĩ thuộc khoa">
+                                    <i class="fas fa-user-md"></i>
+                                </a>
+                                <a href="{{ route('admin.departments.edit', $department) }}" class="btn btn-info btn-circle btn-sm m-0" title="Chỉnh sửa">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ route('admin.departments.destroy', $department) }}" method="POST" class="d-inline m-0" onsubmit="return confirm('Bạn có chắc chắn muốn xóa chuyên khoa này không?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-circle btn-sm m-0" title="Xóa khoa">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-12">
+                    <div class="text-center text-muted py-4 border rounded bg-light">Không tìm thấy chuyên khoa nào phù hợp.</div>
+                </div>
+            @endforelse
+        </div>
+
+        <div class="table-responsive d-none">
             <table class="table table-bordered table-hover" width="100%" cellspacing="0">
                 <thead class="bg-light">
                     <tr>

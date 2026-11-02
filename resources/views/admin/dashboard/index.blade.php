@@ -54,34 +54,34 @@
     <div class="row mb-3">
         @if(($stats['pending_refunds'] ?? 0) > 0)
             <div class="col-md-4 mb-2">
-                <div class="alert alert-danger mb-0 py-2 px-3 d-flex align-items-center justify-content-between shadow-sm">
+                <div class="alert alert-danger mb-0 py-2 px-3 d-flex align-items-center justify-content-between shadow-sm" style="gap: 10px;">
                     <div class="small">
                         <i class="fas fa-undo-alt mr-1"></i>
                         Có <strong>{{ $stats['pending_refunds'] }} lịch hủy</strong> đang chờ hoàn tiền VNPay
                     </div>
-                    <a href="{{ route('admin.appointments.index', ['status' => 'cancelled']) }}" class="btn btn-xs btn-danger py-0 px-2 font-weight-bold" style="font-size: 11.5px;">Xử lý ngay</a>
+                    <a href="{{ route('admin.appointments.index', ['status' => 'cancelled']) }}" class="btn btn-xs btn-danger py-1 px-2 font-weight-bold flex-shrink-0 text-nowrap" style="font-size: 11.5px;">Xử lý ngay</a>
                 </div>
             </div>
         @endif
         @if(($stats['low_stock_medicines'] ?? 0) > 0)
             <div class="col-md-4 mb-2">
-                <div class="alert alert-warning text-dark mb-0 py-2 px-3 d-flex align-items-center justify-content-between shadow-sm">
+                <div class="alert alert-warning text-dark mb-0 py-2 px-3 d-flex align-items-center justify-content-between shadow-sm" style="gap: 10px;">
                     <div class="small">
-                        <i class="fas fa-Capsules mr-1"></i>
+                        <i class="fas fa-capsules mr-1"></i>
                         Có <strong>{{ $stats['low_stock_medicines'] }} mặt hàng thuốc</strong> tồn kho dưới ngưỡng an toàn
                     </div>
-                    <a href="{{ route('admin.medicines.index') }}" class="btn btn-xs btn-warning text-dark border py-0 px-2 font-weight-bold" style="font-size: 11.5px;">Nhập kho</a>
+                    <a href="{{ route('admin.medicines.index') }}" class="btn btn-xs btn-warning text-dark border py-1 px-2 font-weight-bold flex-shrink-0 text-nowrap" style="font-size: 11.5px;">Nhập kho</a>
                 </div>
             </div>
         @endif
         @if(($stats['pending_lab_tests'] ?? 0) > 0)
             <div class="col-md-4 mb-2">
-                <div class="alert alert-info mb-0 py-2 px-3 d-flex align-items-center justify-content-between shadow-sm">
+                <div class="alert alert-info mb-0 py-2 px-3 d-flex align-items-center justify-content-between shadow-sm" style="gap: 10px;">
                     <div class="small">
                         <i class="fas fa-microscope mr-1"></i>
                         Có <strong>{{ $stats['pending_lab_tests'] }} chỉ định xét nghiệm</strong> đang chờ trả kết quả
                     </div>
-                    <a href="{{ route('admin.lab_tests.index', ['status' => 'requested']) }}" class="btn btn-xs btn-info py-0 px-2 font-weight-bold" style="font-size: 11.5px;">Trả KQ</a>
+                    <a href="{{ route('admin.lab_tests.index', ['status' => 'requested']) }}" class="btn btn-xs btn-info py-1 px-2 font-weight-bold flex-shrink-0 text-nowrap" style="font-size: 11.5px;">Trả KQ</a>
                 </div>
             </div>
         @endif
@@ -366,8 +366,8 @@
                 <div class="col-xl-4 col-md-6 mb-3">
                     <div class="sb-ticket-card {{ $tStatusCls }} h-100 p-3 d-flex flex-column justify-content-between">
                         <div>
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="font-weight-bold text-primary">#{{ $app->appointment_code ?? $app->id }}</span>
+                            <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
+                                <span class="font-weight-bold text-primary text-nowrap">#{{ $app->appointment_code ?? $app->id }}</span>
                                 <span class="small text-gray-600">
                                     <i class="far fa-calendar-alt mr-1 text-primary"></i>{{ \Carbon\Carbon::parse($app->appointment_date)->format('d/m/Y') }}
                                     &middot; {{ $app->timeSlot ? $app->timeSlot->formatted_time : $app->medical_examination }}

@@ -151,8 +151,8 @@
                 <div class="col-xl-4 col-md-6 mb-3">
                     <div class="sb-ticket-card {{ $tStatusCls }} h-100 p-3 d-flex flex-column justify-content-between">
                         <div>
-                            <div class="d-flex align-items-center justify-content-between mb-2">
-                                <span class="font-weight-bold text-primary">#{{ $app->appointment_code ?? str_pad($app->id, 6, '0', STR_PAD_LEFT) }}</span>
+                            <div class="d-flex align-items-center justify-content-between flex-wrap mb-2">
+                                <span class="font-weight-bold text-primary text-nowrap">#{{ $app->appointment_code ?? str_pad($app->id, 6, '0', STR_PAD_LEFT) }}</span>
                                 <span class="badge badge-light border text-gray-800">
                                     <i class="far fa-calendar-alt text-primary mr-1"></i>{{ \Carbon\Carbon::parse($app->appointment_date)->format('d/m/Y') }}
                                     &middot;

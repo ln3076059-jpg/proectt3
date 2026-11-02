@@ -339,6 +339,35 @@
         }
 
         /* Contextual Domain Cards across Admin Modules */
+        .card .text-xs.font-weight-bold.text-uppercase {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        #content-wrapper .d-flex.justify-content-between {
+            gap: 6px 10px;
+        }
+        #content-wrapper .row.no-gutters.align-items-center > .col:not(.mr-2) {
+            margin-right: 0.5rem;
+            min-width: 0;
+        }
+        .sb-doctor-badge-card,
+        .sb-ticket-card,
+        .sb-bhyt-card,
+        .sb-blister-card,
+        .sb-folder-card,
+        .sb-lab-slip-card,
+        .sb-room-card,
+        .sb-slot-card {
+            min-width: 0;
+        }
+        .sb-ticket-card .badge,
+        .sb-bhyt-card .badge {
+            max-width: 100%;
+            white-space: normal;
+            text-align: left;
+            line-height: 1.3;
+        }
         /* 1. Thẻ đeo Bác sĩ (Doctor ID Badge Card) */
         .sb-doctor-badge-card {
             position: relative;
